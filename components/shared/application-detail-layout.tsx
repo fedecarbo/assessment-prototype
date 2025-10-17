@@ -44,7 +44,9 @@ export function ApplicationDetailLayout({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsHeroCollapsed(!entry.isIntersecting)
+        if (entry) {
+          setIsHeroCollapsed(!entry.isIntersecting)
+        }
       },
       {
         threshold: 0,
