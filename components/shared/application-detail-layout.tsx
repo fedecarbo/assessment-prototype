@@ -87,7 +87,10 @@ export function ApplicationDetailLayout({
           intersectingSections.sort((a, b) => a.top - b.top)
 
           // Set the topmost visible section as active
-          setActiveSection(intersectingSections[0].id)
+          const topSection = intersectingSections[0]
+          if (topSection) {
+            setActiveSection(topSection.id)
+          }
         }
       },
       {
