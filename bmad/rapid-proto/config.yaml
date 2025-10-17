@@ -1,0 +1,49 @@
+# Rapid Prototype Module Configuration
+module_name: Rapid Prototype
+module_code: rapid-proto
+author: Fede
+description: Zero-friction Next.js prototype scaffolding system with standardized tech stack, automated mock data infrastructure, and context-aware documentation for seamless AI agent collaboration
+
+# Module paths
+module_root: "{project-root}/bmad/rapid-proto"
+installer_path: "{project-root}/bmad/rapid-proto/_module-installer"
+
+# Component counts
+agents:
+  count: 3
+  list:
+    - prototype-architect
+    - builder
+    - qa-refactor
+
+workflows:
+  count: 1
+  list:
+    - rapid-prototype
+
+tasks:
+  count: 0
+  list: []
+
+# Tech Stack Configuration
+tech_stack:
+  framework: "Next.js 15+"
+  language: "TypeScript (strict mode)"
+  styling: "Tailwind CSS v4+"
+  ui_components: "Shadcn UI"
+  router: "App Router"
+  features: "Server Components"
+
+# Context Handoff System
+context_system:
+  docs_path: "{project-root}/docs/rapid-prototype"
+  tracking_files:
+    - project-brief.md
+    - build-log.md
+    - changes-log.md
+    - refactor-log.md
+    - context-summary.md
+
+# Output configuration
+output_folder: "{project-root}/docs/rapid-proto"
+data_folder: "{module_root}/data"

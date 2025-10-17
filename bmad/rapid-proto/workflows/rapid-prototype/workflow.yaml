@@ -1,0 +1,32 @@
+# Rapid Prototype Workflow Configuration
+name: rapid-prototype
+description: "Zero-friction Next.js prototype scaffolding with standardized tech stack, mock data infrastructure, and living documentation"
+author: "Fede"
+
+# Critical variables load from config_source
+config_source: "{project-root}/bmad/rapid-proto/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+date: system-generated
+
+# Tech stack configuration
+tech_stack: "{config_source}:tech_stack"
+
+# Context system paths
+context_docs_path: "{project-root}/docs/rapid-prototype"
+
+# Module path and component files
+installed_path: "{project-root}/bmad/rapid-proto/workflows/rapid-prototype"
+template: false # Action workflow - no template document
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# Scaffold templates
+scaffold_templates: "{installed_path}/templates/"
+
+# Output configuration - creates prototype structure in user-specified location
+target_project_path: "{{user_project_path}}" # User specifies where to scaffold
+project_name: "{{project_name}}" # User provides or auto-generated
+
+# Execution modes
+mode: "{{mode}}" # 'interactive' (default) or 'quick' (instant with defaults)
