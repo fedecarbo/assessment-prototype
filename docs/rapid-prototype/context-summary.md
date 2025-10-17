@@ -6,6 +6,7 @@
 ## Quick Overview
 
 - **Project:** assessment-prototype
+- **Repository:** https://github.com/fedecarbo/assessment-prototype.git
 - **Description:** A prototype for a back office planning system. Building out a new layout for assessing planning applications (focused primarily for pre-applications, but optimised for full applications).
 - **Tech Stack:** Next.js 15, TypeScript (strict), Tailwind v4, Shadcn UI
 
