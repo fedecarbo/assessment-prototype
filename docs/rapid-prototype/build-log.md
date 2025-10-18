@@ -550,3 +550,363 @@ Restructured Overview section to use a **product detail page pattern** with 66/3
 **Status:** UI polish complete with GDS color system fully implemented. All badges use default font weight. Navigation links styled consistently. Brand color (GDS blue) integrated throughout using standard Tailwind utilities.
 
 ---
+
+## 2025-10-18 | Integrated Stage Workflow Timeline
+
+**Built by:** Forge (Builder)
+
+### Major Timeline Redesign
+
+Replaced date-only timeline with integrated stage-workflow timeline that shows both application progress stages AND key dates in context.
+
+### Components Created
+
+**ApplicationStageTimeline** ([components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx))
+- Integrated workflow timeline showing 4 main stages with dates:
+  - **Validation:** First stage, blocks all others until complete
+  - **Consultation:** Can start after validation (parallel with Assessment)
+  - **Assessment:** Can start after validation (parallel with Consultation)
+  - **Review:** Requires both Consultation and Assessment to be complete
+- Visual parallel branching for Consultation + Assessment stages
+- Stage status indicators:
+  - **Locked** (grey + lock icon): Cannot access, dependencies not met
+  - **Active** (blue + clock icon): Currently in progress
+  - **Completed** (green + checkmark icon): Stage finished
+- Smart date display within each stage context:
+  - Validation: Shows "Valid from" or "Validated" date
+  - Consultation: Shows "Started" or "Ends" date, "Approaching" badge if ending soon
+  - Assessment: Shows "Started" date
+  - Review: Shows "Started" date
+- Dependency messaging:
+  - Locked stages show why they're blocked (e.g., "Requires validation")
+  - Review stage shows "Requires consultation & assessment"
+- Expiry warning callout at bottom if approaching (within 7 days)
+- Icon set: Lock (locked), Clock (active), CheckCircle (completed)
+- Full dark mode compatibility
+
+### Schema Updates
+
+**PlanningApplication Interface** ([lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts))
+- Added stage tracking fields:
+  - `validationStatus: 'pending' | 'validated' | 'rejected'`
+  - `validationDate?: string` (ISO date)
+  - `consultationStatus: 'not-started' | 'in-progress' | 'completed'`
+  - `consultationStartDate?: string`
+  - `assessmentStatus: 'not-started' | 'in-progress' | 'completed'`
+  - `assessmentStartDate?: string`
+  - `reviewStatus: 'not-started' | 'in-progress' | 'completed'`
+  - `reviewStartDate?: string`
+
+### Mock Data Updates
+
+**Applications Data** ([lib/mock-data/applications.ts](lib/mock-data/applications.ts))
+- **Application 1 (PA-2025-001):** Validated, both Consultation and Assessment in progress
+  - Shows parallel workflow in action
+  - Consultation approaching end date (warning badge)
+  - Assessment started Oct 8
+- **Application 2 (PA-2025-002):** Still pending validation
+  - All stages locked/not-started
+  - Demonstrates dependency blocking
+- **Application 3 (PA-2025-003):** All stages completed
+  - Shows completed workflow state
+  - Review stage marked complete
+
+### Component Updates
+
+**ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx))
+- Replaced `ApplicationTimeline` with `ApplicationStageTimeline`
+- Now passes full `application` object instead of individual date props
+- Timeline integrated in left column (66%) with proposal description
+
+### Workflow Logic
+
+**Stage Dependencies:**
+1. Application starts in Validation stage (pending/active)
+2. Once validated, Consultation and Assessment unlock
+3. Consultation and Assessment can run in parallel (both active simultaneously)
+4. Review stage only unlocks when both Consultation AND Assessment are completed
+5. Locked stages show dependency requirements inline
+
+**Visual Design:**
+- Vertical timeline with stage nodes and connecting lines
+- Parallel branching shows Consultation + Assessment side-by-side
+- Color-coded status system (grey/blue/green)
+- Icons reinforce status at a glance
+- Dates contextualized within each stage (not separate milestones)
+- Clean, scannable hierarchy
+
+**Technical Features:**
+- Date formatting with UK locale (en-GB)
+- Date proximity detection (7-day threshold for warnings)
+- Conditional rendering based on validation status
+- Parallel stage visualization with branching layout
+- Status-driven styling system
+- Type-safe props with full PlanningApplication interface
+- Lucide React icons (Lock, Clock, CheckCircle)
+
+### Components Removed
+
+- **ApplicationTimeline** ([components/shared/application-timeline.tsx](components/shared/application-timeline.tsx))
+  - Replaced by ApplicationStageTimeline
+  - Old date-only timeline no longer needed
+
+**Files Created:**
+- [components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts)
+- [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+
+**Status:** Integrated stage workflow timeline complete. Timeline now shows both process stages (Validation → Consultation/Assessment → Review) AND key dates in context. Parallel workflow visualization implemented for Consultation + Assessment stages. Dependency logic enforces validation requirement and review stage unlocking.
+
+---
+
+## 2025-10-18 | Interactive Stage Cards with Task Progress & CTAs
+
+**Built by:** Forge (Builder)
+
+### Complete Timeline Redesign with Interactive Cards
+
+Transformed static stage timeline into dynamic, expandable stage cards with task tracking, progress indicators, and call-to-action buttons.
+
+### New Schema Interfaces
+
+**Stage Task System** ([lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts))
+- **StageTask Interface:**
+  - `id: string` - Unique task identifier
+  - `title: string` - Task description
+  - `completed: boolean` - Completion status
+  - `completedDate?: string` - ISO date when completed
+
+- **Stage Interfaces:**
+  - **ValidationStage:** `status`, `validatedDate`, `tasks[]`
+  - **ConsultationStage:** `status`, `startDate`, `endDate`, `tasks[]`
+  - **AssessmentStage:** `status`, `startDate`, `completedDate`, `tasks[]`
+  - **ReviewStage:** `status`, `startDate`, `completedDate`, `tasks[]`
+
+- **PlanningApplication Updates:**
+  - Added `validation: ValidationStage`
+  - Added `consultation: ConsultationStage`
+  - Added `assessment: AssessmentStage`
+  - Added `review: ReviewStage`
+  - Kept legacy fields for backward compatibility
+
+### Mock Data with Realistic Tasks
+
+**Application 1 (PA-2025-001)** - Active parallel workflow:
+- **Validation:** 4/4 tasks complete (validated)
+- **Consultation:** 3/5 tasks complete (in progress)
+  - Statutory consultees notified ✓
+  - Site notice posted ✓
+  - Neighbours notified ✓
+  - Review responses (pending)
+  - Prepare summary (pending)
+- **Assessment:** 2/5 tasks complete (in progress)
+  - Planning policy reviewed ✓
+  - Design assessed ✓
+  - Neighbour impact (pending)
+  - Conservation check (pending)
+  - Recommendation report (pending)
+- **Review:** 0/3 tasks (locked until consultation + assessment done)
+
+**Application 2 (PA-2025-002)** - Validation in progress:
+- **Validation:** 1/4 tasks complete (pending)
+- All other stages locked
+
+**Application 3 (PA-2025-003)** - Fully completed:
+- All stages 100% complete with completion dates
+
+### Component Overhaul
+
+**ApplicationStageTimeline** ([components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx))
+- Complete rewrite with client-side interactivity (`'use client'`)
+- **StageCard Sub-Component:**
+  - Expandable/collapsible stage cards
+  - Auto-expands active stages by default
+  - Color-coded status states (grey/blue/green)
+  - Icons: Lock (locked), Clock (active), CheckCircle (completed)
+  - Progress bars for active stages
+  - "Parallel" badge for Consultation + Assessment
+
+**Stage States & Display:**
+
+1. **Locked State:**
+   - Grey muted styling
+   - Lock icon
+   - Message: "Cannot start until validation is complete" (or similar)
+   - No expand/collapse functionality
+   - Empty state UX
+
+2. **Active State (In Progress):**
+   - Blue highlighted container
+   - Clock icon
+   - Progress indicator: "3 of 5 tasks completed" with percentage
+   - Animated progress bar showing completion percentage
+   - Expandable to show task list
+   - Checkmarks for completed tasks, empty circles for pending
+   - CTA button at bottom: "Continue validation", "Continue consultation", etc.
+   - Auto-expanded by default
+
+3. **Completed State:**
+   - Green highlighted container
+   - CheckCircle icon
+   - Completion date display: "Validated on: 6 October 2025"
+   - Expandable to view all completed tasks
+   - All tasks show green checkmarks
+
+**Interactive Features:**
+- Click-to-expand/collapse (ChevronUp/ChevronDown icons)
+- Active stages start expanded
+- Completed stages start collapsed
+- Task lists with checkboxes (completed vs pending)
+- Full-width CTA buttons for active stages
+- Smooth transitions and hover states
+
+**Dependency Logic:**
+- Validation must complete before unlocking Consultation + Assessment
+- Both Consultation AND Assessment must complete before unlocking Review
+- Locked stages show clear dependency messages
+- "Parallel" badge indicates stages that can run simultaneously
+
+**Visual Design:**
+- Card-based layout with colored borders and backgrounds
+- Status-driven color system:
+  - Locked: `bg-muted/30 border-muted`
+  - Active: `bg-blue-50 border-blue-200` (dark: `bg-blue-950/20`)
+  - Completed: `bg-green-50/50 border-green-200` (dark: `bg-green-950/20`)
+- Progress bar with smooth width transitions
+- Full dark mode support
+
+**Technical Implementation:**
+- React hooks: `useState` for expand/collapse state
+- Percentage calculation for progress bars
+- Dynamic styling based on status
+- Accessible expand/collapse buttons with aria-labels
+- Type-safe props with full TypeScript interfaces
+
+### Files Created/Modified
+
+**Created:**
+- N/A (rewrote existing file)
+
+**Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts) - Added task and stage interfaces
+- [lib/mock-data/applications.ts](lib/mock-data/applications.ts) - Added realistic task data for all 3 applications
+- [components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx) - Complete rewrite with interactive cards
+
+### UX Improvements
+
+**Actionable Workflow:**
+- Timeline transformed from passive display to active workflow management
+- Officers can see exactly what tasks remain at each stage
+- Clear CTAs guide next actions
+- Progress indicators show completion status at a glance
+
+**Progressive Disclosure:**
+- Collapsed view shows status summary
+- Expanded view reveals detailed task lists
+- Reduces cognitive load while maintaining access to details
+- Auto-expand active stages for immediate context
+
+**Status Communication:**
+- Visual hierarchy immediately shows current stage
+- Color coding reinforces status (grey=blocked, blue=active, green=done)
+- Icons provide quick visual cues
+- Percentage progress gives quantitative feedback
+
+**Status:** Interactive stage workflow complete. Timeline now features expandable stage cards with task-level progress tracking, dynamic content based on status (locked/active/completed), progress bars, and call-to-action buttons. Officers can track individual tasks within each stage and understand dependencies at a glance.
+
+---
+
+## 2025-10-18 | Simplified Navigation-Focused Stage Cards
+
+**Built by:** Forge (Builder)
+
+### UX Refinement: From Expandable to Navigable
+
+Simplified stage cards to focus on navigation rather than in-place expansion. Removed task list disclosure in favor of clean, clickable cards that link to dedicated stage pages.
+
+### Component Updates
+
+**ApplicationStageTimeline** ([components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx))
+
+**Removed:**
+- Expandable/collapsible functionality (useState, ChevronUp/ChevronDown)
+- In-card task lists with checkboxes
+- CTA buttons within cards
+- Client-side interactivity (`'use client'` directive removed)
+
+**Added:**
+- Next.js Link integration for navigation
+- ChevronRight arrow indicator on clickable cards
+- Hover states with border highlight (hover:border-primary/50)
+- Placeholder routing: `/application/{id}/{stage-slug}`
+  - `/application/1/validation`
+  - `/application/1/consultation`
+  - `/application/1/assessment`
+  - `/application/1/review`
+
+**Stage Card Behavior:**
+
+1. **Locked Stages:**
+   - Not clickable (no link wrapper)
+   - Grey styling with lock icon
+   - Empty state message
+   - No chevron arrow
+
+2. **Active Stages:**
+   - Clickable card (Link wrapper)
+   - Blue highlighted container
+   - Clock icon + progress bar
+   - Shows "X of Y tasks completed" with percentage
+   - ChevronRight arrow on hover (color shifts to primary)
+   - Links to stage detail page
+
+3. **Completed Stages:**
+   - Clickable card (still accessible)
+   - Green highlighted container
+   - CheckCircle icon + completion date
+   - ChevronRight arrow
+   - Links to stage detail page (can review completed work)
+
+**Visual Design:**
+- Clean, card-based layout without expansion complexity
+- Hover state: border changes to primary color (50% opacity)
+- Group hover effect on ChevronRight icon
+- Maintains all status-based color coding (grey/blue/green)
+- Progress bars for active stages remain visible at card level
+
+**Navigation Pattern:**
+- All unlocked stages are navigable (active + completed)
+- Locked stages show why they're blocked but don't link
+- Officers can revisit completed stages to review work
+- Consistent UX: click card to enter stage detail view
+
+**Technical Changes:**
+- Removed React hooks (no client-side state)
+- Added `applicationId` and `stageSlug` props to StageCard
+- Conditional rendering: Link wrapper for clickable, div for locked
+- Server component (no 'use client' directive)
+- ChevronRight replaces expand/collapse icons
+
+### Routing Structure (Placeholder)
+
+Stage detail pages will be located at:
+- `/app/application/[id]/validation/page.tsx`
+- `/app/application/[id]/consultation/page.tsx`
+- `/app/application/[id]/assessment/page.tsx`
+- `/app/application/[id]/review/page.tsx`
+
+These pages will display:
+- Full task list with detailed information
+- Task completion interface
+- Stage-specific content and tools
+- Navigation back to application overview
+
+**Files Modified:**
+- [components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)
+
+**Status:** Stage cards simplified to navigation-focused design. Removed expandable task lists in favor of clean, clickable cards that link to dedicated stage pages. All unlocked stages (active + completed) are navigable with placeholder routing ready for implementation.
+
+---

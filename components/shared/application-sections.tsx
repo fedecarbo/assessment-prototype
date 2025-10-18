@@ -1,6 +1,6 @@
 import { ProposalDescription } from './proposal-description'
 import { ApplicationMetadata } from './application-metadata'
-import { ApplicationTimeline } from './application-timeline'
+import { ApplicationStageTimeline } from './application-stage-timeline'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
 interface ApplicationSectionsProps {
@@ -19,12 +19,8 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
 
           <hr className="border-border" />
 
-          {/* Application Timeline */}
-          <ApplicationTimeline
-            validFrom={application.validFrom}
-            consultationEnd={application.consultationEnd}
-            expiryDate={application.expiryDate}
-          />
+          {/* Application Stage Timeline */}
+          <ApplicationStageTimeline application={application} />
         </div>
 
         {/* Right Column: Metadata Sidebar (33%) */}

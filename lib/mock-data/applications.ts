@@ -20,6 +20,56 @@ export const mockApplications: PlanningApplication[] = [
       id: 'officer-fc',
       name: 'Federico Carbo',
     },
+    // Stage workflow - validated, both consultation and assessment active
+    validationStatus: 'validated',
+    validationDate: '2025-10-06',
+    consultationStatus: 'in-progress',
+    consultationStartDate: '2025-10-06',
+    assessmentStatus: 'in-progress',
+    assessmentStartDate: '2025-10-08',
+    reviewStatus: 'not-started',
+    // Enhanced stage workflow with tasks
+    validation: {
+      status: 'validated',
+      validatedDate: '2025-10-06',
+      tasks: [
+        { id: 'v1', title: 'Check application completeness', completed: true, completedDate: '2025-10-06' },
+        { id: 'v2', title: 'Verify fee payment', completed: true, completedDate: '2025-10-06' },
+        { id: 'v3', title: 'Confirm site ownership', completed: true, completedDate: '2025-10-06' },
+        { id: 'v4', title: 'Review supporting documents', completed: true, completedDate: '2025-10-06' },
+      ],
+    },
+    consultation: {
+      status: 'in-progress',
+      startDate: '2025-10-06',
+      endDate: '2025-10-27',
+      tasks: [
+        { id: 'c1', title: 'Notify statutory consultees', completed: true, completedDate: '2025-10-06' },
+        { id: 'c2', title: 'Post site notice', completed: true, completedDate: '2025-10-07' },
+        { id: 'c3', title: 'Notify neighbours', completed: true, completedDate: '2025-10-07' },
+        { id: 'c4', title: 'Review consultation responses', completed: false },
+        { id: 'c5', title: 'Prepare consultation summary', completed: false },
+      ],
+    },
+    assessment: {
+      status: 'in-progress',
+      startDate: '2025-10-08',
+      tasks: [
+        { id: 'a1', title: 'Review against planning policy', completed: true, completedDate: '2025-10-08' },
+        { id: 'a2', title: 'Assess design and appearance', completed: true, completedDate: '2025-10-09' },
+        { id: 'a3', title: 'Evaluate neighbour impact', completed: false },
+        { id: 'a4', title: 'Check conservation considerations', completed: false },
+        { id: 'a5', title: 'Prepare recommendation report', completed: false },
+      ],
+    },
+    review: {
+      status: 'not-started',
+      tasks: [
+        { id: 'r1', title: 'Senior officer review', completed: false },
+        { id: 'r2', title: 'Legal check', completed: false },
+        { id: 'r3', title: 'Final decision', completed: false },
+      ],
+    },
   },
   {
     id: '2',
@@ -35,6 +85,49 @@ export const mockApplications: PlanningApplication[] = [
     consultationEnd: '2025-02-22',
     expiryDate: '2025-05-01',
     isPublic: true,
+    // Stage workflow - still pending validation
+    validationStatus: 'pending',
+    consultationStatus: 'not-started',
+    assessmentStatus: 'not-started',
+    reviewStatus: 'not-started',
+    // Enhanced stage workflow with tasks
+    validation: {
+      status: 'pending',
+      tasks: [
+        { id: 'v1', title: 'Check application completeness', completed: true, completedDate: '2025-02-01' },
+        { id: 'v2', title: 'Verify fee payment', completed: false },
+        { id: 'v3', title: 'Confirm site ownership', completed: false },
+        { id: 'v4', title: 'Review supporting documents', completed: false },
+      ],
+    },
+    consultation: {
+      status: 'not-started',
+      tasks: [
+        { id: 'c1', title: 'Notify statutory consultees', completed: false },
+        { id: 'c2', title: 'Post site notice', completed: false },
+        { id: 'c3', title: 'Notify neighbours', completed: false },
+        { id: 'c4', title: 'Review consultation responses', completed: false },
+        { id: 'c5', title: 'Prepare consultation summary', completed: false },
+      ],
+    },
+    assessment: {
+      status: 'not-started',
+      tasks: [
+        { id: 'a1', title: 'Review against planning policy', completed: false },
+        { id: 'a2', title: 'Assess design and appearance', completed: false },
+        { id: 'a3', title: 'Evaluate neighbour impact', completed: false },
+        { id: 'a4', title: 'Check conservation considerations', completed: false },
+        { id: 'a5', title: 'Prepare recommendation report', completed: false },
+      ],
+    },
+    review: {
+      status: 'not-started',
+      tasks: [
+        { id: 'r1', title: 'Senior officer review', completed: false },
+        { id: 'r2', title: 'Legal check', completed: false },
+        { id: 'r3', title: 'Final decision', completed: false },
+      ],
+    },
   },
   {
     id: '3',
@@ -54,6 +147,60 @@ export const mockApplications: PlanningApplication[] = [
     assignedOfficer: {
       id: 'officer-bs',
       name: 'Bob Smith',
+    },
+    // Stage workflow - completed all stages
+    validationStatus: 'validated',
+    validationDate: '2024-12-10',
+    consultationStatus: 'completed',
+    consultationStartDate: '2024-12-10',
+    assessmentStatus: 'completed',
+    assessmentStartDate: '2024-12-12',
+    reviewStatus: 'completed',
+    reviewStartDate: '2025-01-05',
+    // Enhanced stage workflow with tasks
+    validation: {
+      status: 'validated',
+      validatedDate: '2024-12-10',
+      tasks: [
+        { id: 'v1', title: 'Check application completeness', completed: true, completedDate: '2024-12-10' },
+        { id: 'v2', title: 'Verify fee payment', completed: true, completedDate: '2024-12-10' },
+        { id: 'v3', title: 'Confirm site ownership', completed: true, completedDate: '2024-12-10' },
+        { id: 'v4', title: 'Review supporting documents', completed: true, completedDate: '2024-12-10' },
+      ],
+    },
+    consultation: {
+      status: 'completed',
+      startDate: '2024-12-10',
+      endDate: '2024-12-31',
+      tasks: [
+        { id: 'c1', title: 'Notify statutory consultees', completed: true, completedDate: '2024-12-10' },
+        { id: 'c2', title: 'Post site notice', completed: true, completedDate: '2024-12-11' },
+        { id: 'c3', title: 'Notify neighbours', completed: true, completedDate: '2024-12-11' },
+        { id: 'c4', title: 'Review consultation responses', completed: true, completedDate: '2024-12-30' },
+        { id: 'c5', title: 'Prepare consultation summary', completed: true, completedDate: '2024-12-31' },
+      ],
+    },
+    assessment: {
+      status: 'completed',
+      startDate: '2024-12-12',
+      completedDate: '2025-01-04',
+      tasks: [
+        { id: 'a1', title: 'Review against planning policy', completed: true, completedDate: '2024-12-12' },
+        { id: 'a2', title: 'Assess design and appearance', completed: true, completedDate: '2024-12-15' },
+        { id: 'a3', title: 'Evaluate neighbour impact', completed: true, completedDate: '2024-12-20' },
+        { id: 'a4', title: 'Check conservation considerations', completed: true, completedDate: '2024-12-28' },
+        { id: 'a5', title: 'Prepare recommendation report', completed: true, completedDate: '2025-01-04' },
+      ],
+    },
+    review: {
+      status: 'completed',
+      startDate: '2025-01-05',
+      completedDate: '2025-01-10',
+      tasks: [
+        { id: 'r1', title: 'Senior officer review', completed: true, completedDate: '2025-01-05' },
+        { id: 'r2', title: 'Legal check', completed: true, completedDate: '2025-01-08' },
+        { id: 'r3', title: 'Final decision', completed: true, completedDate: '2025-01-10' },
+      ],
     },
   },
 ];

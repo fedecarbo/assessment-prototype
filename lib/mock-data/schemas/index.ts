@@ -22,6 +22,40 @@ export interface AssignedOfficer {
   avatar?: string;
 }
 
+export interface StageTask {
+  id: string;
+  title: string;
+  completed: boolean;
+  completedDate?: string;
+}
+
+export interface ValidationStage {
+  status: 'pending' | 'validated' | 'rejected';
+  validatedDate?: string;
+  tasks: StageTask[];
+}
+
+export interface ConsultationStage {
+  status: 'not-started' | 'in-progress' | 'completed';
+  startDate?: string;
+  endDate?: string;
+  tasks: StageTask[];
+}
+
+export interface AssessmentStage {
+  status: 'not-started' | 'in-progress' | 'completed';
+  startDate?: string;
+  completedDate?: string;
+  tasks: StageTask[];
+}
+
+export interface ReviewStage {
+  status: 'not-started' | 'in-progress' | 'completed';
+  startDate?: string;
+  completedDate?: string;
+  tasks: StageTask[];
+}
+
 export interface PlanningApplication {
   id: string;
   reference: string;
@@ -38,6 +72,20 @@ export interface PlanningApplication {
   isPublic: boolean;
   assignedTo?: string;
   assignedOfficer?: AssignedOfficer;
+  // Stage workflow tracking (legacy - kept for backward compatibility)
+  validationStatus: 'pending' | 'validated' | 'rejected';
+  validationDate?: string;
+  consultationStatus: 'not-started' | 'in-progress' | 'completed';
+  consultationStartDate?: string;
+  assessmentStatus: 'not-started' | 'in-progress' | 'completed';
+  assessmentStartDate?: string;
+  reviewStatus: 'not-started' | 'in-progress' | 'completed';
+  reviewStartDate?: string;
+  // Enhanced stage workflow with tasks
+  validation: ValidationStage;
+  consultation: ConsultationStage;
+  assessment: AssessmentStage;
+  review: ReviewStage;
 }
 
 // Add more schemas as needed
