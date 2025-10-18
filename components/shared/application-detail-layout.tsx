@@ -180,31 +180,21 @@ export function ApplicationDetailLayout({
       </div>
 
       {/* Sticky Header Container */}
-      <div className="sticky top-0 z-40">
-        {/* Condensed Header - Appears when hero collapses */}
-        <div
-          className={`bg-background ${
-            isHeroCollapsed ? '' : 'pointer-events-none h-0 overflow-hidden opacity-0'
-          }`}
-        >
-          <div className="mx-auto max-w-[1100px] px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <h2 className="text-base font-bold text-foreground">{address}</h2>
-                <span className="text-base text-muted-foreground">{reference}</span>
-              </div>
-              <ApplicationStatusBadges
-                status={status}
-                daysToDecision={daysToDecision}
-                size="compact"
-              />
+      <div className="sticky top-0 z-40 border-b border-border bg-background">
+        <div className="mx-auto max-w-[1100px] px-4">
+          {/* Condensed Header - Appears when hero collapses */}
+          <div
+            className={`transition-all ${
+              isHeroCollapsed ? 'pb-2 pt-3' : 'h-0 overflow-hidden opacity-0'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <h2 className="text-base font-bold text-foreground">{address}</h2>
+              <span className="text-base text-muted-foreground">{reference}</span>
             </div>
           </div>
-        </div>
 
-        {/* Section Navigation */}
-        <div className="border-b border-border bg-background">
-        <div className="mx-auto max-w-[1100px] px-4">
+          {/* Section Navigation */}
           <nav className="flex gap-6" aria-label="Application sections" role="navigation">
             {sections.map((section) => (
               <a
@@ -225,7 +215,6 @@ export function ApplicationDetailLayout({
               </a>
             ))}
           </nav>
-        </div>
         </div>
       </div>
 

@@ -276,3 +276,21 @@ Track all features, components, and pages built by Forge (Builder).
 **Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [application-sections.tsx](components/shared/application-sections.tsx), [application-detail-layout.tsx](components/shared/application-detail-layout.tsx)
 
 ---
+
+## 2025-10-18 | Sticky Header Consolidation
+
+**Component:** ApplicationDetailLayout ([components/shared/application-detail-layout.tsx](components/shared/application-detail-layout.tsx))
+
+**Key Decisions:**
+- **Unified sticky container:** Merged condensed header and section navigation into single sticky block with shared background and border
+- **Eliminated visual separation:** Removed gap between address/reference and navigation when hero collapses
+- **Tighter spacing:** Reduced bottom padding of condensed header from `pb-3` to `pb-2` (10px gap to nav)
+- **Simplified condensed header:** Removed status badges (In assessment / days to determination) - only shows address + reference
+
+**Problem solved:** Condensed header felt "floaty" and disconnected from navigation due to separate containers with independent padding/backgrounds
+
+**Result:** Cohesive sticky header unit with address/reference flowing naturally into navigation tabs
+
+**Files modified:** [application-detail-layout.tsx](components/shared/application-detail-layout.tsx)
+
+---

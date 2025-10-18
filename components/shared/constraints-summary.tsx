@@ -85,7 +85,7 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
 
                 return (
                   <div key={type}>
-                    <div className="flex gap-3 py-6">
+                    <div className="flex gap-3 py-4">
                       {getConstraintIcon(type as Constraint['type'])}
                       <div className="flex-1">
                         <div className="font-medium text-foreground">{firstConstraint?.label}</div>
