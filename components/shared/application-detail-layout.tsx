@@ -206,7 +206,7 @@ export function ApplicationDetailLayout({
                 }}
                 className={`relative border-b-2 py-3 text-base transition-colors ${
                   activeSection === section.id
-                    ? 'border-primary text-foreground'
+                    ? 'border-primary text-foreground font-medium'
                     : 'border-transparent text-primary hover:underline'
                 }`}
                 aria-current={activeSection === section.id ? 'page' : undefined}
