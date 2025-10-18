@@ -18,7 +18,10 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
     if (!acc[constraint.type]) {
       acc[constraint.type] = []
     }
-    acc[constraint.type].push(constraint)
+    const group = acc[constraint.type]
+    if (group) {
+      group.push(constraint)
+    }
     return acc
   }, {} as Record<string, Constraint[]>)
 
