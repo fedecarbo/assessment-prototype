@@ -288,3 +288,265 @@ Track all features, components, and pages built by Forge (Builder).
 **Status:** Dark mode fully implemented with neutral color scheme. Custom typography scale and 5px-based spacing system configured. All components theme-aware.
 
 ---
+
+## 2025-10-18 | Overview Section - Airbnb-Inspired UX
+
+**Built by:** Forge (Builder)
+
+### Components Created
+
+1. **ProposalDescription** ([components/shared/proposal-description.tsx](components/shared/proposal-description.tsx))
+   - Clean typography for proposal text
+   - "Show more/less" toggle for long descriptions (>200 chars)
+   - Client-side interactivity with line-clamp
+   - No card wrapper - flat, content-first design
+   - Dark mode compatible
+
+2. **ApplicationMetadata** ([components/shared/application-metadata.tsx](components/shared/application-metadata.tsx))
+   - Flat, list-based layout with icon + label + value pattern
+   - Displays: Assigned officer, Public portal status, Application type
+   - Displays dates: Valid from, Consultation end, Expiry date
+   - Date formatting with locale support (en-GB)
+   - "Approaching" badge for expiry dates within 7 days
+   - Interactive "change" link for officer assignment
+   - Inline badges for categorical data (public status, app type)
+   - SVG icons for visual interest and scannability
+   - Horizontal dividers between logical groups
+   - Generous whitespace, no backgrounds or borders
+   - Full dark mode support with theme-aware colors
+
+### Mock Data Schema Updates
+
+**Extended PlanningApplication Schema** ([lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts)):
+- Added `AssignedOfficer` interface with `id`, `name`, `avatar?`
+- Added fields to `PlanningApplication`:
+  - `applicationType: string` - Full name (e.g., "Pre-application Advice")
+  - `validFrom: string` - ISO date string
+  - `consultationEnd: string` - ISO date string
+  - `expiryDate: string` - ISO date string
+  - `isPublic: boolean` - Public portal visibility
+  - `assignedOfficer?: AssignedOfficer` - Detailed officer info
+
+**Updated Mock Data** ([lib/mock-data/applications.ts](lib/mock-data/applications.ts)):
+- Application 1: Realistic pre-app for 11 Abbey Gardens with rear extension proposal
+- Added all new fields with proper dates and metadata
+- Assigned Federico Carbo as planning officer
+- Set isPublic to false, applicationType to "Pre-application Advice"
+- Updated applications 2 and 3 with new required fields
+
+### Component Updates
+
+**ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx)):
+- Now accepts `application: PlanningApplication` prop
+- Removed placeholder dashed boxes
+- Integrated ProposalDescription component
+- Integrated ApplicationMetadata component
+- Clean layout with horizontal dividers
+- Proper spacing between sections
+- TypeScript props interface
+
+**Application Detail Page** ([app/application/[id]/page.tsx](app/application/[id]/page.tsx)):
+- Loads application from `mockApplications` by ID
+- Passes full application object to ApplicationSections
+- Fallback to first application if ID not found
+- Displays actual address and reference from data
+
+### Design Patterns
+
+**Airbnb-Inspired UX:**
+- Flat, content-first design (no cards or heavy borders)
+- Icon + label + value pattern for metadata
+- Generous whitespace and padding
+- Horizontal dividers for section separation
+- Inline badges for categorical information
+- Interactive elements clearly indicated (hover states)
+- Clean typography hierarchy
+- Scannable layout for complex planning data
+
+**Technical Features:**
+- Date formatting utility with locale support
+- Date proximity detection (7-day threshold for expiry warnings)
+- Responsive flex layouts
+- SVG icons for lightweight visuals
+- Client component for interactivity (show more/less)
+- Full TypeScript type safety
+- Dark mode with semantic color tokens
+
+**Files Created:**
+- [components/shared/proposal-description.tsx](components/shared/proposal-description.tsx)
+- [components/shared/application-metadata.tsx](components/shared/application-metadata.tsx)
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts)
+- [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+- [app/application/[id]/page.tsx](app/application/[id]/page.tsx)
+
+**Status:** Overview section complete with production-ready UX. Metadata displays assigned officer, public status, application type, and key dates with expiry warnings. Proposal description includes expand/collapse for long text. Clean, Airbnb-style flat design with no cards.
+
+### Layout Refinement - 2025-10-18
+
+**Updated:** ApplicationMetadata component to horizontal grid layout
+
+- Changed from vertical list to responsive 3-column grid layout
+- Top row: Assigned officer, Public portal status, Application type
+- Bottom row: Valid from, Consultation end, Expiry date
+- Removed icons for cleaner, more compact presentation
+- Responsive: Stacks to single column on mobile, 3 columns on desktop
+- Maintained all functionality: badges, "change" link, expiry warnings
+- Better space efficiency - reduced vertical height significantly
+
+**Files Modified:**
+- [components/shared/application-metadata.tsx](components/shared/application-metadata.tsx)
+
+---
+
+## 2025-10-18 | Two-Column Layout with Timeline Progress Tracker
+
+**Built by:** Forge (Builder)
+
+### Major Layout Redesign
+
+Restructured Overview section to use a **product detail page pattern** with 66/33 two-column split, inspired by Airbnb and Figma Community layouts.
+
+### Components Created
+
+**ApplicationTimeline** ([components/shared/application-timeline.tsx](components/shared/application-timeline.tsx))
+- Visual timeline progress tracker for application lifecycle
+- Three milestones with status-based styling:
+  - **Valid from:** 6 October 2025 (past - gray)
+  - **Consultation end:** 27 October 2025 (current - blue with "Active" badge)
+  - **Expiry date:** 30 October 2025 (warning - amber with "Approaching" badge)
+- Vertical timeline design with:
+  - Circle indicators (filled/outlined based on status)
+  - Connecting lines between milestones
+  - Status badges ("Active", "Approaching")
+  - Formatted dates (UK locale)
+- Color coding system:
+  - Past milestones: Muted gray
+  - Current milestones: Blue with "Active" badge
+  - Approaching expiry: Amber with "Approaching" badge (within 7 days)
+  - Upcoming: Default border-only circles
+- Date formatting utility with locale support
+- Status detection logic for milestone states
+- Full dark mode compatibility
+
+### Component Updates
+
+**ApplicationMetadata** ([components/shared/application-metadata.tsx](components/shared/application-metadata.tsx))
+- Simplified to sidebar-only component (removed all date fields)
+- Now displays only 3 metadata items:
+  - Assigned to: Federico Carbo (with "change" link)
+  - Public on BOPS Public Portal: No (badge)
+  - Application type: Pre-application Advice (badge)
+- Clean vertical stack layout (removed grid)
+- Optimized for narrow sidebar presentation
+- Removed date formatting utilities (moved to timeline)
+
+**ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx))
+- Implemented two-column grid layout: `grid-cols-1 lg:grid-cols-3`
+- **Left column** (66% - `lg:col-span-2`):
+  - ProposalDescription component
+  - ApplicationTimeline component
+  - Horizontal divider between sections
+- **Right column** (33% - `lg:col-span-1`):
+  - ApplicationMetadata component (sidebar)
+- Responsive behavior:
+  - Mobile: Single column, natural stacking
+  - Desktop (1024px+): Side-by-side 66/33 split
+- Generous 8-unit gap between columns
+
+### Design Pattern
+
+**Product Detail Page Layout:**
+- Main content area on left with proposal text and timeline
+- Metadata sidebar on right with key details
+- Non-sticky sidebar (no fixed positioning)
+- Clean whitespace separation (no vertical dividers)
+- Maintains flat, Airbnb-style aesthetic
+- Full responsive support
+
+**Timeline Visual Language:**
+- Status-driven color system
+- Clear visual progression through application phases
+- Scannable vertical layout
+- Informative badges for active/warning states
+- Professional, government-appropriate design
+
+**Technical Features:**
+- Component composition pattern
+- Tailwind grid system with responsive columns
+- Reusable date utilities
+- Status detection algorithms
+- Type-safe props interfaces
+- Dark mode with semantic tokens
+
+**Files Created:**
+- [components/shared/application-timeline.tsx](components/shared/application-timeline.tsx)
+
+**Files Modified:**
+- [components/shared/application-metadata.tsx](components/shared/application-metadata.tsx)
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+
+**Status:** Two-column layout complete with visual timeline progress tracker. Overview section now follows product detail page patterns with main content (proposal + timeline) on left and metadata sidebar on right. Timeline provides clear visual representation of application lifecycle with status-based styling.
+
+---
+
+## 2025-10-18 | UI Polish & GDS Color System
+
+**Built by:** Forge (Builder)
+
+### Spacing Fix
+- Added `pt-8` to Documents section for consistent spacing with other sections
+
+### Typography Updates
+- Removed `font-medium` from all badges (status, dates, public portal, application type)
+- Changed badge text to default font weight throughout the application
+
+### Navigation Styling Refinement
+**Scroll Navigation** ([application-detail-layout.tsx](components/shared/application-detail-layout.tsx))
+- **Inactive links:** Now styled as standard links (blue text with underline on hover)
+- **Active section:** Uses primary text color with blue border indicator at bottom
+- Clear visual distinction between clickable links and active section
+
+### GDS Color System Implementation
+**Global Color System** ([app/globals.css](app/globals.css))
+- Implemented Government Digital Service (GDS) color palette
+- Updated `--primary` to GDS blue: `211 66% 41%` (`#1d70b8`)
+- Updated `--foreground` and all black colors to GDS black: `0 0% 5%` (`#0b0c0c`)
+- Updated `--ring` to match primary for consistent focus states
+- Removed custom color variables - using standard Tailwind color system
+
+**Color Applications:**
+- Brand color (GDS blue `#1d70b8`) now used for:
+  - Site header border (`border-b-primary`)
+  - All links (`text-primary`)
+  - Active navigation borders
+  - Focus rings
+- Link hover uses foreground (GDS black `#0b0c0c`)
+- All black text uses GDS black specification
+
+**Components Updated:**
+- [site-header.tsx](components/shared/site-header.tsx) - Border uses `border-b-primary`
+- [application-metadata.tsx](components/shared/application-metadata.tsx) - "change" link uses `text-primary`
+- [proposal-description.tsx](components/shared/proposal-description.tsx) - "Show more/less" link uses `text-primary`
+- [application-detail-layout.tsx](components/shared/application-detail-layout.tsx) - Navigation links use `text-primary`
+
+**Design Benefits:**
+- Consistent brand color throughout application
+- Uses existing Tailwind color structure (no custom variables)
+- Accessible, government-standard color palette
+- Simple, maintainable color system
+
+**Files Modified:**
+- [app/globals.css](app/globals.css)
+- [components/shared/site-header.tsx](components/shared/site-header.tsx)
+- [components/shared/application-metadata.tsx](components/shared/application-metadata.tsx)
+- [components/shared/proposal-description.tsx](components/shared/proposal-description.tsx)
+- [application-detail-layout.tsx](components/shared/application-detail-layout.tsx)
+- [application-sections.tsx](components/shared/application-sections.tsx)
+- [application-status-badges.tsx](components/shared/application-status-badges.tsx)
+
+**Status:** UI polish complete with GDS color system fully implemented. All badges use default font weight. Navigation links styled consistently. Brand color (GDS blue) integrated throughout using standard Tailwind utilities.
+
+---

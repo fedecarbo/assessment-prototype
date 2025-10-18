@@ -18,10 +18,10 @@ export function ApplicationStatusBadges({
 
   return (
     <div className="flex items-center gap-2">
-      <span className={`bg-blue-100 ${textSize} font-medium text-blue-800`}>
+      <span className={`bg-blue-100 ${textSize} text-blue-800`}>
         {status}
       </span>
-      <span className={`bg-yellow-100 ${textSize} font-medium text-yellow-800`}>
+      <span className={`bg-yellow-100 ${textSize} text-yellow-800`}>
         {daysToDecision} days to determination date
       </span>
     </div>

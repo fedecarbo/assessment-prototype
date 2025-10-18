@@ -215,8 +215,8 @@ export function ApplicationDetailLayout({
                 }}
                 className={`relative border-b-2 py-3 text-base transition-colors ${
                   activeSection === section.id
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
+                    ? 'border-primary text-foreground'
+                    : 'border-transparent text-primary hover:underline'
                 }`}
                 aria-current={activeSection === section.id ? 'page' : undefined}
               >

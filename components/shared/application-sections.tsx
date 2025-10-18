@@ -1,56 +1,48 @@
-// Placeholder height for development sections
-const SECTION_PLACEHOLDER_HEIGHT = 'h-[--spacing-section-placeholder]'
+import { ProposalDescription } from './proposal-description'
+import { ApplicationMetadata } from './application-metadata'
+import { ApplicationTimeline } from './application-timeline'
+import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
-export function ApplicationSections() {
+interface ApplicationSectionsProps {
+  application: PlanningApplication
+}
+
+export function ApplicationSections({ application }: ApplicationSectionsProps) {
   return (
     <>
-      {/* Overview Details - Below Navigation */}
-      <div className="mb-8 space-y-6 pb-8">
-        {/* Proposal Description */}
-        <div>
-          <h3 className="mb-2 text-sm font-semibold text-foreground">Proposal Description</h3>
-          <div className="min-h-[100px] rounded border-2 border-dashed border-border bg-muted p-4">
-            <p className="text-sm text-muted-foreground">
-              Proposal description will be displayed here. This will contain detailed information
-              about the planning application proposal.
-            </p>
-          </div>
+      {/* Overview Details - Two Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-8">
+        {/* Left Column: Main Content (66%) */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Proposal Description */}
+          <ProposalDescription description={application.description} />
+
+          <hr className="border-border" />
+
+          {/* Application Timeline */}
+          <ApplicationTimeline
+            validFrom={application.validFrom}
+            consultationEnd={application.consultationEnd}
+            expiryDate={application.expiryDate}
+          />
         </div>
 
-        {/* Planning Officer */}
-        <div>
-          <h3 className="mb-2 text-sm font-semibold text-foreground">Planning Officer</h3>
-          <div className="flex items-center gap-3 rounded border-2 border-dashed border-border bg-muted p-4">
-            {/* Avatar Placeholder */}
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted-foreground/20">
-              <svg
-                className="h-6 w-6 text-muted-foreground"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-foreground">Officer Name</p>
-              <p className="text-xs text-muted-foreground">Planning Officer</p>
-            </div>
-          </div>
+        {/* Right Column: Metadata Sidebar (33%) */}
+        <div className="lg:col-span-1">
+          <ApplicationMetadata
+            assignedOfficer={application.assignedOfficer}
+            isPublic={application.isPublic}
+            applicationType={application.applicationType}
+          />
         </div>
-
-        <hr className="border-border" />
       </div>
+
+      <hr className="border-border" />
 
       {/* Documents Section */}
       <section
         id="documents"
-        className="scroll-mt-[160px] space-y-4 pb-8"
+        className="scroll-mt-[160px] space-y-4 pb-8 pt-8"
         aria-labelledby="documents-heading"
       >
         <h2 id="documents-heading" className="text-xl font-bold text-foreground">
