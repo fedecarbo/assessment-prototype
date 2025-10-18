@@ -1,7 +1,5 @@
-import type { PlanningApplication, StageTask } from '@/lib/mock-data/schemas'
-import { Lock, Clock } from 'lucide-react'
+import type { PlanningApplication } from '@/lib/mock-data/schemas'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 
 interface ApplicationStageTimelineProps {
   application: PlanningApplication
@@ -16,158 +14,6 @@ function formatDate(dateString: string): string {
   })
 }
 
-function isDateSoon(dateString: string, daysThreshold: number = 7): boolean {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffTime = date.getTime() - now.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays <= daysThreshold && diffDays > 0
-}
-
-interface StageCardProps {
-  title: string
-  status: 'locked' | 'active' | 'completed'
-  tasks: StageTask[]
-  lockedMessage?: string
-  completedDate?: string
-  completedLabel?: string
-  showParallel?: boolean
-  applicationId: string
-  stageSlug: string
-  isLast?: boolean
-}
-
-function StageCard({ title, status, tasks, lockedMessage, completedDate, completedLabel, showParallel, applicationId, stageSlug, isLast }: StageCardProps) {
-  const completedCount = tasks.filter(t => t.completed).length
-  const totalCount = tasks.length
-  const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
-
-  const getStatusIcon = () => {
-    switch (status) {
-      case 'locked':
-        return <Lock className="h-4 w-4 text-muted-foreground" />
-      case 'active':
-      case 'completed':
-        return <Clock className="h-4 w-4 text-primary" />
-    }
-  }
-
-  const getTitleColor = () => {
-    return status === 'locked' ? 'text-muted-foreground' : 'text-foreground'
-  }
-
-  const getTimelineStyles = () => {
-    // Grey circles - filled when completed, outlined when not
-    const isCompleted = status === 'completed'
-    return {
-      circle: isCompleted
-        ? 'bg-muted-foreground border-muted-foreground'
-        : 'bg-transparent border-muted-foreground/40',
-      line: 'bg-muted-foreground/20'
-    }
-  }
-
-  const timelineStyles = getTimelineStyles()
-
-  const getActionButton = () => {
-    if (status === 'locked') return null
-
-    if (status === 'completed') {
-      return (
-        <Link
-          href={`/application/${applicationId}/${stageSlug}`}
-          className="text-sm text-primary hover:text-foreground transition-colors inline-flex items-center gap-1"
-        >
-          View or change {title.toLowerCase()}
-        </Link>
-      )
-    }
-
-    if (status === 'active') {
-      const actionText = {
-        'Validation': 'Check validation',
-        'Consultation': 'Review consultation',
-        'Assessment': 'Check and assess',
-        'Review': 'Review and approve'
-      }[title] || `Continue ${title.toLowerCase()}`
-
-      return (
-        <Button asChild>
-          <Link href={`/application/${applicationId}/${stageSlug}`}>
-            {actionText}
-          </Link>
-        </Button>
-      )
-    }
-  }
-
-  const content = (
-    <>
-      <div className="flex items-center gap-2 mb-2">
-        {getStatusIcon()}
-        <h4 className={`text-base font-semibold ${getTitleColor()}`}>{title}</h4>
-        {showParallel && status !== 'locked' && (
-          <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">
-            Parallel
-          </span>
-        )}
-      </div>
-
-      {/* Locked State */}
-      {status === 'locked' && lockedMessage && (
-        <p className="text-sm text-muted-foreground mb-3">{lockedMessage}</p>
-      )}
-
-      {/* Active State */}
-      {status === 'active' && (
-        <div className="space-y-3 mb-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{completedCount} of {totalCount} tasks completed</span>
-            <span className="font-medium text-foreground">{Math.round(progress)}%</span>
-          </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Completed State */}
-      {status === 'completed' && completedDate && (
-        <p className="text-sm text-muted-foreground mb-3">
-          {completedLabel || 'Completed'}: {formatDate(completedDate)}
-        </p>
-      )}
-
-      {/* Action Button/Link */}
-      {getActionButton()}
-    </>
-  )
-
-  // Timeline wrapper with vertical line and node - flat design with content-side border
-  return (
-    <div className="flex gap-4 mb-8 last:mb-0">
-      {/* Timeline column */}
-      <div className="relative flex flex-col items-center w-10 flex-shrink-0">
-        {/* Circle node */}
-        <div className={`w-2.5 h-2.5 rounded-full border-2 ${timelineStyles.circle} mt-1.5 z-10`} />
-
-        {/* Vertical connecting line (hidden for last item) */}
-        {!isLast && (
-          <div className={`w-0.5 flex-1 ${timelineStyles.line} mt-1`} />
-        )}
-      </div>
-
-      {/* Content column with bottom border separator */}
-      <div className="flex-1 pb-6 border-b border-border">
-        {content}
-      </div>
-    </div>
-  )
-}
-
 export function ApplicationStageTimeline({ application }: ApplicationStageTimelineProps) {
   const isValidated = application.validation.status === 'validated'
   const consultationDone = application.consultation.status === 'completed'
@@ -176,93 +22,247 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
 
   return (
     <div>
-      <h3 className="mb-4 text-base font-semibold text-foreground">Application Progress</h3>
-      <div>
+      <h2 id="progress-heading" className="text-xl font-bold text-foreground mb-4">
+        Application Progress
+      </h2>
+
+      <div className="space-y-0">
         {/* 1. Validation Stage */}
-        <StageCard
-          title="Validation"
-          status={
-            application.validation.status === 'validated' ? 'completed' :
-            application.validation.status === 'pending' ? 'active' : 'locked'
-          }
-          tasks={application.validation.tasks}
-          completedDate={application.validation.validatedDate}
-          completedLabel="Validated on"
-          applicationId={application.id}
-          stageSlug="validation"
-          isLast={false}
-        />
+        <div className="flex gap-4">
+          {/* Timeline indicator */}
+          <div className="flex flex-col items-center pt-1">
+            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+              application.validation.status === 'validated'
+                ? 'bg-foreground'
+                : application.validation.status === 'pending'
+                ? 'bg-primary'
+                : 'bg-transparent border-2 border-muted-foreground'
+            }`} />
+            <div className={`w-0.5 flex-1 my-2 ${
+              application.validation.status === 'validated'
+                ? 'bg-foreground'
+                : 'bg-border'
+            }`} />
+          </div>
 
-        {/* 2. Consultation Stage (Parallel) */}
-        <StageCard
-          title="Consultation"
-          status={
-            !isValidated ? 'locked' :
-            application.consultation.status === 'completed' ? 'completed' :
-            application.consultation.status === 'in-progress' ? 'active' : 'locked'
-          }
-          tasks={application.consultation.tasks}
-          lockedMessage="Cannot start until validation is complete"
-          completedDate={application.consultation.endDate}
-          completedLabel="Completed on"
-          showParallel={isValidated}
-          applicationId={application.id}
-          stageSlug="consultation"
-          isLast={false}
-        />
+          {/* Content */}
+          <div className="flex-1 pb-8">
+            <h4 className="text-base font-semibold mb-1">Validation</h4>
+            {application.validation.status === 'validated' && application.validation.validatedDate && (
+              <div className="mt-2">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Valid from {formatDate(application.validation.validatedDate)}
+                </p>
+                <Link
+                  href={`/application/${application.id}/validation`}
+                  className="text-sm text-primary hover:text-foreground transition-colors"
+                >
+                  View or change validation
+                </Link>
+              </div>
+            )}
+            {application.validation.status === 'pending' && (
+              <div className="mt-2">
+                <p className="text-muted-foreground mb-4">
+                  Check all required documents are present and the application meets validation criteria.
+                </p>
+                <Link
+                  href={`/application/${application.id}/validation`}
+                  className="text-base text-primary hover:text-foreground transition-colors"
+                >
+                  Start validation
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
 
-        {/* 3. Assessment Stage (Parallel) */}
-        <StageCard
-          title="Assessment"
-          status={
-            !isValidated ? 'locked' :
-            application.assessment.status === 'completed' ? 'completed' :
-            application.assessment.status === 'in-progress' ? 'active' : 'locked'
-          }
-          tasks={application.assessment.tasks}
-          lockedMessage="Cannot start until validation is complete"
-          completedDate={application.assessment.completedDate}
-          completedLabel="Completed on"
-          showParallel={isValidated}
-          applicationId={application.id}
-          stageSlug="assessment"
-          isLast={false}
-        />
+        {/* 2. Consultation Stage */}
+        <div className="flex gap-4">
+          {/* Timeline indicator */}
+          <div className="flex flex-col items-center pt-1">
+            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+              application.consultation.status === 'completed'
+                ? 'bg-foreground'
+                : application.consultation.status === 'in-progress'
+                ? 'bg-primary'
+                : 'bg-transparent border-2 border-muted-foreground'
+            }`} />
+            <div className={`w-0.5 flex-1 my-2 ${
+              application.consultation.status === 'completed'
+                ? 'bg-foreground'
+                : 'bg-border'
+            }`} />
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 pb-8">
+            <h4 className="text-base font-semibold mb-1">Consultation</h4>
+            {application.consultation.status === 'completed' && application.consultation.endDate && (
+              <div className="mt-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-muted-foreground">
+                    Consultation end {formatDate(application.consultation.endDate)}
+                  </span>
+                  <Link
+                    href={`/application/${application.id}/consultation`}
+                    className="text-sm text-primary hover:text-foreground transition-colors"
+                  >
+                    Change
+                  </Link>
+                </div>
+              </div>
+            )}
+            {application.consultation.status === 'in-progress' && (
+              <div className="mt-2 space-y-3">
+                {application.consultation.endDate && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">
+                      Consultation end {formatDate(application.consultation.endDate)}
+                    </span>
+                    <Link
+                      href={`/application/${application.id}/consultation/change-date`}
+                      className="text-sm text-primary hover:text-foreground transition-colors"
+                    >
+                      Change
+                    </Link>
+                  </div>
+                )}
+                <p className="text-muted-foreground">
+                  Notify statutory consultees and neighbours. Review consultation responses and prepare summary.
+                </p>
+                <Link
+                  href={`/application/${application.id}/consultation`}
+                  className="text-base text-primary hover:text-foreground transition-colors"
+                >
+                  Continue consultation
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 3. Assessment Stage */}
+        <div className="flex gap-4">
+          {/* Timeline indicator */}
+          <div className="flex flex-col items-center pt-1">
+            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+              application.assessment.status === 'completed'
+                ? 'bg-foreground'
+                : application.assessment.status === 'in-progress'
+                ? 'bg-primary'
+                : 'bg-transparent border-2 border-muted-foreground'
+            }`} />
+            <div className={`w-0.5 flex-1 my-2 ${
+              application.assessment.status === 'completed'
+                ? 'bg-foreground'
+                : 'bg-border'
+            }`} />
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 pb-8">
+            <h4 className="text-base font-semibold mb-1">Assessment</h4>
+            {application.assessment.status === 'completed' && application.assessment.completedDate && (
+              <div className="mt-2">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Completed on {formatDate(application.assessment.completedDate)}
+                </p>
+                <Link
+                  href={`/application/${application.id}/assessment`}
+                  className="text-sm text-primary hover:text-foreground transition-colors"
+                >
+                  View or change assessment
+                </Link>
+              </div>
+            )}
+            {application.assessment.status === 'in-progress' && (
+              <div className="mt-2">
+                <p className="text-muted-foreground mb-4">
+                  Review planning policy compliance, design quality, and neighbour impacts. Prepare recommendation report.
+                </p>
+                <Link
+                  href={`/application/${application.id}/assessment`}
+                  className="text-base text-primary hover:text-foreground transition-colors"
+                >
+                  Continue assessment
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* 4. Review Stage */}
-        <StageCard
-          title="Review"
-          status={
-            !bothParallelDone ? 'locked' :
-            application.review.status === 'completed' ? 'completed' :
-            application.review.status === 'in-progress' ? 'active' : 'locked'
-          }
-          tasks={application.review.tasks}
-          lockedMessage="Cannot start until consultation and assessment are complete"
-          completedDate={application.review.completedDate}
-          completedLabel="Completed on"
-          applicationId={application.id}
-          stageSlug="review"
-          isLast={true}
-        />
-      </div>
+        <div className="flex gap-4">
+          {/* Timeline indicator */}
+          <div className="flex flex-col items-center pt-1">
+            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+              application.review.status === 'completed'
+                ? 'bg-foreground'
+                : application.review.status === 'in-progress'
+                ? 'bg-primary'
+                : 'bg-transparent border-2 border-muted-foreground'
+            }`} />
+            <div className={`w-0.5 flex-1 my-2 ${
+              application.review.status === 'completed'
+                ? 'bg-foreground'
+                : 'bg-border'
+            }`} />
+          </div>
 
-      {/* Expiry Warning */}
-      {isDateSoon(application.expiryDate) && (
-        <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-900/50 dark:bg-amber-900/20">
-          <div className="flex items-start gap-2">
-            <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5" />
-            <div>
-              <div className="text-sm font-medium text-amber-900 dark:text-amber-400">
-                Application expires soon
+          {/* Content */}
+          <div className="flex-1 pb-8">
+            <h4 className="text-base font-semibold mb-1">Review and decision</h4>
+            {application.review.status === 'completed' && application.review.completedDate && (
+              <div className="mt-2">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Decision made on {formatDate(application.review.completedDate)}
+                </p>
+                <Link
+                  href={`/application/${application.id}/review`}
+                  className="text-sm text-primary hover:text-foreground transition-colors"
+                >
+                  View or change decision
+                </Link>
               </div>
-              <div className="text-sm text-amber-800 dark:text-amber-500">
-                Expiry date: {formatDate(application.expiryDate)}
+            )}
+            {application.review.status === 'in-progress' && (
+              <div className="mt-2">
+                <p className="text-muted-foreground mb-4">
+                  Final review of assessment and consultation. Make decision and prepare decision notice.
+                </p>
+                <Link
+                  href={`/application/${application.id}/review`}
+                  className="text-base text-primary hover:text-foreground transition-colors"
+                >
+                  Review and decide
+                </Link>
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* 5. Expiry Date */}
+        <div className="flex gap-4">
+          {/* Timeline indicator */}
+          <div className="flex flex-col items-center pt-1">
+            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-transparent border-2 border-muted-foreground" />
+          </div>
+
+          {/* Content */}
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h4 className="text-base font-semibold">Expires {formatDate(application.expiryDate)}</h4>
+              <Link
+                href={`/application/${application.id}/request-extension`}
+                className="text-sm text-primary hover:text-foreground transition-colors"
+              >
+                Request extension
+              </Link>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }

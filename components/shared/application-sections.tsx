@@ -13,14 +13,9 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
       {/* Overview Details - Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-8">
         {/* Left Column: Main Content (66%) */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2">
           {/* Proposal Description */}
           <ProposalDescription description={application.description} />
-
-          <hr className="border-border" />
-
-          {/* Application Stage Timeline */}
-          <ApplicationStageTimeline application={application} />
         </div>
 
         {/* Right Column: Metadata Sidebar (33%) */}
@@ -34,6 +29,16 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
       </div>
 
       <hr className="border-border" />
+
+      {/* Application Progress Section */}
+      <section
+        id="progress"
+        className="scroll-mt-[160px] space-y-4 pb-8 pt-8"
+        aria-labelledby="progress-heading"
+      >
+        <ApplicationStageTimeline application={application} />
+        <hr className="border-border" />
+      </section>
 
       {/* Documents Section */}
       <section
