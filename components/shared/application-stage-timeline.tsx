@@ -1,6 +1,7 @@
 import type { PlanningApplication, StageTask } from '@/lib/mock-data/schemas'
-import { Lock, CheckCircle, Clock, ChevronRight } from 'lucide-react'
+import { Lock, Clock } from 'lucide-react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 interface ApplicationStageTimelineProps {
   application: PlanningApplication
@@ -33,9 +34,10 @@ interface StageCardProps {
   showParallel?: boolean
   applicationId: string
   stageSlug: string
+  isLast?: boolean
 }
 
-function StageCard({ title, status, tasks, lockedMessage, completedDate, completedLabel, showParallel, applicationId, stageSlug }: StageCardProps) {
+function StageCard({ title, status, tasks, lockedMessage, completedDate, completedLabel, showParallel, applicationId, stageSlug, isLast }: StageCardProps) {
   const completedCount = tasks.filter(t => t.completed).length
   const totalCount = tasks.length
   const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
@@ -45,43 +47,65 @@ function StageCard({ title, status, tasks, lockedMessage, completedDate, complet
       case 'locked':
         return <Lock className="h-4 w-4 text-muted-foreground" />
       case 'active':
-        return <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400" />
       case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+        return <Clock className="h-4 w-4 text-primary" />
     }
   }
 
-  const getStatusStyles = () => {
-    switch (status) {
-      case 'locked':
-        return {
-          container: 'bg-muted/30 border-muted',
-          title: 'text-muted-foreground',
-          progress: 'bg-muted-foreground/20',
-        }
-      case 'active':
-        return {
-          container: 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900/50',
-          title: 'text-foreground',
-          progress: 'bg-blue-600 dark:bg-blue-400',
-        }
-      case 'completed':
-        return {
-          container: 'bg-green-50/50 border-green-200 dark:bg-green-950/20 dark:border-green-900/50',
-          title: 'text-foreground',
-          progress: 'bg-green-600 dark:bg-green-400',
-        }
+  const getTitleColor = () => {
+    return status === 'locked' ? 'text-muted-foreground' : 'text-foreground'
+  }
+
+  const getTimelineStyles = () => {
+    // Grey circles - filled when completed, outlined when not
+    const isCompleted = status === 'completed'
+    return {
+      circle: isCompleted
+        ? 'bg-muted-foreground border-muted-foreground'
+        : 'bg-transparent border-muted-foreground/40',
+      line: 'bg-muted-foreground/20'
     }
   }
 
-  const styles = getStatusStyles()
-  const isClickable = status !== 'locked'
+  const timelineStyles = getTimelineStyles()
 
-  const cardContent = (
+  const getActionButton = () => {
+    if (status === 'locked') return null
+
+    if (status === 'completed') {
+      return (
+        <Link
+          href={`/application/${applicationId}/${stageSlug}`}
+          className="text-sm text-primary hover:text-foreground transition-colors inline-flex items-center gap-1"
+        >
+          View or change {title.toLowerCase()}
+        </Link>
+      )
+    }
+
+    if (status === 'active') {
+      const actionText = {
+        'Validation': 'Check validation',
+        'Consultation': 'Review consultation',
+        'Assessment': 'Check and assess',
+        'Review': 'Review and approve'
+      }[title] || `Continue ${title.toLowerCase()}`
+
+      return (
+        <Button asChild>
+          <Link href={`/application/${applicationId}/${stageSlug}`}>
+            {actionText}
+          </Link>
+        </Button>
+      )
+    }
+  }
+
+  const content = (
     <>
       <div className="flex items-center gap-2 mb-2">
         {getStatusIcon()}
-        <h4 className={`text-base font-semibold ${styles.title}`}>{title}</h4>
+        <h4 className={`text-base font-semibold ${getTitleColor()}`}>{title}</h4>
         {showParallel && status !== 'locked' && (
           <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">
             Parallel
@@ -91,19 +115,19 @@ function StageCard({ title, status, tasks, lockedMessage, completedDate, complet
 
       {/* Locked State */}
       {status === 'locked' && lockedMessage && (
-        <p className="text-sm text-muted-foreground">{lockedMessage}</p>
+        <p className="text-sm text-muted-foreground mb-3">{lockedMessage}</p>
       )}
 
       {/* Active State */}
       {status === 'active' && (
-        <div className="space-y-2">
+        <div className="space-y-3 mb-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">{completedCount} of {totalCount} tasks completed</span>
             <span className="font-medium text-foreground">{Math.round(progress)}%</span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
-              className={`h-full ${styles.progress} transition-all duration-300`}
+              className="h-full bg-primary transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -112,35 +136,33 @@ function StageCard({ title, status, tasks, lockedMessage, completedDate, complet
 
       {/* Completed State */}
       {status === 'completed' && completedDate && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mb-3">
           {completedLabel || 'Completed'}: {formatDate(completedDate)}
         </p>
       )}
+
+      {/* Action Button/Link */}
+      {getActionButton()}
     </>
   )
 
-  if (isClickable) {
-    return (
-      <Link
-        href={`/application/${applicationId}/${stageSlug}`}
-        className={`block rounded-lg border ${styles.container} p-4 transition-colors hover:border-primary/50 group`}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            {cardContent}
-          </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
-        </div>
-      </Link>
-    )
-  }
-
+  // Timeline wrapper with vertical line and node - flat design with content-side border
   return (
-    <div className={`rounded-lg border ${styles.container} p-4 transition-colors`}>
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          {cardContent}
-        </div>
+    <div className="flex gap-4 mb-8 last:mb-0">
+      {/* Timeline column */}
+      <div className="relative flex flex-col items-center w-10 flex-shrink-0">
+        {/* Circle node */}
+        <div className={`w-2.5 h-2.5 rounded-full border-2 ${timelineStyles.circle} mt-1.5 z-10`} />
+
+        {/* Vertical connecting line (hidden for last item) */}
+        {!isLast && (
+          <div className={`w-0.5 flex-1 ${timelineStyles.line} mt-1`} />
+        )}
+      </div>
+
+      {/* Content column with bottom border separator */}
+      <div className="flex-1 pb-6 border-b border-border">
+        {content}
       </div>
     </div>
   )
@@ -155,7 +177,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
   return (
     <div>
       <h3 className="mb-4 text-base font-semibold text-foreground">Application Progress</h3>
-      <div className="space-y-4">
+      <div>
         {/* 1. Validation Stage */}
         <StageCard
           title="Validation"
@@ -168,6 +190,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           completedLabel="Validated on"
           applicationId={application.id}
           stageSlug="validation"
+          isLast={false}
         />
 
         {/* 2. Consultation Stage (Parallel) */}
@@ -185,6 +208,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           showParallel={isValidated}
           applicationId={application.id}
           stageSlug="consultation"
+          isLast={false}
         />
 
         {/* 3. Assessment Stage (Parallel) */}
@@ -202,6 +226,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           showParallel={isValidated}
           applicationId={application.id}
           stageSlug="assessment"
+          isLast={false}
         />
 
         {/* 4. Review Stage */}
@@ -218,6 +243,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           completedLabel="Completed on"
           applicationId={application.id}
           stageSlug="review"
+          isLast={true}
         />
       </div>
 

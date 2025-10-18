@@ -910,3 +910,150 @@ These pages will display:
 **Status:** Stage cards simplified to navigation-focused design. Removed expandable task lists in favor of clean, clickable cards that link to dedicated stage pages. All unlocked stages (active + completed) are navigable with placeholder routing ready for implementation.
 
 ---
+
+## 2025-10-18 | Minimalist Timeline Progress Indicator
+
+**Built by:** Forge (Builder)
+
+### Visual Timeline Enhancement
+
+Added left-side progress indicator to Application Progress section, transforming stage cards into a visual timeline layout.
+
+### Design Changes
+
+**ApplicationStageTimeline** ([components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx))
+
+**Timeline Visual Components:**
+- **Vertical Line:** Thin (0.5px width) connecting line running through all stages
+- **Circle Nodes:** Small (10px diameter) circular indicators at each stage
+- **Minimalist Color System:**
+  - Locked stages: Light grey line + empty circle outline
+  - Active/Completed stages: Primary blue line + filled blue circle
+  - No color variation between active and completed (single accent color)
+
+**Layout Structure:**
+- Left column: Timeline elements (40px width)
+  - Vertical connecting line
+  - Circle node positioned at top of each card (mt-6 for alignment)
+- Right column: Stage cards (full width, flex-1)
+- 4-unit gap between timeline and cards
+
+**Simplified Status Indicators:**
+- Removed CheckCircle icon from completed stages
+- Active and completed stages now share same styling (Clock icon, blue accent)
+- Timeline nodes are purely visual (no icons inside circles)
+- Minimalist approach with single accent color (GDS blue)
+
+**Technical Implementation:**
+- Timeline wrapper function wraps all card content
+- Vertical line uses `flex-1` to span between nodes
+- Last stage node has no line below it (`isLast` prop)
+- Circle nodes use 2px border, either filled or outlined
+- Color-coded with `bg-primary` (filled) or `bg-transparent` (outlined)
+- Full dark mode compatibility maintained
+
+**Color Consolidation:**
+- Removed green color for completed stages
+- Unified active/completed styling with blue accent
+- Grey for locked, blue for everything else
+- Cleaner, more professional appearance
+
+**Visual Design Principles:**
+- Minimalist aesthetic - no decorative elements
+- Single accent color for clarity
+- Subtle timeline elements that don't overwhelm cards
+- Professional, government-appropriate design
+- Clean spatial hierarchy
+
+**Files Modified:**
+- [components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)
+
+**Status:** Minimalist timeline progress indicator complete. Application Progress section now displays with vertical timeline on left (connecting line + circle nodes) and stage cards on right. Single-color accent system (blue for active/completed, grey for locked) provides clean, professional visual progression.
+
+---
+
+## 2025-10-18 | Flat Timeline Layout with Contextual Actions
+
+**Built by:** Forge (Builder)
+
+### Design Refinement - From Cards to Flat List
+
+Transformed stage timeline from card-based layout to flat, Airbnb-style list with bottom borders and contextual action buttons.
+
+### Major Changes
+
+**ApplicationStageTimeline** ([components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx))
+
+**Removed Card Styling:**
+- Eliminated clickable card behavior (entire stage was previously a Link)
+- Removed card backgrounds, borders, and rounded corners
+- Removed hover states on card containers
+- Removed ChevronRight navigation arrows
+- Simplified to flat content layout with bottom border separators
+
+**New Border System:**
+- Simple bottom border (`border-b border-border`) between stages
+- Padding bottom/top (6 units) for breathing room
+- Last stage has no bottom border (`last:border-b-0`)
+- Clean, list-based separation instead of card containers
+
+**Contextual Action Buttons/Links:**
+
+1. **Locked Stages:**
+   - No action button/link (cannot interact)
+   - Shows dependency message only
+
+2. **Active Stages:**
+   - Blue primary button (not full width)
+   - Stage-specific action text:
+     - Validation: "Check validation"
+     - Consultation: "Review consultation"
+     - Assessment: "Check and assess"
+     - Review: "Review and approve"
+   - Links to stage detail page
+
+3. **Completed Stages:**
+   - Text link (blue primary color)
+   - Format: "View or change {stage name}"
+   - Hover transitions to foreground color
+   - Links to stage detail page
+
+**Layout Structure:**
+- Timeline column (40px) with vertical line + circle node
+- Content column (flex-1) with flat content layout
+- No wrapper containers or card styling
+- Content flows naturally with typography hierarchy
+- Action buttons/links positioned below stage information
+
+**Visual Hierarchy:**
+- Stage title with icon (Lock/Clock) at top
+- Progress bar or completion date in middle
+- Action button/link at bottom (if applicable)
+- Clean vertical stacking with consistent spacing
+
+**Technical Changes:**
+- Removed `isClickable` logic and conditional Link wrappers
+- Simplified component structure - single return statement
+- Action buttons rendered inline within content flow
+- Border separators applied to timeline wrapper div
+- Circle node alignment adjusted (mt-1.5) for better visual balance
+
+**Design Philosophy:**
+- Flat, content-first Airbnb aesthetic
+- Actions are explicit, not implicit (no whole-card clickability)
+- Clear call-to-action buttons for active stages
+- Subtle links for completed stages (review/edit capability)
+- Minimalist separator system instead of heavy card UI
+
+**Spacing & Typography:**
+- 6-unit padding bottom/margin bottom between stages
+- Consistent 3-unit margin bottom on info elements
+- Action buttons use standard padding (px-4 py-2)
+- Text links inline with natural flow
+
+**Files Modified:**
+- [components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)
+
+**Status:** Flat timeline layout complete. Removed card styling in favor of clean list with bottom borders. Added contextual action buttons for active stages ("Check and assess") and text links for completed stages ("View or change validation"). No clickable card behavior - actions are explicit and purposeful.
+
+---
