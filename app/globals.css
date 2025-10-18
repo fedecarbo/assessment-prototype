@@ -24,4 +24,8 @@
   --radius-lg: 0.5rem;
   --radius-md: calc(0.5rem - 2px);
   --radius-sm: calc(0.5rem - 4px);
+
+  /* Layout spacing */
+  --spacing-sticky-header-offset: 100px;
+  --spacing-section-placeholder: 384px;
 }

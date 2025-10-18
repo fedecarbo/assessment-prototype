@@ -136,3 +136,37 @@ Track all features, components, and pages built by Forge (Builder).
 - [application-detail-layout.tsx](components/shared/application-detail-layout.tsx) - Navigation border, reference typography
 
 ---
+
+## 2025-10-17 | Vercel Deployment Fixes
+
+**Built by:** Forge (Builder)
+
+### TypeScript Build Errors Resolved
+
+**Issue:** Vercel build failing with TypeScript strict mode errors in IntersectionObserver callbacks.
+
+### Fixes Applied
+
+1. **Hero Collapse Observer** ([application-detail-layout.tsx:47](components/shared/application-detail-layout.tsx#L47))
+   - **Error:** `'entry' is possibly 'undefined'`
+   - **Fix:** Added null guard before accessing `entry.isIntersecting`
+   - **Code:** Wrapped state update in `if (entry)` check
+
+2. **Scrollspy Observer** ([application-detail-layout.tsx:90](components/shared/application-detail-layout.tsx#L90))
+   - **Error:** `Object is possibly 'undefined'`
+   - **Fix:** Added null guard for `intersectingSections[0]`
+   - **Code:** Extracted to `topSection` variable with null check before accessing `.id`
+
+### Technical Details
+- Both errors caused by TypeScript strict null checking in IntersectionObserver callbacks
+- Array destructuring and array access can potentially return undefined
+- Added defensive guards to satisfy TypeScript compiler
+- No functional changes - guards are defensive programming best practice
+
+**Commits:**
+- `7de396a` - Fix TypeScript error in IntersectionObserver callback
+- `c1c87c2` - Fix second TypeScript error in scrollspy observer
+
+**Status:** All build errors resolved. Application successfully deployed to Vercel.
+
+---

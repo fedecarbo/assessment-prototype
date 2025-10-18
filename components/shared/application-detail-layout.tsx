@@ -1,6 +1,8 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { ApplicationStatusBadges } from './application-status-badges'
 
 interface ApplicationDetailLayoutProps {
   applicationId: string
@@ -8,7 +10,7 @@ interface ApplicationDetailLayoutProps {
   reference: string
   status: string
   daysToDecision: number
-  children: React.ReactNode
+  children: ReactNode
 }
 
 interface Section {
@@ -23,6 +25,12 @@ const sections: Section[] = [
   { id: 'history', label: 'History' },
   { id: 'comments', label: 'Comments' },
 ]
+
+// IntersectionObserver configuration constants
+const HERO_COLLAPSE_THRESHOLD_PX = 80
+const SCROLLSPY_TOP_OFFSET_PX = 120
+const SCROLLSPY_BOTTOM_OFFSET_PERCENT = 50
+const SCROLLSPY_THRESHOLDS = [0, 0.25, 0.5, 0.75, 1]
 
 export function ApplicationDetailLayout({
   applicationId,
@@ -50,7 +58,7 @@ export function ApplicationDetailLayout({
       },
       {
         threshold: 0,
-        rootMargin: '-80px 0px 0px 0px', // Trigger when hero scrolls past 80px
+        rootMargin: `-${HERO_COLLAPSE_THRESHOLD_PX}px 0px 0px 0px`,
       }
     )
 
@@ -94,8 +102,8 @@ export function ApplicationDetailLayout({
         }
       },
       {
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-        rootMargin: '-120px 0px -50% 0px',
+        threshold: SCROLLSPY_THRESHOLDS,
+        rootMargin: `-${SCROLLSPY_TOP_OFFSET_PX}px 0px -${SCROLLSPY_BOTTOM_OFFSET_PERCENT}% 0px`,
       }
     )
 
@@ -140,14 +148,7 @@ export function ApplicationDetailLayout({
                   <span className="text-base text-gray-900">{reference}</span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
-                    {status}
-                  </span>
-                  <span className="bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-800">
-                    {daysToDecision} days to determination date
-                  </span>
-                </div>
+                <ApplicationStatusBadges status={status} daysToDecision={daysToDecision} />
               </div>
             </div>
 
@@ -191,14 +192,11 @@ export function ApplicationDetailLayout({
                 <h2 className="text-lg font-semibold text-gray-900">{address}</h2>
                 <span className="text-base text-gray-600">{reference}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-                  {status}
-                </span>
-                <span className="bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800">
-                  {daysToDecision} days to determination date
-                </span>
-              </div>
+              <ApplicationStatusBadges
+                status={status}
+                daysToDecision={daysToDecision}
+                size="compact"
+              />
             </div>
           </div>
         </div>
@@ -206,20 +204,24 @@ export function ApplicationDetailLayout({
         {/* Section Navigation */}
         <div className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-[1100px] px-4">
-          <nav className="flex gap-6" aria-label="Application sections">
+          <nav className="flex gap-6" aria-label="Application sections" role="navigation">
             {sections.map((section) => (
-              <button
+              <a
                 key={section.id}
-                onClick={() => handleNavClick(section.id)}
+                href={`#${section.id}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleNavClick(section.id)
+                }}
                 className={`relative border-b-2 py-3 text-sm font-medium transition-colors ${
                   activeSection === section.id
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
                 }`}
-                aria-current={activeSection === section.id ? 'location' : undefined}
+                aria-current={activeSection === section.id ? 'page' : undefined}
               >
                 {section.label}
-              </button>
+              </a>
             ))}
           </nav>
         </div>

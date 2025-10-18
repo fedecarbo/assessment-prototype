@@ -1,3 +1,6 @@
+// Placeholder height for development sections
+const SECTION_PLACEHOLDER_HEIGHT = 'h-[--spacing-section-placeholder]'
+
 export function ApplicationSections() {
   return (
     <>
@@ -49,7 +52,7 @@ export function ApplicationSections() {
       {/* Documents Section */}
       <section
         id="documents"
-        className="scroll-mt-[100px] space-y-4"
+        className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="documents-heading"
       >
         <h2 id="documents-heading" className="text-2xl font-bold text-gray-900">
@@ -61,13 +64,13 @@ export function ApplicationSections() {
             application documents.
           </p>
         </div>
-        <div className="h-96"></div>
+        <div className={SECTION_PLACEHOLDER_HEIGHT}></div>
       </section>
 
       {/* Assessment Section */}
       <section
         id="assessment"
-        className="scroll-mt-[100px] space-y-4"
+        className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="assessment-heading"
       >
         <h2 id="assessment-heading" className="text-2xl font-bold text-gray-900">
@@ -78,13 +81,13 @@ export function ApplicationSections() {
             Planning assessment details, conditions, and recommendations will be shown here.
           </p>
         </div>
-        <div className="h-96"></div>
+        <div className={SECTION_PLACEHOLDER_HEIGHT}></div>
       </section>
 
       {/* History Section */}
       <section
         id="history"
-        className="scroll-mt-[100px] space-y-4"
+        className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="history-heading"
       >
         <h2 id="history-heading" className="text-2xl font-bold text-gray-900">
@@ -95,13 +98,13 @@ export function ApplicationSections() {
             Application history timeline and status changes will be displayed here.
           </p>
         </div>
-        <div className="h-96"></div>
+        <div className={SECTION_PLACEHOLDER_HEIGHT}></div>
       </section>
 
       {/* Comments Section */}
       <section
         id="comments"
-        className="scroll-mt-[100px] space-y-4"
+        className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="comments-heading"
       >
         <h2 id="comments-heading" className="text-2xl font-bold text-gray-900">
@@ -112,7 +115,7 @@ export function ApplicationSections() {
             Internal comments and notes about the application will appear here.
           </p>
         </div>
-        <div className="h-96"></div>
+        <div className={SECTION_PLACEHOLDER_HEIGHT}></div>
       </section>
     </>
   )
