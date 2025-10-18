@@ -294,3 +294,75 @@ Track all features, components, and pages built by Forge (Builder).
 **Files modified:** [application-detail-layout.tsx](components/shared/application-detail-layout.tsx)
 
 ---
+
+## 2025-10-18 | Document List Redesign - Filename-First Layout
+
+**Component:** DocumentList ([components/shared/document-list.tsx](components/shared/document-list.tsx))
+
+**Key Decisions:**
+- **Filename as title link:** Document filename displayed as primary clickable link (blue, hover underline)
+- **Tags below filename:** Document contents displayed as grey badge tags (using Badge component)
+- **Minimal metadata:** Removed icon, file type, uploader name, file size, and upload date
+- **Layout:** Filename link on first line, tags on second line
+- **Realistic filenames:** Technical naming convention (DRA-001, SUP-002, PHO-003 prefixes)
+
+**Schema changes:**
+- Added `tags?: string[]` field to Document interface
+- Removed `uploadedBy` field from Document interface
+
+**Mock data updates:**
+- **Drawings:** DRA-001-Site_Plan.pdf, DRA-002-Proposed_Existing_Drawings.pdf (with 4 tags), DRA-003-Sections.pdf
+- **Supporting:** SUP-001-Pre_Application_Form.pdf, SUP-002-Design_Access_Statement.pdf (2 tags), SUP-003-Planning_Statement.pdf, SUP-004-Heritage_Impact_Assessment.pdf
+- **Evidence:** PHO-001-Rear_Elevation.jpg, PHO-002-Garden_Context.jpg, PHO-003-Street_View.jpg (2 tags), PHO-004-Neighbor_Context.jpg (2 tags)
+- **Tag examples:** "Elevations - existing", "Floor plan - proposed", "Site photos", "Heritage assessment"
+
+**Files modified:** [document-list.tsx](components/shared/document-list.tsx), [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
+
+---
+
+## 2025-10-18 | Documents Section Spacing Refinement
+
+**Key Decisions:**
+- **Section heading spacing:** Increased `mb-4` → `mb-6` (16px → 24px) between "Documents" and category groups
+- **Category group spacing:** Reduced outer container `space-y-8` → `space-y-6` (32px → 24px between category groups)
+- **Category heading spacing:** Reduced `mb-4` → `mb-3` (16px → 12px) between category heading and first document
+- **Visual hierarchy:** Category headings stay close to their content, adequate breathing room between groups
+
+**Result:** Consistent spacing pattern matching other sections - section headings have proper breathing room, category subheadings stay close to their content
+
+**Files modified:** [application-sections.tsx](components/shared/application-sections.tsx), [document-list.tsx](components/shared/document-list.tsx)
+
+---
+
+## 2025-10-18 | Collapsible Document Categories
+
+**Component:** DocumentList ([components/shared/document-list.tsx](components/shared/document-list.tsx))
+
+**Key Decisions:**
+- **Client-side interactivity:** Converted to client component with useState for expand/collapse
+- **Default state:** Drawings expanded, Supporting documents and Evidence collapsed
+- **Category headers:** Clickable with chevron icons (ChevronRight collapsed, ChevronDown expanded)
+- **Document counts:** Show count in parentheses next to category name (e.g., "Evidence (4)")
+- **Visual feedback:** Header hover state changes text to primary blue
+- **Indentation:** Expanded documents indented with `ml-7` to align with category name
+- **Condensed spacing:** `py-3` per document (was `py-4`), `mb-1.5` filename to tags (was `mb-2`)
+
+**Result:** More focused initial view showing only drawings, with clear indication of additional documents available in collapsed categories
+
+**Files modified:** [document-list.tsx](components/shared/document-list.tsx)
+
+---
+
+## 2025-10-18 | Document Thumbnails
+
+**Component:** DocumentList ([components/shared/document-list.tsx](components/shared/document-list.tsx))
+
+**Key Decisions:**
+- **Thumbnail placement:** 64px × 64px placeholder thumbnail on left of each document row
+- **Placeholder styling:** Muted background with border (`bg-muted border-border`)
+- **Layout:** Flexbox with `gap-3` between thumbnail and document info
+- **Responsive:** Thumbnail is `flex-shrink-0`, document info uses `flex-1 min-w-0` for text truncation
+
+**Files modified:** [document-list.tsx](components/shared/document-list.tsx)
+
+---

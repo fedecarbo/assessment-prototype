@@ -79,20 +79,107 @@ export const mockApplications: PlanningApplication[] = [
     ],
     documents: [
       // Drawings
-      { id: 'd1', name: 'Proposed Site Plan', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '2.4 MB', fileType: 'pdf' as const },
-      { id: 'd2', name: 'Existing Floor Plans', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '1.8 MB', fileType: 'pdf' as const },
-      { id: 'd3', name: 'Proposed Floor Plans', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '2.1 MB', fileType: 'pdf' as const },
-      { id: 'd4', name: 'Elevation Drawings - South & West', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '1.5 MB', fileType: 'pdf' as const },
+      {
+        id: 'd1',
+        name: 'DRA-001-Site_Plan.pdf',
+        category: 'drawings' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '2.4 MB',
+        fileType: 'pdf' as const,
+        tags: ['Site plan - proposed']
+      },
+      {
+        id: 'd2',
+        name: 'DRA-002-Proposed_Existing_Drawings.pdf',
+        category: 'drawings' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '3.9 MB',
+        fileType: 'pdf' as const,
+        tags: ['Elevations - existing', 'Floor plan - existing', 'Elevations - proposed', 'Floor plan - proposed']
+      },
+      {
+        id: 'd3',
+        name: 'DRA-003-Sections.pdf',
+        category: 'drawings' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '2.1 MB',
+        fileType: 'pdf' as const,
+        tags: ['Sections - existing', 'Sections - proposed']
+      },
       // Supporting documents
-      { id: 's1', name: 'Pre-Application Form', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '456 KB', fileType: 'pdf' as const },
-      { id: 's2', name: 'Design & Access Statement', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '3.2 MB', fileType: 'pdf' as const },
-      { id: 's3', name: 'Planning Statement', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '1.1 MB', fileType: 'pdf' as const },
-      { id: 's4', name: 'Heritage Impact Assessment', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-07', fileSize: '2.8 MB', fileType: 'pdf' as const },
+      {
+        id: 's1',
+        name: 'SUP-001-Pre_Application_Form.pdf',
+        category: 'supporting' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '456 KB',
+        fileType: 'pdf' as const,
+        tags: ['Application form']
+      },
+      {
+        id: 's2',
+        name: 'SUP-002-Design_Access_Statement.pdf',
+        category: 'supporting' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '3.2 MB',
+        fileType: 'pdf' as const,
+        tags: ['Design statement', 'Access statement']
+      },
+      {
+        id: 's3',
+        name: 'SUP-003-Planning_Statement.pdf',
+        category: 'supporting' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '1.1 MB',
+        fileType: 'pdf' as const,
+        tags: ['Planning statement']
+      },
+      {
+        id: 's4',
+        name: 'SUP-004-Heritage_Impact_Assessment.pdf',
+        category: 'supporting' as const,
+        uploadedDate: '2025-10-07',
+        fileSize: '2.8 MB',
+        fileType: 'pdf' as const,
+        tags: ['Heritage assessment']
+      },
       // Evidence
-      { id: 'e1', name: 'Existing Rear Elevation Photo', category: 'evidence' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '3.5 MB', fileType: 'jpg' as const },
-      { id: 'e2', name: 'Garden Context Photo', category: 'evidence' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '4.1 MB', fileType: 'jpg' as const },
-      { id: 'e3', name: 'Street View Photo', category: 'evidence' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '3.8 MB', fileType: 'jpg' as const },
-      { id: 'e4', name: 'Neighbor Context Photos', category: 'evidence' as const, uploadedBy: 'Federico Carbo', uploadedDate: '2025-10-08', fileSize: '5.2 MB', fileType: 'jpg' as const },
+      {
+        id: 'e1',
+        name: 'PHO-001-Rear_Elevation.jpg',
+        category: 'evidence' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '3.5 MB',
+        fileType: 'jpg' as const,
+        tags: ['Site photos']
+      },
+      {
+        id: 'e2',
+        name: 'PHO-002-Garden_Context.jpg',
+        category: 'evidence' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '4.1 MB',
+        fileType: 'jpg' as const,
+        tags: ['Site photos']
+      },
+      {
+        id: 'e3',
+        name: 'PHO-003-Street_View.jpg',
+        category: 'evidence' as const,
+        uploadedDate: '2025-10-06',
+        fileSize: '3.8 MB',
+        fileType: 'jpg' as const,
+        tags: ['Site photos', 'Street scene']
+      },
+      {
+        id: 'e4',
+        name: 'PHO-004-Neighbor_Context.jpg',
+        category: 'evidence' as const,
+        uploadedDate: '2025-10-08',
+        fileSize: '5.2 MB',
+        fileType: 'jpg' as const,
+        tags: ['Site photos', 'Neighbor context']
+      },
     ],
     // Stage workflow - validated, both consultation and assessment active
     validationStatus: 'validated',

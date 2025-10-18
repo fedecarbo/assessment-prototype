@@ -71,10 +71,10 @@ export interface Document {
   id: string;
   name: string;
   category: 'drawings' | 'supporting' | 'evidence';
-  uploadedBy: string;
   uploadedDate: string;
   fileSize: string;
   fileType: 'pdf' | 'jpg' | 'png' | 'doc' | 'docx';
+  tags?: string[]; // Tags describing what the document contains
 }
 
 export interface PlanningApplication {

@@ -185,7 +185,7 @@ export function ApplicationDetailLayout({
           {/* Condensed Header - Appears when hero collapses */}
           <div
             className={`transition-all ${
-              isHeroCollapsed ? 'pb-2 pt-3' : 'h-0 overflow-hidden opacity-0'
+              isHeroCollapsed ? 'pt-3' : 'h-0 overflow-hidden opacity-0'
             }`}
           >
             <div className="flex items-center gap-3">

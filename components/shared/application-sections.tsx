@@ -4,6 +4,7 @@ import { ApplicationMetadata } from './application-metadata'
 import { ApplicationStageTimeline } from './application-stage-timeline'
 import { DocumentList } from './document-list'
 import { ConstraintsSummary } from './constraints-summary'
+import { Badge } from '@/components/ui/badge'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
 interface ApplicationSectionsProps {
@@ -20,6 +21,14 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
           {/* Proposal Description */}
           <ProposalDescription description={application.description} />
 
+          {/* Application Type */}
+          <div>
+            <h3 className="mb-3 text-base font-semibold text-foreground">Application type</h3>
+            <Badge variant="gray">
+              {application.applicationType}
+            </Badge>
+          </div>
+
           {/* Requested Services */}
           {application.requestedServices && (
             <RequestedServices services={application.requestedServices} />
@@ -31,7 +40,6 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
           <ApplicationMetadata
             assignedOfficer={application.assignedOfficer}
             isPublic={application.isPublic}
-            applicationType={application.applicationType}
           />
         </div>
       </div>
@@ -55,7 +63,7 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         className="scroll-mt-[160px] pb-8 pt-8"
         aria-labelledby="documents-heading"
       >
-        <h2 id="documents-heading" className="text-xl font-bold text-foreground mb-4">
+        <h2 id="documents-heading" className="text-xl font-bold text-foreground mb-6">
           Documents
         </h2>
         <DocumentList documents={application.documents} />

@@ -1,5 +1,9 @@
-import { FileText, Image, File } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
 import type { Document } from '@/lib/mock-data/schemas'
+import { Badge } from '@/components/ui/badge'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 
 interface DocumentListProps {
   documents?: Document[]
@@ -11,26 +15,13 @@ const categoryLabels = {
   evidence: 'Evidence',
 } as const
 
-function getFileIcon(fileType: Document['fileType']) {
-  if (fileType === 'jpg' || fileType === 'png') {
-    return Image
-  }
-  if (fileType === 'pdf') {
-    return FileText
-  }
-  return File
-}
-
-function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  return new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(date)
-}
-
 export function DocumentList({ documents }: DocumentListProps) {
+  const [expandedCategories, setExpandedCategories] = useState({
+    drawings: true,
+    supporting: false,
+    evidence: false,
+  })
+
   if (!documents || documents.length === 0) {
     return (
       <p className="text-base text-muted-foreground">No documents uploaded yet</p>
@@ -49,53 +40,71 @@ export function DocumentList({ documents }: DocumentListProps) {
     {} as Record<Document['category'], Document[]>
   )
 
+  const toggleCategory = (category: keyof typeof expandedCategories) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }))
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {(['drawings', 'supporting', 'evidence'] as const).map((category) => {
         const categoryDocs = groupedDocuments[category]
         if (!categoryDocs || categoryDocs.length === 0) return null
 
+        const isExpanded = expandedCategories[category]
+        const ChevronIcon = isExpanded ? ChevronDown : ChevronRight
+
         return (
           <div key={category}>
-            <h3 className="mb-4 text-base font-semibold text-foreground">
-              {categoryLabels[category]}
-            </h3>
-            <div className="space-y-0">
-              {categoryDocs.map((doc, index) => {
-                const Icon = getFileIcon(doc.fileType)
-                const isLast = index === categoryDocs.length - 1
+            <button
+              onClick={() => toggleCategory(category)}
+              className="flex items-center gap-2 mb-3 text-base font-semibold text-foreground hover:text-primary transition-colors w-full text-left"
+            >
+              <ChevronIcon className="h-5 w-5 flex-shrink-0" />
+              <span>
+                {categoryLabels[category]} ({categoryDocs.length})
+              </span>
+            </button>
 
-                return (
-                  <div
-                    key={doc.id}
-                    className={`flex items-start gap-3 py-4 ${!isLast ? 'border-b border-border' : ''}`}
-                  >
-                    <div className="flex-shrink-0 mt-0.5">
-                      <Icon className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline justify-between gap-4 mb-1">
-                        <h4 className="text-base font-medium text-foreground">
+            {isExpanded && (
+              <div className="space-y-0 ml-7">
+                {categoryDocs.map((doc, index) => {
+                  const isLast = index === categoryDocs.length - 1
+
+                  return (
+                    <div
+                      key={doc.id}
+                      className={`flex gap-3 py-3 ${!isLast ? 'border-b border-border' : ''}`}
+                    >
+                      {/* Thumbnail */}
+                      <div className="flex-shrink-0 w-16 h-16 bg-muted border border-border" />
+
+                      {/* Document info */}
+                      <div className="flex-1 min-w-0">
+                        <a
+                          href="#"
+                          className="text-base font-medium text-primary hover:text-foreground hover:underline transition-colors inline-block mb-1.5"
+                        >
                           {doc.name}
-                        </h4>
-                        <button className="flex-shrink-0 text-sm text-primary hover:text-foreground hover:underline transition-colors">
-                          Download
-                        </button>
-                      </div>
-                      <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
-                        <span>{doc.fileType.toUpperCase()}</span>
-                        <span>•</span>
-                        <span>{doc.fileSize}</span>
-                        <span>•</span>
-                        <span>Uploaded {formatDate(doc.uploadedDate)}</span>
-                        <span>•</span>
-                        <span>{doc.uploadedBy}</span>
+                        </a>
+
+                        {doc.tags && doc.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {doc.tags.map((tag, tagIndex) => (
+                              <Badge key={tagIndex} variant="gray" size="small">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
         )
       })}
