@@ -104,6 +104,6 @@
   --text-9xl--line-height: 1;
 
   /* Layout spacing */
-  --spacing-sticky-header-offset: 100px;
+  --spacing-sticky-header-offset: 160px;
   --spacing-section-placeholder: 384px;
 }
