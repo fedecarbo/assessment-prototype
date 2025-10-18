@@ -170,3 +170,121 @@ Track all features, components, and pages built by Forge (Builder).
 **Status:** All build errors resolved. Application successfully deployed to Vercel.
 
 ---
+
+## 2025-10-18 | Tailwind v4 Configuration & Dark Mode Implementation
+
+**Built by:** Forge (Builder)
+
+### Global Styles Configuration
+
+**Tailwind CSS v4 Setup** ([app/globals.css](app/globals.css))
+- Updated to proper Tailwind v4 structure with `@import "tailwindcss"` and `@config` directive
+- Migrated from `@theme` block to `:root` and `.dark` selectors (shadcn/ui v4 pattern)
+- Added `@theme inline` block for mapping CSS variables to Tailwind theme system
+- Configured complete color palette for light and dark modes with neutral grays (0% saturation)
+
+**Dark Mode Colors:**
+- Background: `0 0% 5%` (very dark neutral, no blue tint)
+- Cards: `0 0% 8%` (subtle contrast)
+- Muted/Secondary: `0 0% 14%`
+- Borders: `0 0% 20%`
+- Foreground text: `0 0% 98%`
+- All colors use neutral grays with zero saturation
+
+**Typography Scale:**
+- Custom text sizes with line heights
+- Base: `1.188rem` / `1.563rem`
+- Large: `1.5rem` / `1.875rem`
+- XL: `1.688rem` / `1.875rem`
+- 2XL through 9XL with corresponding line heights
+
+**Spacing System:**
+- Changed base spacing from `0.25rem` (4px) to `0.3125rem` (5px)
+- Each increment now equals 5px (p-1 = 5px, p-2 = 10px, p-4 = 20px, etc.)
+
+### Dark Mode Implementation
+
+**Dependencies Added:**
+- `next-themes@0.4.6` - Theme management with system preference detection and localStorage persistence
+
+**Components Created:**
+
+1. **ThemeProvider** ([components/theme-provider.tsx](components/theme-provider.tsx))
+   - Client-side wrapper for NextThemesProvider
+   - Enables theme switching across the application
+
+2. **ThemeToggle** ([components/shared/theme-toggle.tsx](components/shared/theme-toggle.tsx))
+   - Sun/Moon icon toggle button
+   - Proper hydration handling to prevent flash
+   - Hover states with subtle background
+   - Accessible with `aria-label`
+
+**Configuration Files:**
+
+- **Root Layout** ([app/layout.tsx](app/layout.tsx))
+  - Added ThemeProvider wrapper with `attribute="class"`, `defaultTheme="system"`, `enableSystem`
+  - Added `suppressHydrationWarning` to html tag
+  - Applied `bg-background text-foreground` to body
+
+- **Tailwind Config** ([tailwind.config.ts](tailwind.config.ts))
+  - Created config with `darkMode: 'class'`
+  - Defined content paths for proper CSS generation
+
+### Component Updates for Dark Mode
+
+**Updated Components:**
+- **SiteHeader** ([components/shared/site-header.tsx](components/shared/site-header.tsx))
+  - Added ThemeToggle button between user name and logout
+  - Applied neutral dark background: `dark:bg-[hsl(0,0%,5%)]`
+  - Changed text color: `dark:text-foreground`
+
+- **ApplicationDetailLayout** ([components/shared/application-detail-layout.tsx](components/shared/application-detail-layout.tsx))
+  - Replaced all hardcoded grays with theme-aware tokens
+  - `bg-background`, `text-foreground`, `text-muted-foreground`
+  - `border-border`, `bg-muted` for subtle surfaces
+  - Sticky headers and navigation fully dark mode compatible
+
+- **ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx))
+  - Updated all section cards to use `bg-card`, `text-card-foreground`
+  - Placeholder areas use `bg-muted`, `text-muted-foreground`
+  - Borders use `border-border` throughout
+
+- **Application Pages:**
+  - Home page ([app/page.tsx](app/page.tsx)): Added `bg-background text-foreground`
+  - Application detail page ([app/application/[id]/page.tsx](app/application/[id]/page.tsx)): Changed to `bg-background`
+
+### Typography Refinements
+
+**Text Size Updates:**
+- Address in hero: Changed from `text-3xl` to `text-2xl`
+- Address in condensed header: Changed from `text-lg font-semibold` to `text-base font-bold`
+- Application reference label and value: Both set to `text-base`
+- Status badge labels: Changed from `text-sm` to `text-base`
+- Scroll navigation links: Changed from `text-sm` to `text-base`, removed `font-medium` (now default weight)
+- Section titles (Documents, Assessment, History, Comments): Changed from `text-2xl` to `text-xl`
+
+### Technical Implementation
+
+**Features:**
+- System theme detection (respects OS dark/light preference)
+- LocalStorage persistence (theme choice saved between sessions)
+- No flash on page load (proper SSR handling)
+- Smooth transitions between themes
+- Complete color neutrality (zero saturation for dark mode grays)
+
+**Files Modified:**
+- [app/globals.css](app/globals.css)
+- [app/layout.tsx](app/layout.tsx)
+- [tailwind.config.ts](tailwind.config.ts) (created)
+- [components/theme-provider.tsx](components/theme-provider.tsx) (created)
+- [components/shared/theme-toggle.tsx](components/shared/theme-toggle.tsx) (created)
+- [components/shared/site-header.tsx](components/shared/site-header.tsx)
+- [components/shared/application-detail-layout.tsx](components/shared/application-detail-layout.tsx)
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+- [components/shared/application-status-badges.tsx](components/shared/application-status-badges.tsx)
+- [app/page.tsx](app/page.tsx)
+- [app/application/[id]/page.tsx](app/application/[id]/page.tsx)
+
+**Status:** Dark mode fully implemented with neutral color scheme. Custom typography scale and 5px-based spacing system configured. All components theme-aware.
+
+---

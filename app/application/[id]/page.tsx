@@ -12,7 +12,7 @@ export default async function ApplicationDetailsPage({ params }: ApplicationDeta
   const { id } = await params
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <SiteHeader />
 
       <ApplicationDetailLayout

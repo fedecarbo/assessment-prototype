@@ -6,13 +6,13 @@ export function ApplicationSections() {
     <>
       {/* Overview Details - Below Navigation */}
       <div className="mb-8 space-y-4">
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="rounded-lg border border-border bg-card p-6">
           <div className="space-y-6">
             {/* Proposal Description */}
             <div>
-              <h3 className="mb-2 text-sm font-semibold text-gray-900">Proposal Description</h3>
-              <div className="min-h-[100px] rounded border-2 border-dashed border-gray-200 bg-gray-50 p-4">
-                <p className="text-sm text-gray-500">
+              <h3 className="mb-2 text-sm font-semibold text-card-foreground">Proposal Description</h3>
+              <div className="min-h-[100px] rounded border-2 border-dashed border-border bg-muted p-4">
+                <p className="text-sm text-muted-foreground">
                   Proposal description will be displayed here. This will contain detailed information
                   about the planning application proposal.
                 </p>
@@ -21,12 +21,12 @@ export function ApplicationSections() {
 
             {/* Planning Officer */}
             <div>
-              <h3 className="mb-2 text-sm font-semibold text-gray-900">Planning Officer</h3>
-              <div className="flex items-center gap-3 rounded border-2 border-dashed border-gray-200 bg-gray-50 p-4">
+              <h3 className="mb-2 text-sm font-semibold text-card-foreground">Planning Officer</h3>
+              <div className="flex items-center gap-3 rounded border-2 border-dashed border-border bg-muted p-4">
                 {/* Avatar Placeholder */}
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted-foreground/20">
                   <svg
-                    className="h-6 w-6 text-gray-600"
+                    className="h-6 w-6 text-muted-foreground"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -40,8 +40,8 @@ export function ApplicationSections() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Officer Name</p>
-                  <p className="text-xs text-gray-500">Planning Officer</p>
+                  <p className="text-sm font-medium text-card-foreground">Officer Name</p>
+                  <p className="text-xs text-muted-foreground">Planning Officer</p>
                 </div>
               </div>
             </div>
@@ -55,11 +55,11 @@ export function ApplicationSections() {
         className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="documents-heading"
       >
-        <h2 id="documents-heading" className="text-2xl font-bold text-gray-900">
+        <h2 id="documents-heading" className="text-xl font-bold text-foreground">
           Documents
         </h2>
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <p className="text-gray-600">
+        <div className="rounded-lg border border-border bg-card p-6">
+          <p className="text-muted-foreground">
             Document list and management will be displayed here. Users can view and download
             application documents.
           </p>
@@ -73,11 +73,11 @@ export function ApplicationSections() {
         className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="assessment-heading"
       >
-        <h2 id="assessment-heading" className="text-2xl font-bold text-gray-900">
+        <h2 id="assessment-heading" className="text-xl font-bold text-foreground">
           Assessment
         </h2>
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <p className="text-gray-600">
+        <div className="rounded-lg border border-border bg-card p-6">
+          <p className="text-muted-foreground">
             Planning assessment details, conditions, and recommendations will be shown here.
           </p>
         </div>
@@ -90,11 +90,11 @@ export function ApplicationSections() {
         className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="history-heading"
       >
-        <h2 id="history-heading" className="text-2xl font-bold text-gray-900">
+        <h2 id="history-heading" className="text-xl font-bold text-foreground">
           History
         </h2>
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <p className="text-gray-600">
+        <div className="rounded-lg border border-border bg-card p-6">
+          <p className="text-muted-foreground">
             Application history timeline and status changes will be displayed here.
           </p>
         </div>
@@ -107,11 +107,11 @@ export function ApplicationSections() {
         className="scroll-mt-[--spacing-sticky-header-offset] space-y-4"
         aria-labelledby="comments-heading"
       >
-        <h2 id="comments-heading" className="text-2xl font-bold text-gray-900">
+        <h2 id="comments-heading" className="text-xl font-bold text-foreground">
           Comments
         </h2>
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <p className="text-gray-600">
+        <div className="rounded-lg border border-border bg-card p-6">
+          <p className="text-muted-foreground">
             Internal comments and notes about the application will appear here.
           </p>
         </div>

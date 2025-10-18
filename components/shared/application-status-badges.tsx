@@ -10,7 +10,7 @@ export function ApplicationStatusBadges({
   size = 'default',
 }: ApplicationStatusBadgesProps) {
   const sizeClasses = {
-    default: 'text-sm px-3 py-1',
+    default: 'text-base px-3 py-1',
     compact: 'text-xs px-3 py-1',
   }
 

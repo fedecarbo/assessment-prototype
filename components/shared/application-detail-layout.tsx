@@ -133,19 +133,19 @@ export function ApplicationDetailLayout({
   return (
     <div className="relative">
       {/* Hero Section */}
-      <div ref={heroRef} id="overview" className="bg-white">
+      <div ref={heroRef} id="overview" className="bg-background">
         <div className="mx-auto max-w-[1100px] px-4 py-8">
           <div className="flex gap-8">
             {/* Left: Application Details */}
             <div className="flex flex-1 flex-col justify-center space-y-4">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{address}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{address}</h1>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-medium text-gray-600">Application reference:</span>
-                  <span className="text-base text-gray-900">{reference}</span>
+                  <span className="text-base font-medium text-muted-foreground">Application reference:</span>
+                  <span className="text-base text-foreground">{reference}</span>
                 </div>
 
                 <ApplicationStatusBadges status={status} daysToDecision={daysToDecision} />
@@ -154,10 +154,10 @@ export function ApplicationDetailLayout({
 
             {/* Right: Map Placeholder */}
             <div className="w-[550px]">
-              <div className="aspect-square w-full rounded-lg border-2 border-dashed border-gray-300 bg-gray-100 flex items-center justify-center">
+              <div className="aspect-square w-full rounded-lg border-2 border-dashed border-border bg-muted flex items-center justify-center">
                 <div className="text-center">
                   <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
+                    className="mx-auto h-12 w-12 text-muted-foreground"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -170,7 +170,7 @@ export function ApplicationDetailLayout({
                       d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
                     />
                   </svg>
-                  <p className="mt-2 text-sm text-gray-500">Map placeholder</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Map placeholder</p>
                 </div>
               </div>
             </div>
@@ -182,15 +182,15 @@ export function ApplicationDetailLayout({
       <div className="sticky top-0 z-40">
         {/* Condensed Header - Appears when hero collapses */}
         <div
-          className={`bg-white ${
+          className={`bg-background ${
             isHeroCollapsed ? '' : 'pointer-events-none h-0 overflow-hidden opacity-0'
           }`}
         >
           <div className="mx-auto max-w-[1100px] px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <h2 className="text-lg font-semibold text-gray-900">{address}</h2>
-                <span className="text-base text-gray-600">{reference}</span>
+                <h2 className="text-base font-bold text-foreground">{address}</h2>
+                <span className="text-base text-muted-foreground">{reference}</span>
               </div>
               <ApplicationStatusBadges
                 status={status}
@@ -202,7 +202,7 @@ export function ApplicationDetailLayout({
         </div>
 
         {/* Section Navigation */}
-        <div className="border-b border-gray-200 bg-white">
+        <div className="border-b border-border bg-background">
         <div className="mx-auto max-w-[1100px] px-4">
           <nav className="flex gap-6" aria-label="Application sections" role="navigation">
             {sections.map((section) => (
@@ -213,10 +213,10 @@ export function ApplicationDetailLayout({
                   e.preventDefault()
                   handleNavClick(section.id)
                 }}
-                className={`relative border-b-2 py-3 text-sm font-medium transition-colors ${
+                className={`relative border-b-2 py-3 text-base transition-colors ${
                   activeSection === section.id
                     ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
+                    : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
                 }`}
                 aria-current={activeSection === section.id ? 'page' : undefined}
               >
