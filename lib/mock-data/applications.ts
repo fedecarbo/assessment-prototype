@@ -21,6 +21,62 @@ export const mockApplications: PlanningApplication[] = [
       name: 'Federico Carbo',
     },
     requestedServices: ['written-advice', 'site-visit', 'meeting'],
+    constraints: [
+      {
+        id: 'c1',
+        type: 'conservation-area',
+        label: 'Conservation Area',
+        status: 'applies',
+        details: 'Bermondsey Street Conservation Area',
+      },
+      {
+        id: 'c2',
+        type: 'listed-building',
+        label: 'Listed Building',
+        status: 'nearby',
+        details: 'Grade II listed building within 50m',
+      },
+      {
+        id: 'c3',
+        type: 'tpo',
+        label: 'Tree Preservation Orders',
+        status: 'does-not-apply',
+      },
+      {
+        id: 'c4',
+        type: 'flood-risk',
+        label: 'Flood Risk',
+        status: 'does-not-apply',
+        value: 'Zone 1',
+      },
+      {
+        id: 'c5',
+        type: 'green-belt',
+        label: 'Green Belt / MOL',
+        status: 'does-not-apply',
+      },
+      {
+        id: 'c6',
+        type: 'article-4',
+        label: 'Article 4 Direction',
+        status: 'applies',
+        details: 'Modified Direction 1 - CAZ',
+      },
+      {
+        id: 'c7',
+        type: 'article-4',
+        label: 'Article 4 Direction',
+        status: 'applies',
+        details: 'Modified Direction 2 - KIBAs and WNCBC',
+      },
+      {
+        id: 'c8',
+        type: 'archaeology',
+        label: 'Archaeological Priority Area',
+        status: 'applies',
+        details: 'Tier 2 - Bermondsey Abbey',
+      },
+    ],
     documents: [
       // Drawings
       { id: 'd1', name: 'Proposed Site Plan', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '2.4 MB', fileType: 'pdf' as const },

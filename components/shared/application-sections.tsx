@@ -3,6 +3,7 @@ import { RequestedServices } from './requested-services'
 import { ApplicationMetadata } from './application-metadata'
 import { ApplicationStageTimeline } from './application-stage-timeline'
 import { DocumentList } from './document-list'
+import { ConstraintsSummary } from './constraints-summary'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
 interface ApplicationSectionsProps {
@@ -62,55 +63,66 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
 
       <hr className="border-border" />
 
-      {/* Assessment Section */}
+      {/* Constraints Section */}
       <section
-        id="assessment"
+        id="constraints"
         className="scroll-mt-[160px] pb-8 pt-8"
-        aria-labelledby="assessment-heading"
+        aria-labelledby="constraints-heading"
       >
-        <h2 id="assessment-heading" className="text-xl font-bold text-foreground mb-4">
-          Assessment
+        <h2 id="constraints-heading" className="text-xl font-bold text-foreground mb-4">
+          Constraints
+        </h2>
+        <ConstraintsSummary constraints={application.constraints} applicationId={application.id} />
+      </section>
+
+      <hr className="border-border" />
+
+      {/* Site History Section */}
+      <section
+        id="site-history"
+        className="scroll-mt-[160px] pb-8 pt-8"
+        aria-labelledby="site-history-heading"
+      >
+        <h2 id="site-history-heading" className="text-xl font-bold text-foreground mb-4">
+          Site history
         </h2>
         <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
           <p className="text-sm text-muted-foreground">
-            Planning assessment details, conditions, and recommendations will be shown here.
+            Previous planning applications and site history will be displayed here.
           </p>
         </div>
       </section>
 
       <hr className="border-border" />
 
-      {/* History Section */}
+      {/* Consultation Section */}
       <section
-        id="history"
+        id="consultation"
         className="scroll-mt-[160px] pb-8 pt-8"
-        aria-labelledby="history-heading"
+        aria-labelledby="consultation-heading"
       >
-        <h2 id="history-heading" className="text-xl font-bold text-foreground mb-4">
-          History
+        <h2 id="consultation-heading" className="text-xl font-bold text-foreground mb-4">
+          Consultation
         </h2>
-        <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
-          <p className="text-sm text-muted-foreground">
-            Application history timeline and status changes will be displayed here.
-          </p>
+
+        {/* Consultees Subsection */}
+        <div className="mb-6">
+          <h3 className="text-base font-semibold text-foreground mb-3">Consultees</h3>
+          <div className="min-h-[200px] border-2 border-dashed border-border bg-muted p-4">
+            <p className="text-sm text-muted-foreground">
+              Statutory consultees and consultation responses will be displayed here.
+            </p>
+          </div>
         </div>
-      </section>
 
-      <hr className="border-border" />
-
-      {/* Comments Section */}
-      <section
-        id="comments"
-        className="scroll-mt-[160px] pb-8 pt-8"
-        aria-labelledby="comments-heading"
-      >
-        <h2 id="comments-heading" className="text-xl font-bold text-foreground mb-4">
-          Comments
-        </h2>
-        <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
-          <p className="text-sm text-muted-foreground">
-            Internal comments and notes about the application will appear here.
-          </p>
+        {/* Neighbours Subsection */}
+        <div>
+          <h3 className="text-base font-semibold text-foreground mb-3">Neighbours</h3>
+          <div className="min-h-[200px] border-2 border-dashed border-border bg-muted p-4">
+            <p className="text-sm text-muted-foreground">
+              Neighbour notifications and responses will appear here.
+            </p>
+          </div>
         </div>
       </section>
     </>

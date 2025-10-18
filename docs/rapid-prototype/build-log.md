@@ -228,3 +228,51 @@ Track all features, components, and pages built by Forge (Builder).
 **Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [application-sections.tsx](components/shared/application-sections.tsx)
 
 ---
+
+## 2025-10-18 | Section Reorganization & Constraints Summary
+
+**Key Decisions:**
+- **Section changes:** Removed Assessment and Comments sections
+- **Renamed:** History → Site history
+- **Merged:** Consultees + Neighbours → Consultation (with two subsections)
+- **New section order:** Overview, Application Progress, Documents, Constraints, Site history, Consultation
+
+**Component:** ConstraintsSummary ([components/shared/constraints-summary.tsx](components/shared/constraints-summary.tsx))
+
+**Constraints Section - Final Design:**
+- **Layout:** Two-column split (33% map + 66% detailed list)
+  - Left: Square constraints map placeholder (aspect-square, dashed border)
+  - Right: Vertical list with icons, grouped by constraint type
+- **Only shows identified constraints** (applies/nearby/partial status) - does not display "does not apply" items
+- **Grouping logic:** Multiple instances of same constraint type grouped under single heading
+  - Example: "Article 4 Direction" with 2 sub-items listed below
+- **Icons:** Lucide React icons (20px, muted color) for each constraint type:
+  - Building2 (Conservation Area), Landmark (Listed Building), TreeDeciduous (TPO)
+  - Droplets (Flood Risk), Trees (Green Belt), FileText (Article 4), Mountain (Archaeology)
+- **Dividers:** Horizontal rules between each constraint type (not after last item)
+- **Bottom link:** "View full constraints report" for detailed page
+
+**Schema extensions:**
+- `Constraint` interface: `id`, `type`, `label`, `status`, `details?`, `value?`
+- Added `id` field to support multiple instances of same constraint type
+- `constraints?: Constraint[]` added to `PlanningApplication`
+
+**Mock data:** App 1 includes 5 identified constraints (8 total, 3 hidden as "does not apply"):
+- Archaeological Priority Area — Tier 2 - Bermondsey Abbey
+- Article 4 Direction (2 instances):
+  - Modified Direction 1 - CAZ
+  - Modified Direction 2 - KIBAs and WNCBC
+- Conservation Area — Bermondsey Street Conservation Area
+- Listed Building — Grade II listed building within 50m
+
+**Design iterations:**
+1. Initial: Two-column grid with status badges
+2. Simplified: Removed badges, bullet list format
+3. Grid with icons: Two-column grid (lg:grid-cols-2) with Lucide icons
+4. Final: 33/66 split with map placeholder + grouped vertical list with dividers
+
+**Files created:** [constraints-summary.tsx](components/shared/constraints-summary.tsx)
+
+**Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [application-sections.tsx](components/shared/application-sections.tsx), [application-detail-layout.tsx](components/shared/application-detail-layout.tsx)
+
+---

@@ -22,9 +22,9 @@ const sections: Section[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'progress', label: 'Application Progress' },
   { id: 'documents', label: 'Documents' },
-  { id: 'assessment', label: 'Assessment' },
-  { id: 'history', label: 'History' },
-  { id: 'comments', label: 'Comments' },
+  { id: 'constraints', label: 'Constraints' },
+  { id: 'site-history', label: 'Site history' },
+  { id: 'consultation', label: 'Consultation' },
 ]
 
 // IntersectionObserver configuration constants

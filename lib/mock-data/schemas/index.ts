@@ -58,6 +58,15 @@ export interface ReviewStage {
 
 export type RequestedService = 'written-advice' | 'site-visit' | 'meeting';
 
+export interface Constraint {
+  id: string; // Unique identifier to allow multiple instances of same type
+  type: 'conservation-area' | 'listed-building' | 'tpo' | 'flood-risk' | 'green-belt' | 'article-4' | 'archaeology';
+  label: string;
+  status: 'applies' | 'does-not-apply' | 'nearby' | 'partial';
+  details?: string;
+  value?: string; // For specific values like "Zone 1" or "Grade II"
+}
+
 export interface Document {
   id: string;
   name: string;
@@ -86,6 +95,7 @@ export interface PlanningApplication {
   assignedOfficer?: AssignedOfficer;
   requestedServices?: RequestedService[];
   documents?: Document[];
+  constraints?: Constraint[];
   // Stage workflow tracking (legacy - kept for backward compatibility)
   validationStatus: 'pending' | 'validated' | 'rejected';
   validationDate?: string;
