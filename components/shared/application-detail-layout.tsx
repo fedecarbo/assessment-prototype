@@ -10,6 +10,8 @@ interface ApplicationDetailLayoutProps {
   reference: string
   status: string
   daysToDecision: number
+  documentsCount?: number
+  constraintsCount?: number
   children: ReactNode
 }
 
@@ -18,14 +20,16 @@ interface Section {
   label: string
 }
 
-const sections: Section[] = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'progress', label: 'Application Progress' },
-  { id: 'documents', label: 'Documents' },
-  { id: 'constraints', label: 'Constraints' },
-  { id: 'site-history', label: 'Site history' },
-  { id: 'consultation', label: 'Consultation' },
-]
+function getSections(documentsCount?: number, constraintsCount?: number): Section[] {
+  return [
+    { id: 'overview', label: 'Overview' },
+    { id: 'progress', label: 'Application Progress' },
+    { id: 'documents', label: documentsCount ? `Documents (${documentsCount})` : 'Documents' },
+    { id: 'constraints', label: constraintsCount ? `Constraints (${constraintsCount})` : 'Constraints' },
+    { id: 'site-history', label: 'Site history' },
+    { id: 'consultation', label: 'Consultation' },
+  ]
+}
 
 // IntersectionObserver configuration constants
 const HERO_COLLAPSE_THRESHOLD_PX = 80
@@ -39,12 +43,15 @@ export function ApplicationDetailLayout({
   reference,
   status,
   daysToDecision,
+  documentsCount,
+  constraintsCount,
   children,
 }: ApplicationDetailLayoutProps) {
   const [isHeroCollapsed, setIsHeroCollapsed] = useState(false)
   const [activeSection, setActiveSection] = useState<string>('overview')
   const heroRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const sections = getSections(documentsCount, constraintsCount)
 
   // Hero collapse effect using IntersectionObserver
   useEffect(() => {

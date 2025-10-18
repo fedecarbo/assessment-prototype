@@ -19,6 +19,12 @@ export default async function ApplicationDetailsPage({ params }: ApplicationDeta
     return <div>Application not found</div>
   }
 
+  // Calculate counts
+  const documentsCount = application.documents?.length || 0
+  const constraintsCount = application.constraints?.filter(
+    (c) => c.status === 'applies' || c.status === 'nearby' || c.status === 'partial'
+  ).length || 0
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -29,6 +35,8 @@ export default async function ApplicationDetailsPage({ params }: ApplicationDeta
         reference={application.reference}
         status="In assessment"
         daysToDecision={12}
+        documentsCount={documentsCount}
+        constraintsCount={constraintsCount}
       >
         <ApplicationSections application={application} />
       </ApplicationDetailLayout>
