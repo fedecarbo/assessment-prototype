@@ -56,6 +56,8 @@ export interface ReviewStage {
   tasks: StageTask[];
 }
 
+export type RequestedService = 'written-advice' | 'site-visit' | 'meeting';
+
 export interface PlanningApplication {
   id: string;
   reference: string;
@@ -72,6 +74,7 @@ export interface PlanningApplication {
   isPublic: boolean;
   assignedTo?: string;
   assignedOfficer?: AssignedOfficer;
+  requestedServices?: RequestedService[];
   // Stage workflow tracking (legacy - kept for backward compatibility)
   validationStatus: 'pending' | 'validated' | 'rejected';
   validationDate?: string;

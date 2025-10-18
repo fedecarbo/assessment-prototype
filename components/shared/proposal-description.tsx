@@ -15,7 +15,7 @@ export function ProposalDescription({ description, maxLines = 3 }: ProposalDescr
 
   return (
     <div>
-      <h3 className="mb-3 text-base font-semibold text-foreground">Proposal</h3>
+      <h3 className="mb-3 text-base font-semibold text-foreground">Proposal description</h3>
       <div className="space-y-3">
         <p
           className={`text-base leading-relaxed text-foreground ${

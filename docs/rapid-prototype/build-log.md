@@ -1057,3 +1057,113 @@ Transformed stage timeline from card-based layout to flat, Airbnb-style list wit
 **Status:** Flat timeline layout complete. Removed card styling in favor of clean list with bottom borders. Added contextual action buttons for active stages ("Check and assess") and text links for completed stages ("View or change validation"). No clickable card behavior - actions are explicit and purposeful.
 
 ---
+
+## 2025-10-18 | Overview Section - Requested Services
+
+**Built by:** Forge (Builder)
+
+### Components Created
+
+**RequestedServices** ([components/shared/requested-services.tsx](components/shared/requested-services.tsx))
+- Displays requested services as inline badges
+- Three service types supported:
+  - Written advice
+  - Site visit
+  - Meeting
+- Clean badge layout with muted background
+- Horizontal flex layout with gap spacing
+- Conditional rendering (only shows if services exist)
+- Full dark mode compatibility
+
+### Schema Updates
+
+**PlanningApplication Interface** ([lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts))
+- Added `RequestedService` type: `'written-advice' | 'site-visit' | 'meeting'`
+- Added `requestedServices?: RequestedService[]` field to PlanningApplication
+
+### Mock Data Updates
+
+**Applications Data** ([lib/mock-data/applications.ts](lib/mock-data/applications.ts))
+- Application 1 (PA-2025-001): Added all three requested services (written-advice, site-visit, meeting)
+
+### Component Updates
+
+**ProposalDescription** ([components/shared/proposal-description.tsx](components/shared/proposal-description.tsx))
+- Renamed heading from "Proposal" to "Proposal description"
+
+**ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx))
+- Integrated RequestedServices component below Proposal description
+- Added `space-y-6` to left column for consistent vertical spacing
+- Conditional rendering based on `requestedServices` field
+
+### Visual Design
+
+- Badge styling: Muted background (`bg-muted`), rounded-sm corners
+- Inline layout with flex-wrap for responsive stacking
+- 2-unit gap between service badges
+- Text size: base (consistent with proposal description)
+- Clean, minimal presentation matching Airbnb-style flat design
+
+**Files Created:**
+- [components/shared/requested-services.tsx](components/shared/requested-services.tsx)
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts)
+- [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
+- [components/shared/proposal-description.tsx](components/shared/proposal-description.tsx)
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+
+**Status:** Overview section enhanced with "Requested services" display. Shows three service types (Written advice, Site visit, Meeting) as inline badges below proposal description. Clean, flat design consistent with existing UX patterns.
+
+---
+
+## 2025-10-18 | Border Radius Consistency - Sharp Corners
+
+**Built by:** Forge (Builder)
+
+### Visual Refinement
+
+Removed all border radius (rounded corners) from labels, badges, and containers across the application to maintain consistent sharp corner styling.
+
+**Components Updated:**
+
+1. **RequestedServices** ([components/shared/requested-services.tsx](components/shared/requested-services.tsx))
+   - Service badges: Removed `rounded-sm`, now sharp corners
+
+2. **ApplicationMetadata** ([components/shared/application-metadata.tsx](components/shared/application-metadata.tsx))
+   - Public portal badge: Removed `rounded`
+   - Application type badge: Removed `rounded`
+
+3. **ApplicationTimeline** ([components/shared/application-timeline.tsx](components/shared/application-timeline.tsx))
+   - Status badges (Active/Approaching): Removed `rounded`
+
+4. **ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx))
+   - Placeholder boxes: Removed `rounded` from all dashed border placeholders
+
+5. **ApplicationDetailLayout** ([components/shared/application-detail-layout.tsx](components/shared/application-detail-layout.tsx))
+   - Map placeholder: Removed `rounded-lg`
+
+6. **ThemeToggle** ([components/shared/theme-toggle.tsx](components/shared/theme-toggle.tsx))
+   - Toggle button: Removed `rounded-md`
+
+**What Remains Rounded:**
+- Timeline circle nodes (`rounded-full`) - intentional design element for timeline visualization
+- UI components (avatar, dropdown menus, etc.) - Shadcn defaults maintained for interactive elements
+
+**Visual Consistency:**
+- All labels and badges now have sharp corners
+- Consistent with rectangular badge design established earlier
+- Clean, professional government-appropriate aesthetic
+- Placeholders and content containers maintain sharp edges
+
+**Files Modified:**
+- [components/shared/requested-services.tsx](components/shared/requested-services.tsx)
+- [components/shared/application-metadata.tsx](components/shared/application-metadata.tsx)
+- [components/shared/application-timeline.tsx](components/shared/application-timeline.tsx)
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+- [components/shared/application-detail-layout.tsx](components/shared/application-detail-layout.tsx)
+- [components/shared/theme-toggle.tsx](components/shared/theme-toggle.tsx)
+
+**Status:** Border radius removed from all labels, badges, and containers. Application now maintains consistent sharp corner styling throughout, with rounded corners only on intentional circular elements (timeline nodes) and base UI components.
+
+---

@@ -127,7 +127,7 @@ export function ApplicationTimeline({ validFrom, consultationEnd, expiryDate }: 
                 <div className="flex items-center gap-2 mb-1">
                   <div className={`text-sm ${styles.text}`}>{milestone.label}</div>
                   {styles.badge && (
-                    <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs ${styles.badge.className}`}>
+                    <span className={`inline-flex items-center px-2 py-0.5 text-xs ${styles.badge.className}`}>
                       {styles.badge.text}
                     </span>
                   )}

@@ -20,6 +20,7 @@ export const mockApplications: PlanningApplication[] = [
       id: 'officer-fc',
       name: 'Federico Carbo',
     },
+    requestedServices: ['written-advice', 'site-visit', 'meeting'],
     // Stage workflow - validated, both consultation and assessment active
     validationStatus: 'validated',
     validationDate: '2025-10-06',

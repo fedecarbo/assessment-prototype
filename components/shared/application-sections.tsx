@@ -1,4 +1,5 @@
 import { ProposalDescription } from './proposal-description'
+import { RequestedServices } from './requested-services'
 import { ApplicationMetadata } from './application-metadata'
 import { ApplicationStageTimeline } from './application-stage-timeline'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
@@ -13,9 +14,14 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
       {/* Overview Details - Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-8">
         {/* Left Column: Main Content (66%) */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-6">
           {/* Proposal Description */}
           <ProposalDescription description={application.description} />
+
+          {/* Requested Services */}
+          {application.requestedServices && (
+            <RequestedServices services={application.requestedServices} />
+          )}
         </div>
 
         {/* Right Column: Metadata Sidebar (33%) */}
@@ -49,7 +55,7 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         <h2 id="documents-heading" className="text-xl font-bold text-foreground">
           Documents
         </h2>
-        <div className="min-h-[300px] rounded border-2 border-dashed border-border bg-muted p-4">
+        <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
           <p className="text-sm text-muted-foreground">
             Document list and management will be displayed here. Users can view and download
             application documents.
@@ -67,7 +73,7 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         <h2 id="assessment-heading" className="text-xl font-bold text-foreground">
           Assessment
         </h2>
-        <div className="min-h-[300px] rounded border-2 border-dashed border-border bg-muted p-4">
+        <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
           <p className="text-sm text-muted-foreground">
             Planning assessment details, conditions, and recommendations will be shown here.
           </p>
@@ -84,7 +90,7 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         <h2 id="history-heading" className="text-xl font-bold text-foreground">
           History
         </h2>
-        <div className="min-h-[300px] rounded border-2 border-dashed border-border bg-muted p-4">
+        <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
           <p className="text-sm text-muted-foreground">
             Application history timeline and status changes will be displayed here.
           </p>
@@ -101,7 +107,7 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         <h2 id="comments-heading" className="text-xl font-bold text-foreground">
           Comments
         </h2>
-        <div className="min-h-[300px] rounded border-2 border-dashed border-border bg-muted p-4">
+        <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
           <p className="text-sm text-muted-foreground">
             Internal comments and notes about the application will appear here.
           </p>

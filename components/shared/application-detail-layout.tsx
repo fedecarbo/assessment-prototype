@@ -155,7 +155,7 @@ export function ApplicationDetailLayout({
 
             {/* Right: Map Placeholder */}
             <div className="w-[550px]">
-              <div className="aspect-square w-full rounded-lg border-2 border-dashed border-border bg-muted flex items-center justify-center">
+              <div className="aspect-square w-full border-2 border-dashed border-border bg-muted flex items-center justify-center">
                 <div className="text-center">
                   <svg
                     className="mx-auto h-12 w-12 text-muted-foreground"
