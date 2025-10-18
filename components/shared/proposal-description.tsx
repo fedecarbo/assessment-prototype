@@ -27,7 +27,7 @@ export function ProposalDescription({ description, maxLines = 3 }: ProposalDescr
         {needsReadMore && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-sm font-medium text-primary hover:text-foreground hover:underline transition-colors"
+            className="text-sm font-medium text-primary hover:text-foreground underline underline-offset-4 transition-colors"
           >
             {isExpanded ? 'Show less' : 'Show more'}
           </button>

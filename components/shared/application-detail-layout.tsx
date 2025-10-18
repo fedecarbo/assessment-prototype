@@ -204,9 +204,9 @@ export function ApplicationDetailLayout({
                   e.preventDefault()
                   handleNavClick(section.id)
                 }}
-                className={`relative border-b-2 py-3 text-base transition-colors ${
+                className={`relative border-b-[3px] py-3 text-base transition-colors ${
                   activeSection === section.id
-                    ? 'border-primary text-foreground font-medium'
+                    ? 'border-primary text-foreground'
                     : 'border-transparent text-primary hover:underline'
                 }`}
                 aria-current={activeSection === section.id ? 'page' : undefined}

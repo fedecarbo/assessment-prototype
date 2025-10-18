@@ -31,7 +31,7 @@ export function ApplicationMetadata({
               <span className="text-base font-medium text-foreground">
                 {assignedOfficer.name}
               </span>
-              <button className="text-sm text-primary hover:text-foreground hover:underline transition-colors text-left">
+              <button className="text-sm text-primary hover:text-foreground underline underline-offset-4 transition-colors text-left">
                 change
               </button>
             </div>

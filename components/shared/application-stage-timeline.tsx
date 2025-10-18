@@ -66,7 +66,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                 <h4 className="text-base font-semibold mb-2">Validation</h4>
                 <Link
                   href={`/application/${application.id}/validation`}
-                  className="text-base text-primary hover:text-foreground transition-colors"
+                  className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors"
                 >
                   {application.validation.status === 'validated' ? 'View or change validation' : 'Check and validate'}
                 </Link>
@@ -103,7 +103,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                 <h4 className="text-base font-semibold mb-2">Consultation</h4>
                 <Link
                   href={`/application/${application.id}/consultation`}
-                  className="text-base text-primary hover:text-foreground transition-colors"
+                  className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors"
                 >
                   {application.consultation.status === 'completed' ? 'View or change consultation' : 'Check and consult'}
                 </Link>
@@ -140,7 +140,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                 <h4 className="text-base font-semibold mb-2">Assessment</h4>
                 <Link
                   href={`/application/${application.id}/assessment`}
-                  className="text-base text-primary hover:text-foreground transition-colors"
+                  className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors"
                 >
                   {application.assessment.status === 'completed' ? 'View or change assessment' : 'Check and assess'}
                 </Link>
@@ -173,7 +173,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                 {application.assessment.status === 'completed' ? (
                   <Link
                     href={`/application/${application.id}/review`}
-                    className="text-base text-primary hover:text-foreground transition-colors"
+                    className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors"
                   >
                     {application.review.status === 'completed' ? 'View or change decision' : 'Review and decide'}
                   </Link>

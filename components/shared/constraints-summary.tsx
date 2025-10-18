@@ -124,7 +124,7 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
           <div>
             <Link
               href={`/application/${applicationId}/constraints`}
-              className="text-sm text-primary hover:underline"
+              className="text-base text-primary underline underline-offset-4"
             >
               View full constraints report
             </Link>
@@ -136,7 +136,7 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
           <div>
             <Link
               href={`/application/${applicationId}/constraints`}
-              className="text-sm text-primary hover:underline"
+              className="text-base text-primary underline underline-offset-4"
             >
               View full constraints report
             </Link>

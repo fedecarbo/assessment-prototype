@@ -85,7 +85,7 @@ export function DocumentList({ documents }: DocumentListProps) {
                       <div className="flex-1 min-w-0">
                         <a
                           href="#"
-                          className="text-base font-medium text-primary hover:text-foreground hover:underline transition-colors inline-block mb-1.5"
+                          className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors inline-block mb-1.5"
                         >
                           {doc.name}
                         </a>
