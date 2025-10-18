@@ -21,6 +21,23 @@ export const mockApplications: PlanningApplication[] = [
       name: 'Federico Carbo',
     },
     requestedServices: ['written-advice', 'site-visit', 'meeting'],
+    documents: [
+      // Drawings
+      { id: 'd1', name: 'Proposed Site Plan', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '2.4 MB', fileType: 'pdf' as const },
+      { id: 'd2', name: 'Existing Floor Plans', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '1.8 MB', fileType: 'pdf' as const },
+      { id: 'd3', name: 'Proposed Floor Plans', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '2.1 MB', fileType: 'pdf' as const },
+      { id: 'd4', name: 'Elevation Drawings - South & West', category: 'drawings' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '1.5 MB', fileType: 'pdf' as const },
+      // Supporting documents
+      { id: 's1', name: 'Pre-Application Form', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '456 KB', fileType: 'pdf' as const },
+      { id: 's2', name: 'Design & Access Statement', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '3.2 MB', fileType: 'pdf' as const },
+      { id: 's3', name: 'Planning Statement', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '1.1 MB', fileType: 'pdf' as const },
+      { id: 's4', name: 'Heritage Impact Assessment', category: 'supporting' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-07', fileSize: '2.8 MB', fileType: 'pdf' as const },
+      // Evidence
+      { id: 'e1', name: 'Existing Rear Elevation Photo', category: 'evidence' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '3.5 MB', fileType: 'jpg' as const },
+      { id: 'e2', name: 'Garden Context Photo', category: 'evidence' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '4.1 MB', fileType: 'jpg' as const },
+      { id: 'e3', name: 'Street View Photo', category: 'evidence' as const, uploadedBy: 'Green Development Ltd', uploadedDate: '2025-10-06', fileSize: '3.8 MB', fileType: 'jpg' as const },
+      { id: 'e4', name: 'Neighbor Context Photos', category: 'evidence' as const, uploadedBy: 'Federico Carbo', uploadedDate: '2025-10-08', fileSize: '5.2 MB', fileType: 'jpg' as const },
+    ],
     // Stage workflow - validated, both consultation and assessment active
     validationStatus: 'validated',
     validationDate: '2025-10-06',

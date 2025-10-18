@@ -2,6 +2,7 @@ import { ProposalDescription } from './proposal-description'
 import { RequestedServices } from './requested-services'
 import { ApplicationMetadata } from './application-metadata'
 import { ApplicationStageTimeline } from './application-stage-timeline'
+import { DocumentList } from './document-list'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
 interface ApplicationSectionsProps {
@@ -56,12 +57,7 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         <h2 id="documents-heading" className="text-xl font-bold text-foreground mb-4">
           Documents
         </h2>
-        <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
-          <p className="text-sm text-muted-foreground">
-            Document list and management will be displayed here. Users can view and download
-            application documents.
-          </p>
-        </div>
+        <DocumentList documents={application.documents} />
       </section>
 
       <hr className="border-border" />

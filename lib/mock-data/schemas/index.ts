@@ -58,6 +58,16 @@ export interface ReviewStage {
 
 export type RequestedService = 'written-advice' | 'site-visit' | 'meeting';
 
+export interface Document {
+  id: string;
+  name: string;
+  category: 'drawings' | 'supporting' | 'evidence';
+  uploadedBy: string;
+  uploadedDate: string;
+  fileSize: string;
+  fileType: 'pdf' | 'jpg' | 'png' | 'doc' | 'docx';
+}
+
 export interface PlanningApplication {
   id: string;
   reference: string;
@@ -75,6 +85,7 @@ export interface PlanningApplication {
   assignedTo?: string;
   assignedOfficer?: AssignedOfficer;
   requestedServices?: RequestedService[];
+  documents?: Document[];
   // Stage workflow tracking (legacy - kept for backward compatibility)
   validationStatus: 'pending' | 'validated' | 'rejected';
   validationDate?: string;

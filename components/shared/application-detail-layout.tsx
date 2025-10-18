@@ -29,8 +29,8 @@ const sections: Section[] = [
 
 // IntersectionObserver configuration constants
 const HERO_COLLAPSE_THRESHOLD_PX = 80
-const SCROLLSPY_TOP_OFFSET_PX = 120
-const SCROLLSPY_BOTTOM_OFFSET_PERCENT = 50
+const SCROLLSPY_TOP_OFFSET_PX = 161 // Just below scroll-mt-[160px] - section must reach this point to activate
+const SCROLLSPY_BOTTOM_OFFSET_PERCENT = 75 // Increased - section must be well into viewport
 const SCROLLSPY_THRESHOLDS = [0, 0.25, 0.5, 0.75, 1]
 
 export function ApplicationDetailLayout({
