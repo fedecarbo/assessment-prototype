@@ -250,7 +250,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           </div>
 
           {/* Content */}
-          <div className="flex-1">
+          <div className="flex-1 pb-8">
             <div className="flex items-center gap-2">
               <h4 className="text-base font-semibold">Expires {formatDate(application.expiryDate)}</h4>
               <Link

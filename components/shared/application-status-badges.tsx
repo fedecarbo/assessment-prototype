@@ -1,3 +1,5 @@
+import { Badge } from '@/components/ui/badge'
+
 interface ApplicationStatusBadgesProps {
   status: string
   daysToDecision: number
@@ -9,21 +11,16 @@ export function ApplicationStatusBadges({
   daysToDecision,
   size = 'default',
 }: ApplicationStatusBadgesProps) {
-  const sizeClasses = {
-    default: 'text-base px-3 py-1',
-    compact: 'text-xs px-3 py-1',
-  }
-
-  const textSize = sizeClasses[size]
+  const badgeSize = size === 'compact' ? 'small' : 'default'
 
   return (
     <div className="flex items-center gap-2">
-      <span className={`bg-blue-100 ${textSize} text-blue-800`}>
+      <Badge variant="blue" size={badgeSize}>
         {status}
-      </span>
-      <span className={`bg-yellow-100 ${textSize} text-yellow-800`}>
+      </Badge>
+      <Badge variant="yellow" size={badgeSize}>
         {daysToDecision} days to determination date
-      </span>
+      </Badge>
     </div>
   )
 }

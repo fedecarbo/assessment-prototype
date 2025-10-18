@@ -12,7 +12,7 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
   return (
     <>
       {/* Overview Details - Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-8 pt-8">
         {/* Left Column: Main Content (66%) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Proposal Description */}
@@ -39,20 +39,21 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
       {/* Application Progress Section */}
       <section
         id="progress"
-        className="scroll-mt-[160px] space-y-4 pb-8 pt-8"
+        className="scroll-mt-[160px] pb-8 pt-8"
         aria-labelledby="progress-heading"
       >
         <ApplicationStageTimeline application={application} />
-        <hr className="border-border" />
       </section>
+
+      <hr className="border-border" />
 
       {/* Documents Section */}
       <section
         id="documents"
-        className="scroll-mt-[160px] space-y-4 pb-8 pt-8"
+        className="scroll-mt-[160px] pb-8 pt-8"
         aria-labelledby="documents-heading"
       >
-        <h2 id="documents-heading" className="text-xl font-bold text-foreground">
+        <h2 id="documents-heading" className="text-xl font-bold text-foreground mb-4">
           Documents
         </h2>
         <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
@@ -61,16 +62,17 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
             application documents.
           </p>
         </div>
-        <hr className="border-border" />
       </section>
+
+      <hr className="border-border" />
 
       {/* Assessment Section */}
       <section
         id="assessment"
-        className="scroll-mt-[160px] space-y-4 pb-8 pt-8"
+        className="scroll-mt-[160px] pb-8 pt-8"
         aria-labelledby="assessment-heading"
       >
-        <h2 id="assessment-heading" className="text-xl font-bold text-foreground">
+        <h2 id="assessment-heading" className="text-xl font-bold text-foreground mb-4">
           Assessment
         </h2>
         <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
@@ -78,16 +80,17 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
             Planning assessment details, conditions, and recommendations will be shown here.
           </p>
         </div>
-        <hr className="border-border" />
       </section>
+
+      <hr className="border-border" />
 
       {/* History Section */}
       <section
         id="history"
-        className="scroll-mt-[160px] space-y-4 pb-8 pt-8"
+        className="scroll-mt-[160px] pb-8 pt-8"
         aria-labelledby="history-heading"
       >
-        <h2 id="history-heading" className="text-xl font-bold text-foreground">
+        <h2 id="history-heading" className="text-xl font-bold text-foreground mb-4">
           History
         </h2>
         <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">
@@ -95,16 +98,17 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
             Application history timeline and status changes will be displayed here.
           </p>
         </div>
-        <hr className="border-border" />
       </section>
+
+      <hr className="border-border" />
 
       {/* Comments Section */}
       <section
         id="comments"
-        className="scroll-mt-[160px] space-y-4 pb-8 pt-8"
+        className="scroll-mt-[160px] pb-8 pt-8"
         aria-labelledby="comments-heading"
       >
-        <h2 id="comments-heading" className="text-xl font-bold text-foreground">
+        <h2 id="comments-heading" className="text-xl font-bold text-foreground mb-4">
           Comments
         </h2>
         <div className="min-h-[300px] border-2 border-dashed border-border bg-muted p-4">

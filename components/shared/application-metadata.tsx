@@ -1,4 +1,5 @@
 import type { AssignedOfficer } from '@/lib/mock-data/schemas'
+import { Badge } from '@/components/ui/badge'
 
 interface ApplicationMetadataProps {
   assignedOfficer?: AssignedOfficer
@@ -36,15 +37,9 @@ export function ApplicationMetadata({
       <div>
         <div className="text-sm text-muted-foreground mb-2">Public on BOPS Public Portal</div>
         <div>
-          <span
-            className={`inline-flex items-center px-2 py-0.5 text-sm ${
-              isPublic
-                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
-            }`}
-          >
+          <Badge variant="gray" size="small">
             {isPublic ? 'Yes' : 'No'}
-          </span>
+          </Badge>
         </div>
       </div>
 
@@ -52,9 +47,9 @@ export function ApplicationMetadata({
       <div>
         <div className="text-sm text-muted-foreground mb-2">Application type</div>
         <div>
-          <span className="inline-flex items-center bg-blue-100 px-2 py-0.5 text-sm text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+          <Badge variant="gray" size="small">
             {applicationType}
-          </span>
+          </Badge>
         </div>
       </div>
     </div>

@@ -1167,3 +1167,378 @@ Removed all border radius (rounded corners) from labels, badges, and containers 
 **Status:** Border radius removed from all labels, badges, and containers. Application now maintains consistent sharp corner styling throughout, with rounded corners only on intentional circular elements (timeline nodes) and base UI components.
 
 ---
+
+## 2025-10-18 | Dark Mode - Status Badge Optimization
+
+**Built by:** Forge (Builder)
+
+### Issue Resolved
+
+Status labels in Application Details hero section were not optimized for dark mode - using hardcoded light colors that didn't adapt to theme changes.
+
+### Fix Applied
+
+**ApplicationStatusBadges** ([components/shared/application-status-badges.tsx](components/shared/application-status-badges.tsx))
+- Added dark mode variants to status badge (blue):
+  - Light mode: `bg-blue-100 text-blue-800`
+  - Dark mode: `dark:bg-blue-900 dark:text-blue-100`
+- Added dark mode variants to days countdown badge (yellow):
+  - Light mode: `bg-yellow-100 text-yellow-800`
+  - Dark mode: `dark:bg-yellow-900 dark:text-yellow-100`
+
+### Visual Result
+
+- Status badges now have proper contrast in both light and dark modes
+- Blue status badge: Light background in light mode, dark background in dark mode
+- Yellow countdown badge: Light background in light mode, dark background in dark mode
+- Text colors inverted appropriately for readability
+
+**Files Modified:**
+- [components/shared/application-status-badges.tsx](components/shared/application-status-badges.tsx)
+
+**Status:** Status badges fully optimized for dark mode with proper color variants.
+
+---
+
+## 2025-10-18 | Unified Badge Component System
+
+**Built by:** Forge (Builder)
+
+### Problem Identified
+
+Badge/label styling was inconsistent across the application with multiple inline implementations:
+- **Inconsistent padding**: Three different combinations (`px-3 py-1`, `px-2 py-0.5`, `px-3 py-1.5`)
+- **Inconsistent text sizes**: `text-base`, `text-sm`, mixed usage
+- **Border radius inconsistency**: RequestedServices still had `rounded-sm` (missed in earlier cleanup)
+- **No reusability**: Each component had inline badge styling
+- **Mixed color approaches**: Hardcoded colors vs semantic tokens
+
+### Solution Implemented
+
+Created a unified Badge component system with consistent variants.
+
+**Badge Component** ([components/ui/badge.tsx](components/ui/badge.tsx))
+- Replaced Shadcn default badge variants with custom application-specific variants
+- **Size variants:**
+  - `default`: `text-base px-3 py-1` - for hero badges and requested services
+  - `small`: `text-sm px-2 py-0.5` - for sidebar metadata badges
+- **Color variants:**
+  - `blue`: Blue background with dark mode support
+  - `yellow`: Yellow background with dark mode support
+  - `green`: Green background with dark mode support
+  - `gray`: Gray background with dark mode support
+  - `muted`: Semantic muted background (uses theme tokens)
+- **No border radius** - sharp corners throughout (removed `rounded-full` from Shadcn defaults)
+- **Full dark mode support** for all color schemes
+- Uses class-variance-authority (CVA) for type-safe variants
+
+### Components Refactored
+
+**ApplicationStatusBadges** ([components/shared/application-status-badges.tsx](components/shared/application-status-badges.tsx))
+- Removed inline badge styling
+- Now uses `<Badge variant="blue" size={badgeSize}>` for status
+- Now uses `<Badge variant="yellow" size={badgeSize}>` for days countdown
+- Maps `compact` prop to `small` badge size
+- Cleaner, more maintainable code
+
+**ApplicationMetadata** ([components/shared/application-metadata.tsx](components/shared/application-metadata.tsx))
+- Removed inline badge styling
+- Public portal: `<Badge variant={isPublic ? 'green' : 'gray'} size="small">`
+- Application type: `<Badge variant="blue" size="small">`
+- Conditional color based on public status (green for Yes, gray for No)
+
+**RequestedServices** ([components/shared/requested-services.tsx](components/shared/requested-services.tsx))
+- Removed inline badge styling and `rounded-sm` border radius
+- Now uses `<Badge variant="muted">` for all service badges
+- Uses semantic muted variant for neutral appearance
+- Consistent with flat Airbnb-style design
+
+### Benefits
+
+- **Consistency**: All badges now use same component with standardized sizing and spacing
+- **Maintainability**: Single source of truth for badge styling
+- **Type safety**: CVA provides compile-time type checking for variants
+- **Dark mode**: All badges properly support both light and dark themes
+- **Sharp corners**: Complete removal of border radius as per design system
+- **Reusability**: Badge component can be used anywhere in the application
+- **Clean code**: No more inline styling or className strings
+
+### Visual Result
+
+All labels across the application now have:
+- Consistent padding (default: 12px/4px, small: 8px/2px)
+- Consistent text sizing (default: base, small: sm)
+- No border radius (sharp corners)
+- Proper dark mode colors
+- Unified component API
+
+**Files Created:**
+- N/A (modified existing Shadcn badge component)
+
+**Files Modified:**
+- [components/ui/badge.tsx](components/ui/badge.tsx)
+- [components/shared/application-status-badges.tsx](components/shared/application-status-badges.tsx)
+- [components/shared/application-metadata.tsx](components/shared/application-metadata.tsx)
+- [components/shared/requested-services.tsx](components/shared/requested-services.tsx)
+
+**Status:** Badge component system unified. All labels and badges across the application now use a single, consistent Badge component with size and color variants. Sharp corners enforced, dark mode fully supported.
+
+---
+
+## 2025-10-18 | Section Spacing Consistency
+
+**Built by:** Forge (Builder)
+
+### Issue Identified
+
+Section spacing was inconsistent between the Overview section and other sections (Application Progress, Documents, Assessment, History, Comments).
+
+**Inconsistency:**
+- Overview section: No top padding (started flush with content area)
+- All other sections: `pt-8` top padding for consistent breathing room between sections
+
+### Fix Applied
+
+**ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx))
+- Added `pt-8` top padding to Overview section container
+- Now matches the spacing pattern used by Application Progress section and all subsequent sections
+
+### Visual Result
+
+All sections now have consistent vertical spacing:
+- Each section has `pt-8 pb-8` (top and bottom padding of 8 units = 40px)
+- Horizontal separators between sections
+- Uniform breathing room above and below each section
+- Clean, balanced visual rhythm throughout the page
+
+**Files Modified:**
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+
+**Status:** Section spacing now consistent throughout Application Details page. All sections use `pt-8 pb-8` pattern.
+
+---
+
+## 2025-10-18 | Timeline Content-to-Divider Spacing Fix
+
+**Built by:** Forge (Builder)
+
+### Issue Identified
+
+Spacing between timeline content and the horizontal divider was inconsistent:
+- Timeline stages (Validation, Consultation, Assessment, Review): Each had `pb-8` (32px bottom padding)
+- Expiry Date item: Had no bottom padding, only the section's `space-y-4` (16px)
+- Result: Very tight spacing (16px) between "Expires 30 October 2025" and the divider below
+- Other sections (Documents, etc.): Proper spacing (48px = 32px from content + 16px from space-y-4)
+
+### Fix Applied
+
+**ApplicationStageTimeline** ([components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx))
+- Added `pb-8` to Expiry Date content container (line 253)
+- Now matches the bottom padding pattern of all other timeline stages
+
+### Visual Result
+
+Consistent spacing throughout the page:
+- All timeline items now have `pb-8` bottom padding
+- Combined with section's `space-y-4`, creates uniform spacing above dividers
+- Total spacing: 48px (32px content padding + 16px space-y gap)
+- Matches the spacing pattern used by Documents section and all other sections
+
+**Files Modified:**
+- [components/shared/application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)
+
+**Status:** Timeline content-to-divider spacing fixed. All sections now have consistent spacing between content and horizontal dividers.
+
+---
+
+## 2025-10-18 | Section Divider Spacing Restructure
+
+**Built by:** Forge (Builder)
+
+### Issue Identified
+
+Spacing around horizontal dividers was inconsistent throughout the page:
+- Dividers were **inside** sections, wrapped by section padding
+- This created uneven spacing: less space above divider, more space below
+- Combined with `space-y-4` on sections, the math was: Content → 16px → HR → 32px (pb-8) + 32px (next pt-8) = 64px
+- Result: Dividers appeared closer to content above than content below
+
+**User Feedback:**
+"Above and below the section divider should have the same spacing"
+
+### Solution Implemented
+
+Restructured all sections to place dividers **between** sections rather than inside them.
+
+**ApplicationSections** ([components/shared/application-sections.tsx](components/shared/application-sections.tsx))
+
+**Changes Made:**
+1. Moved all `<hr>` elements **outside** section containers
+2. Removed `space-y-4` from all sections (was causing inconsistent gaps)
+3. Added explicit `mb-4` to section headings (h2 elements) for spacing between title and content
+4. Kept `pt-8 pb-8` on all sections for consistent vertical rhythm
+
+**New Structure:**
+```jsx
+<section className="pt-8 pb-8">
+  <h2 className="mb-4">Title</h2>
+  <div>Content</div>
+</section>
+
+<hr />  ← Divider is BETWEEN sections, not inside
+
+<section className="pt-8 pb-8">
+  ...
+</section>
+```
+
+### Spacing Math
+
+**Consistent spacing around dividers:**
+- Content end → Section `pb-8` (32px) → **HR** → Next section `pt-8` (32px) → Next content start
+- **Result**: 32px above divider, 32px below divider ✓
+- Perfect symmetry around all horizontal dividers
+
+**Within sections:**
+- Section heading → `mb-4` (16px) → Content
+- Consistent internal spacing
+
+### Visual Result
+
+All sections now have:
+- **Equal spacing above and below dividers** (32px each side)
+- **Consistent section padding** (`pt-8 pb-8` on all sections)
+- **Clean heading spacing** (`mb-4` between h2 and content)
+- **Uniform visual rhythm** throughout the page
+- **No unexpected gaps** or tight spacing
+
+### Sections Updated
+
+All sections restructured with consistent pattern:
+- Overview (two-column layout)
+- Application Progress (timeline)
+- Documents
+- Assessment
+- History
+- Comments
+
+**Files Modified:**
+- [components/shared/application-sections.tsx](components/shared/application-sections.tsx)
+
+**Status:** Section divider spacing fully restructured. All horizontal dividers now have equal spacing (32px) above and below. Consistent vertical rhythm established throughout Application Details page.
+
+---
+
+## 2025-10-18 | Metadata Badge Color Update
+
+**Built by:** Forge (Builder)
+
+### Change Requested
+
+Updated metadata sidebar badge colors to use grey variant for a more neutral, subdued appearance.
+
+### Changes Applied
+
+**ApplicationMetadata** ([components/shared/application-metadata.tsx](components/shared/application-metadata.tsx))
+- Changed Public Portal badge from conditional `green/gray` to always `gray`
+  - Was: `variant={isPublic ? 'green' : 'gray'}`
+  - Now: `variant="gray"`
+- Changed Application Type badge from `blue` to `gray`
+  - Was: `variant="blue"`
+  - Now: `variant="gray"`
+
+### Visual Result
+
+Both metadata badges now use neutral grey styling:
+- **"No"** (Public on BOPS Public Portal): Grey badge
+- **"Pre-application Advice"** (Application type): Grey badge
+
+This creates a more subdued, consistent appearance in the metadata sidebar, allowing the hero badges (blue status, yellow countdown) to be the primary visual indicators.
+
+**Files Modified:**
+- [components/shared/application-metadata.tsx](components/shared/application-metadata.tsx)
+
+**Status:** Metadata badges updated to grey variant for neutral styling.
+
+---
+
+## 2025-10-18 | Badge Color Consistency - All Grey
+
+**Built by:** Forge (Builder)
+
+### Issue Identified
+
+Badge colors were inconsistent across the page:
+- **RequestedServices** ("Written advice", "Site visit", "Meeting"): Used `variant="muted"` → `bg-muted text-foreground`
+- **ApplicationMetadata** ("No", "Pre-application Advice"): Used `variant="gray"` → `bg-gray-100 text-gray-800`
+
+These two variants rendered with different colors and would not match visually.
+
+### Fix Applied
+
+**RequestedServices** ([components/shared/requested-services.tsx](components/shared/requested-services.tsx))
+- Changed from `variant="muted"` to `variant="gray"`
+- Now matches the metadata badges exactly
+
+### Visual Result
+
+All informational badges now use the same grey styling:
+- **"Written advice"** → Grey badge
+- **"Site visit"** → Grey badge
+- **"Meeting"** → Grey badge
+- **"No"** (Public Portal) → Grey badge
+- **"Pre-application Advice"** (Application type) → Grey badge
+
+**Consistent styling:**
+- Light mode: `bg-gray-100 text-gray-800`
+- Dark mode: `bg-gray-800 text-gray-300`
+- All badges have identical appearance and behavior
+
+**Color hierarchy:**
+- **Hero badges** (status/countdown): Blue and yellow for high visibility
+- **Informational badges** (services/metadata): Grey for subdued, neutral presentation
+
+**Files Modified:**
+- [components/shared/requested-services.tsx](components/shared/requested-services.tsx)
+
+**Status:** All informational badges now use consistent grey variant. Perfect visual consistency across "Written advice", "No", and "Pre-application Advice" badges.
+
+---
+
+## 2025-10-18 | Site Header Border - Slightly Brighter in Dark Mode
+
+**Built by:** Forge (Builder)
+
+### Issue Identified
+
+The site header's 10px blue border was too prominent in dark mode, appearing overly bright and harsh against the dark background.
+
+### Fix Applied
+
+**SiteHeader** ([components/shared/site-header.tsx](components/shared/site-header.tsx))
+- Added dark mode variant: `dark:border-b-[hsl(211,66%,50%)]`
+- Keeps the same GDS blue hue and saturation (211°, 66%)
+- Slightly increased lightness from 41% to 50% (9% brighter)
+- Light mode remains unchanged (GDS primary blue at 41% lightness)
+
+### Color Specification
+
+**Light mode:**
+- Border: `hsl(211, 66%, 41%)` - GDS blue (`#1d70b8`)
+
+**Dark mode:**
+- Border: `hsl(211, 66%, 50%)` - Same blue, slightly brighter
+- Maintains exact same hue and saturation
+- Only lightness adjusted upward for better visibility
+- Subtle brightness increase provides better contrast without harshness
+
+### Visual Result
+
+The border maintains the same GDS blue color identity but with a gentle brightness boost for dark mode. This provides better visibility and reduces harshness while keeping color consistency across themes.
+
+**Files Modified:**
+- [components/shared/site-header.tsx](components/shared/site-header.tsx)
+
+**Status:** Site header border updated to use same GDS blue with 9% increased lightness in dark mode.
+
+---
