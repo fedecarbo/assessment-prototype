@@ -84,6 +84,8 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
             <div className="lg:col-span-2">
               {sortedTypes.map((type, index) => {
                 const constraintsOfType = groupedConstraints[type]
+                if (!constraintsOfType) return null
+
                 const firstConstraint = constraintsOfType[0]
 
                 return (
