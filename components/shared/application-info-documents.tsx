@@ -30,7 +30,7 @@ export function ApplicationInfoDocuments({ application }: ApplicationInfoDocumen
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-foreground">Documents</h2>
+        <h2 className="text-2xl font-bold text-foreground">Documents</h2>
         <p className="text-sm text-muted-foreground mt-1">Last updated: 15 October 2024</p>
       </div>
 

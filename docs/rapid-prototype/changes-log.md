@@ -56,3 +56,75 @@ Track all bug fixes and modifications.
 **Status:** ✅ Resolved - Application information link now navigates to `/application/[id]/information` in new tab
 
 ---
+
+## 2025-10-19 | Application Information Page Title Size Update
+
+**Issue:** Tab section titles on Application Information page were using text-xl instead of text-2xl for visual hierarchy
+
+**Resolution:**
+- Updated all 6 tab section component titles from text-xl to text-2xl
+- Maintains consistency with larger page titles across the application
+
+**Files Changed:**
+- [application-info-overview.tsx](components/shared/application-info-overview.tsx) - Title: text-xl → text-2xl
+- [application-info-documents.tsx](components/shared/application-info-documents.tsx) - Title: text-xl → text-2xl
+- [application-info-constraints.tsx](components/shared/application-info-constraints.tsx) - Title: text-xl → text-2xl
+- [application-info-site-history.tsx](components/shared/application-info-site-history.tsx) - Title: text-xl → text-2xl
+- [application-info-consultees.tsx](components/shared/application-info-consultees.tsx) - Title: text-xl → text-2xl
+- [application-info-neighbours.tsx](components/shared/application-info-neighbours.tsx) - Title: text-xl → text-2xl
+
+**Status:** ✅ Resolved - All Application Information page section titles now use text-2xl
+
+---
+
+## 2025-10-19 | DocumentsTable Cell Padding Alignment
+
+**Issue:** Table content needed to align with vertical cell borders while maintaining 20px total spacing between columns
+
+**Resolution:**
+- First column (thumbnail): `pl-0 pr-2.5` - aligns left edge with border, 10px spacing to next column
+- Middle columns: `px-2.5` - 10px padding each side (10px + 10px = 20px total spacing between columns)
+- Last column (visibility): `pl-2.5 pr-0` - 10px spacing from previous, aligns right edge with border
+- Vertical padding maintained at `py-4` for row spacing
+- Uses Tailwind `px-2.5` (10px each side) to achieve 20px total gap between adjacent columns
+
+**Files Changed:**
+- [documents-table.tsx](components/shared/documents-table.tsx) - Updated TableHead and TableCell padding to px-2.5 (10px per side = 20px total between columns)
+
+**Status:** ✅ Resolved - Table content aligns with borders and has 20px total spacing between columns
+
+---
+
+## 2025-10-19 | Table Border Color Update
+
+**Issue:** Table borders needed to use grey color (`border-border`) instead of default border color
+
+**Resolution:**
+- Added explicit `border-border` class to TableHeader, TableRow, and TableFooter components
+- Ensures consistent grey border color across all table instances
+
+**Files Changed:**
+- [table.tsx](components/ui/table.tsx) - Added `border-border` class to TableHeader, TableRow, and TableFooter
+
+**Status:** ✅ Resolved - Table borders now use grey color from design system
+
+---
+
+## 2025-10-19 | DocumentsTable Thumbnail Integration
+
+**Issue:** Separate thumbnail column had empty header, felt disconnected from document information
+
+**Resolution:**
+- Merged thumbnail column into "Document name" column
+- Reduced from 5 columns to 4 columns total
+- Used flexbox layout: thumbnail (64px) on left, document name and tags on right
+- Added `gap-2.5` (10px) spacing between thumbnail and content
+- `items-start` alignment keeps thumbnail aligned with first line of text
+- Maintains same padding structure: first column `pl-0 pr-2.5`, last column `pl-2.5 pr-0`
+
+**Files Changed:**
+- [documents-table.tsx](components/shared/documents-table.tsx) - Merged thumbnail into Document name column with flex layout
+
+**Status:** ✅ Resolved - Thumbnail integrated with document name, cleaner table header
+
+---
