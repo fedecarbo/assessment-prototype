@@ -8,31 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { getDocumentCategoryLabel, getDocumentVisibilityLabel } from '@/lib/utils'
 
 interface DocumentsTableProps {
   documents: Document[]
 }
 
 export function DocumentsTable({ documents }: DocumentsTableProps) {
-  // Get category label
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case 'drawings':
-        return 'Drawings'
-      case 'supporting':
-        return 'Supporting'
-      case 'evidence':
-        return 'Evidence'
-      default:
-        return category
-    }
-  }
-
-  // Get visibility label
-  const getVisibilityLabel = (visibility: 'public' | 'sensitive') => {
-    return visibility === 'public' ? 'Public' : 'Sensitive'
-  }
-
   // Get thumbnail placeholder (will be replaced with actual document preview)
   const getThumbnail = () => {
     return (
@@ -44,17 +26,17 @@ export function DocumentsTable({ documents }: DocumentsTableProps) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="text-base font-bold text-foreground pl-0 pr-2.5">Document name</TableHead>
-          <TableHead className="text-base font-bold text-foreground px-2.5">Category</TableHead>
-          <TableHead className="text-base font-bold text-foreground px-2.5">Version</TableHead>
-          <TableHead className="text-base font-bold text-foreground pl-2.5 pr-0">Visibility</TableHead>
+          <TableHead className="text-base font-bold text-foreground pl-0 pr-3">Document name</TableHead>
+          <TableHead className="text-base font-bold text-foreground px-3">Category</TableHead>
+          <TableHead className="text-base font-bold text-foreground px-3">Version</TableHead>
+          <TableHead className="text-base font-bold text-foreground pl-3 pr-0">Visibility</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {documents.map((doc) => (
           <TableRow key={doc.id}>
-            <TableCell className="py-4 pl-0 pr-2.5">
-              <div className="flex items-start gap-2.5">
+            <TableCell className="py-4 pl-0 pr-3">
+              <div className="flex items-start gap-3">
                 {getThumbnail()}
                 <div className="flex-1">
                   <a
@@ -76,9 +58,9 @@ export function DocumentsTable({ documents }: DocumentsTableProps) {
                 </div>
               </div>
             </TableCell>
-            <TableCell className="py-4 px-2.5">{getCategoryLabel(doc.category)}</TableCell>
-            <TableCell className="py-4 px-2.5">{doc.version || '—'}</TableCell>
-            <TableCell className="py-4 pl-2.5 pr-0">{getVisibilityLabel(doc.visibility)}</TableCell>
+            <TableCell className="py-4 px-3">{getDocumentCategoryLabel(doc.category)}</TableCell>
+            <TableCell className="py-4 px-3">{doc.version || '—'}</TableCell>
+            <TableCell className="py-4 pl-3 pr-0">{getDocumentVisibilityLabel(doc.visibility)}</TableCell>
           </TableRow>
         ))}
       </TableBody>

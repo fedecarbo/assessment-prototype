@@ -29,3 +29,30 @@ export function calculateResponseRate(responses: number, total: number): number 
   if (total === 0) return 0
   return Math.round((responses / total) * 100)
 }
+
+/**
+ * Get formatted label for document category
+ * @param category - Document category key
+ * @returns Human-readable category label
+ */
+export function getDocumentCategoryLabel(category: string): string {
+  switch (category) {
+    case 'drawings':
+      return 'Drawings'
+    case 'supporting':
+      return 'Supporting'
+    case 'evidence':
+      return 'Evidence'
+    default:
+      return category
+  }
+}
+
+/**
+ * Get formatted label for document visibility
+ * @param visibility - Document visibility level
+ * @returns Human-readable visibility label
+ */
+export function getDocumentVisibilityLabel(visibility: 'public' | 'sensitive'): string {
+  return visibility === 'public' ? 'Public' : 'Sensitive'
+}
