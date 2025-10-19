@@ -137,6 +137,9 @@ Quick reference for what's been built and key architectural decisions.
 - Light blue background (GDS primary 95% lightness)
 - Slash separators between items
 - Links to previous pages, current page as plain text
+- **Variant support:** `constrained` (default, 1100px max-width) | `full` (no max-width)
+- Application detail page: `constrained` variant with trail Home → Application details
+- Assessment page: `full` variant with trail Home → Application details → Check and assess
 
 **CaseSummaryHeader** - Condensed application header (client component)
 - Reference number + address in single line (left side)
@@ -219,5 +222,20 @@ Quick reference for what's been built and key architectural decisions.
 **Mock Data:** [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
 **Utilities:** [lib/utils.ts](lib/utils.ts) - formatDate, calculateResponseRate
 **Styles:** [app/globals.css](app/globals.css) - Tailwind v4 theme variables
+
+---
+
+## Home Page
+
+**Route:** `/`
+**Pattern:** Centered landing page with call-to-action
+
+### Components
+
+**Home Page** - Simple landing page
+- Title: "Assessment Prototype"
+- Description: "Back office planning system for assessing planning applications"
+- Primary "Start" button linking to `/application/1` (first mock application)
+- Uses Shadcn UI Button component with `size="lg"`
 
 ---

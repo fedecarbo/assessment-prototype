@@ -37,7 +37,7 @@ function AssessmentLayoutContent({
         <SiteHeader variant="full" />
 
         {/* Breadcrumbs - Full width */}
-        <Breadcrumbs items={breadcrumbItems} />
+        <Breadcrumbs items={breadcrumbItems} variant="full" />
 
         {/* Case Summary Header - Full width */}
         <CaseSummaryHeader reference={reference} address={address} description={description} />

@@ -7,12 +7,13 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[]
+  variant?: 'constrained' | 'full'
 }
 
-export function Breadcrumbs({ items }: BreadcrumbsProps) {
+export function Breadcrumbs({ items, variant = 'constrained' }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb" className="border-b border-border bg-[hsl(211,66%,95%)] dark:bg-[hsl(0,0%,8%)]">
-      <div className="px-4 py-2">
+      <div className={`mx-auto px-4 py-2 ${variant === 'constrained' ? 'max-w-[1100px]' : ''}`}>
         <ol className="flex items-center gap-2 text-sm">
           {items.map((item, index) => (
             <li key={index} className="flex items-center gap-2">

@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/shared/site-header"
+import { Breadcrumbs } from "@/components/shared/breadcrumbs"
 import { ApplicationDetailLayout } from "@/components/shared/application-detail-layout"
 import { ApplicationSections } from "@/components/shared/application-sections"
 import { mockApplications } from "@/lib/mock-data/applications"
@@ -28,6 +29,12 @@ export default async function ApplicationDetailsPage({ params }: ApplicationDeta
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Application details' },
+        ]}
+      />
 
       <ApplicationDetailLayout
         applicationId={application.id}
