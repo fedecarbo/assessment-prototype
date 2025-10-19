@@ -2,6 +2,7 @@
 
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
 function getStatusBadge(status: TaskStatus) {
   switch (status) {
@@ -22,25 +23,30 @@ export function AssessmentContent() {
 
   return (
     <div className="py-8">
-      <div className="flex items-center gap-3">
-        {getStatusBadge(currentTask.status)}
-      </div>
-      <h1 className="mt-2 text-xl font-bold text-foreground">{currentTask.title}</h1>
-      <p className="mt-4 text-muted-foreground">
-        Content for the selected task. Click different tasks in the left panel to switch content.
-      </p>
+      {/* Content constrained to 723px for readability */}
+      <div style={{ maxWidth: '723px' }}>
+        {/* Status Badge */}
+        <div className="flex items-center gap-3">
+          {getStatusBadge(currentTask.status)}
+        </div>
 
-      {/* Placeholder content to demonstrate scrolling */}
-      <div className="mt-8 space-y-4">
-        {Array.from({ length: 30 }, (_, i) => (
-          <div key={i} className="rounded border border-border bg-muted p-4">
-            <h3 className="font-semibold">Section {i + 1} for {currentTask.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              This is placeholder content for {currentTask.title}.
-              The task panel on the left scrolls independently from this main content area.
-            </p>
-          </div>
-        ))}
+        {/* Task Title */}
+        <h1 className="mt-2 text-2xl font-bold text-foreground">{currentTask.title}</h1>
+
+        {/* Task Description/Instruction */}
+        <div className="mt-3">
+          <p className="text-base leading-relaxed text-muted-foreground">
+            {currentTask.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Divider - Full width */}
+      <Separator className="mt-6" />
+
+      {/* Content coming soon placeholder */}
+      <div className="mt-6 flex items-center justify-center bg-muted" style={{ minHeight: '300px' }}>
+        <p className="text-lg text-muted-foreground">Content coming soon</p>
       </div>
     </div>
   )

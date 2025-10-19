@@ -162,18 +162,23 @@ Quick reference for what's been built and key architectural decisions.
 - Callbacks: `onTaskSelect(taskId)` updates parent state
 
 **AssessmentContent** - Dynamic task content renderer (client component)
-- Displays selected task content
-- **Status badge** above task title:
-  - Completed: Green badge
-  - In progress: Blue badge
-  - Not started: Gray badge
-- Task title and description
+- Text-based layout displaying task details:
+  - **Status badge** at top (green/blue/gray)
+  - **Task title** (text-xl font-bold)
+  - **Task description/instruction** (mt-6, text-base leading-relaxed, max 2 lines)
+  - **Separator divider** (mt-8, full width) below description
+- Content width constrained to 723px for optimal readability
+- Clean, readable layout with proper spacing
 - Placeholder content sections (30 items for scroll demo)
 
 **AssessmentContext** - React Context for task state management
 - `TaskStatus` type: `'not-started' | 'in-progress' | 'completed'`
-- `Task` interface: id, title, status
-- Mock data: 7 tasks (2 completed, 1 in-progress, 4 not-started)
+- `Task` interface: id, title, description, status
+- Mock data: 7 realistic planning assessment tasks with descriptions
+  - Task 1: Review site constraints (completed)
+  - Task 2: Assess design and layout (completed)
+  - Task 3: Review consultation responses (in-progress)
+  - Task 4-7: Policy compliance, amenity impacts, technical docs, draft recommendation (not-started)
 - Provides `selectedTaskId`, `setSelectedTaskId`, and `tasks` array
 - `useAssessment()` hook for consuming context
 
