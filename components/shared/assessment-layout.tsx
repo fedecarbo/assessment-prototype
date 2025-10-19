@@ -45,12 +45,12 @@ function AssessmentLayoutContent({
 
       {/* Scrollable Content Area - Two column layout */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left: Task Panel - Fixed 320px with independent scroll */}
+        {/* Left: Task Panel - Fixed 338px + 32px padding = 370px total */}
         <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
 
-        {/* Right: Main Content - Centered with max-width 1100px and independent scroll */}
+        {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
         <main className="flex flex-1 justify-center overflow-y-auto">
-          <div className="w-full max-w-[1100px]">
+          <div className="w-full max-w-[1100px] px-4">
             {children}
           </div>
         </main>

@@ -21,7 +21,7 @@ export function TaskPanel({ selectedTaskId, onTaskSelect }: TaskPanelProps) {
   const { tasks } = useAssessment()
 
   return (
-    <aside className="w-80 flex-none overflow-y-auto border-r border-border bg-background p-4">
+    <aside className="w-[338px] flex-none overflow-y-auto border-r border-border bg-background p-4">
       <h2 className="text-base font-bold text-foreground">Tasks</h2>
       <div className="mt-4">
         <div className="space-y-2">

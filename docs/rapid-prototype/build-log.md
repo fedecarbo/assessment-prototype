@@ -117,8 +117,10 @@ Quick reference for what's been built and key architectural decisions.
 - **Fixed headers:** Site header, breadcrumbs, and case summary remain at top (flex-none)
 - **Viewport height:** Uses `h-screen` with flexbox column layout
 - **Two-column scrollable layout:**
-  - Left: TaskPanel (320px fixed width, `overflow-y-auto`)
-  - Right: Main content (centered with 1100px max-width, `overflow-y-auto`)
+  - Left: TaskPanel (370px total: 338px + 32px padding, `overflow-y-auto`)
+  - Right: Main content area (`flex-1`, takes remaining space, centered, `overflow-y-auto`)
+  - Content constraint: 1100px max-width with 16px horizontal padding (px-4), centered within main area
+  - Responsive: Content stays centered and constrained on all screen sizes
 - **Independent scrolling:** Each content area scrolls independently with its own scrollbar
 - **Task selection state:** Manages `selectedTaskId` state (default: 1)
 - **Render prop pattern:** Children function receives `selectedTaskId` to render task-specific content
@@ -145,7 +147,7 @@ Quick reference for what's been built and key architectural decisions.
 - Replaces the collapsing hero pattern from detail page
 
 **TaskPanel** - Fixed sidebar for assessment tasks with independent scroll
-- Fixed width: 320px (w-80, flex-none)
+- Fixed width: 338px + 16px padding each side = 370px total
 - Independent scrolling: `overflow-y-auto`
 - Border right separator
 - **Interactive task list:** Click to select task (7 tasks)

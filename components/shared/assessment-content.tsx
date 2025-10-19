@@ -21,7 +21,7 @@ export function AssessmentContent() {
   if (!currentTask) return null
 
   return (
-    <div className="p-8">
+    <div className="py-8">
       <div className="flex items-center gap-3">
         {getStatusBadge(currentTask.status)}
       </div>
