@@ -16,8 +16,17 @@ function getStatusBadge(status: TaskStatus) {
 }
 
 export function AssessmentContent() {
-  const { selectedTaskId, tasks } = useAssessment()
-  const currentTask = tasks.find(task => task.id === selectedTaskId)
+  const { selectedTaskId, taskGroups } = useAssessment()
+
+  // Find the current task across all groups
+  let currentTask = null
+  for (const group of taskGroups) {
+    const task = group.tasks.find(task => task.id === selectedTaskId)
+    if (task) {
+      currentTask = task
+      break
+    }
+  }
 
   if (!currentTask) return null
 

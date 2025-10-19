@@ -150,14 +150,24 @@ Quick reference for what's been built and key architectural decisions.
 - Fixed width: 338px + 16px padding each side = 370px total
 - Independent scrolling: `overflow-y-auto`
 - Border right separator
-- **Interactive task list:** Click to select task (7 tasks)
+- **Grouped task structure:** Tasks organized under parent titles (3 groups: Check application, Additional services, Assessment summaries)
+- **Interactive task list:** Text links to select task (8 tasks total)
+- **Link behavior:** Uses Next.js Link with query params `?task={id}`, maintains onClick callback
 - **Visual states:**
-  - Selected: Primary background with white text
-  - Unselected: Default background with hover state
+  - Selected: Black (foreground) text with font-semibold, no underline
+  - Unselected: Blue (primary) text with hover to black, underline with 3px offset
+  - Links: text-sm size with py-1.5 padding
+  - Group titles: text-sm font-bold, 10px bottom margin
+- **Spacing hierarchy:**
+  - Main "Tasks" heading to first group: 20px (mb-5)
+  - Between task groups: 16px separator with my-4
+  - Group title to tasks: 10px (mb-2.5)
+  - Between tasks within group: 4px separator with my-1
 - **Status icons** (right-aligned):
-  - Completed: Green checkmark icon (lucide-react Check)
+  - Completed: Black checkmark icon (lucide-react Check)
   - In progress: Blue circle-dot icon (lucide-react CircleDot)
   - Not started: Gray circle outline icon (lucide-react Circle)
+- **Dividers:** Separator components between tasks within groups (my-1) and between groups (my-4)
 - Scrolls independently from main content area
 - Callbacks: `onTaskSelect(taskId)` updates parent state
 
@@ -174,12 +184,12 @@ Quick reference for what's been built and key architectural decisions.
 **AssessmentContext** - React Context for task state management
 - `TaskStatus` type: `'not-started' | 'in-progress' | 'completed'`
 - `Task` interface: id, title, description, status
-- Mock data: 7 realistic planning assessment tasks with descriptions
-  - Task 1: Review site constraints (completed)
-  - Task 2: Assess design and layout (completed)
-  - Task 3: Review consultation responses (in-progress)
-  - Task 4-7: Policy compliance, amenity impacts, technical docs, draft recommendation (not-started)
-- Provides `selectedTaskId`, `setSelectedTaskId`, and `tasks` array
+- `TaskGroup` interface: title, tasks array
+- Mock data: 8 realistic planning assessment tasks organized in 3 groups
+  - Check application: Check application details (completed), Check consultees consulted (completed), Check site history (in-progress)
+  - Additional services: Site visit (not-started), Meeting (not-started)
+  - Assessment summaries: Site description (not-started), Summary of advice (not-started), Planning considerations and advice (not-started)
+- Provides `selectedTaskId`, `setSelectedTaskId`, and `taskGroups` array
 - `useAssessment()` hook for consuming context
 
 ### Layout Differences from Application Detail Page

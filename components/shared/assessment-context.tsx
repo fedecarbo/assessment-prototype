@@ -11,55 +11,81 @@ export interface Task {
   status: TaskStatus
 }
 
-interface AssessmentContextType {
-  selectedTaskId: number
-  setSelectedTaskId: (id: number) => void
+export interface TaskGroup {
+  title: string
   tasks: Task[]
 }
 
-// Mock task data
-const mockTasks: Task[] = [
+interface AssessmentContextType {
+  selectedTaskId: number
+  setSelectedTaskId: (id: number) => void
+  taskGroups: TaskGroup[]
+}
+
+// Mock task data organized in groups
+const mockTaskGroups: TaskGroup[] = [
   {
-    id: 1,
-    title: 'Review site constraints',
-    description: 'Review all planning constraints that apply to this site including conservation areas, listed buildings, tree preservation orders, and flood zones.',
-    status: 'completed'
+    title: 'Check application',
+    tasks: [
+      {
+        id: 1,
+        title: 'Check application details',
+        description: 'Verify all application details are complete and accurate including site address, applicant information, and proposed development description.',
+        status: 'completed'
+      },
+      {
+        id: 2,
+        title: 'Check consultees consulted',
+        description: 'Review the list of statutory consultees contacted and confirm all required consultees have been notified according to planning regulations.',
+        status: 'completed'
+      },
+      {
+        id: 3,
+        title: 'Check site history',
+        description: 'Examine planning history for the site including previous applications, appeals, enforcement actions, and any relevant planning conditions.',
+        status: 'in-progress'
+      },
+    ]
   },
   {
-    id: 2,
-    title: 'Assess design and layout',
-    description: 'Evaluate the proposed design against local design policies. Consider building height, massing, materials, and relationship to neighbouring properties.',
-    status: 'completed'
+    title: 'Additional services',
+    tasks: [
+      {
+        id: 4,
+        title: 'Site visit',
+        description: 'Conduct site visit to assess the existing conditions, verify details in the application, and evaluate the impact of the proposed development.',
+        status: 'not-started'
+      },
+      {
+        id: 5,
+        title: 'Meeting',
+        description: 'Arrange and conduct meetings with applicant, consultees, or other stakeholders as necessary to discuss the proposal and resolve issues.',
+        status: 'not-started'
+      },
+    ]
   },
   {
-    id: 3,
-    title: 'Review consultation responses',
-    description: 'Examine all responses from statutory consultees and neighbours. Identify key planning issues raised and prepare summary of material planning considerations.',
-    status: 'in-progress'
-  },
-  {
-    id: 4,
-    title: 'Evaluate policy compliance',
-    description: 'Assess the proposal against relevant national, regional, and local planning policies including the London Plan and Local Plan policies.',
-    status: 'not-started'
-  },
-  {
-    id: 5,
-    title: 'Assess amenity impacts',
-    description: 'Consider the impact on neighbouring amenity including privacy, outlook, daylight, sunlight, and noise. Review technical reports and determine if impacts are acceptable.',
-    status: 'not-started'
-  },
-  {
-    id: 6,
-    title: 'Review technical documents',
-    description: 'Examine all supporting technical documents including transport assessments, drainage strategies, ecology reports, and heritage statements.',
-    status: 'not-started'
-  },
-  {
-    id: 7,
-    title: 'Draft recommendation',
-    description: 'Prepare draft planning recommendation based on assessment findings. Summarize key issues, planning balance, and recommended decision with conditions or reasons for refusal.',
-    status: 'not-started'
+    title: 'Assessment summaries',
+    tasks: [
+      {
+        id: 6,
+        title: 'Site description',
+        description: 'Prepare detailed description of the site including its location, existing use, surrounding context, and any relevant site characteristics.',
+        status: 'not-started'
+      },
+      {
+        id: 7,
+        title: 'Summary of advice',
+        description: 'Summarize advice received from consultees, technical specialists, and other relevant parties. Highlight key recommendations and concerns.',
+        status: 'not-started'
+      },
+      {
+        id: 8,
+        title: 'Planning considerations and advice',
+        description: 'Provide comprehensive planning assessment covering policy compliance, material considerations, and planning balance. Draft recommendation with supporting reasoning.',
+        status: 'not-started'
+      },
+    ]
   },
 ]
 
@@ -69,7 +95,7 @@ export function AssessmentProvider({ children }: { children: ReactNode }) {
   const [selectedTaskId, setSelectedTaskId] = useState(1)
 
   return (
-    <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, tasks: mockTasks }}>
+    <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, taskGroups: mockTaskGroups }}>
       {children}
     </AssessmentContext.Provider>
   )
