@@ -77,6 +77,36 @@ export interface Document {
   tags?: string[]; // Tags describing what the document contains
 }
 
+export type ConsultationTopic = 'design' | 'privacy' | 'loss-of-light' | 'traffic' | 'accessibility' | 'noise' | 'other';
+
+export interface TopicSummary {
+  topic: ConsultationTopic;
+  label: string;
+  count: number;
+  aiSummary: string; // 2-3 sentence AI-generated summary of comments on this topic
+}
+
+export interface NeighbourResponse {
+  id: string;
+  respondentName: string;
+  address: string;
+  responseDate: string;
+  position: 'support' | 'object' | 'neutral';
+  topics: ConsultationTopic[];
+  summary: string;
+}
+
+export interface NeighbourConsultation {
+  totalNotified: number;
+  totalResponses: number;
+  supportCount: number;
+  objectCount: number;
+  neutralCount: number;
+  briefSummary: string;
+  topicSummaries: TopicSummary[];
+  responses?: NeighbourResponse[];
+}
+
 export interface PlanningApplication {
   id: string;
   reference: string;
@@ -96,16 +126,8 @@ export interface PlanningApplication {
   requestedServices?: RequestedService[];
   documents?: Document[];
   constraints?: Constraint[];
-  // Stage workflow tracking (legacy - kept for backward compatibility)
-  validationStatus: 'pending' | 'validated' | 'rejected';
-  validationDate?: string;
-  consultationStatus: 'not-started' | 'in-progress' | 'completed';
-  consultationStartDate?: string;
-  assessmentStatus: 'not-started' | 'in-progress' | 'completed';
-  assessmentStartDate?: string;
-  reviewStatus: 'not-started' | 'in-progress' | 'completed';
-  reviewStartDate?: string;
-  // Enhanced stage workflow with tasks
+  neighbourConsultation?: NeighbourConsultation;
+  // Stage workflow with tasks
   validation: ValidationStage;
   consultation: ConsultationStage;
   assessment: AssessmentStage;

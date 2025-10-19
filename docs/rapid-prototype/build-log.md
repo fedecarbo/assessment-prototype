@@ -366,3 +366,97 @@ Track all features, components, and pages built by Forge (Builder).
 **Files modified:** [document-list.tsx](components/shared/document-list.tsx)
 
 ---
+
+## 2025-10-19 | Neighbour Consultation - Side-by-Side Layout with Plain English Summary
+
+**Component:** NeighbourConsultation ([components/shared/neighbour-consultation.tsx](components/shared/neighbour-consultation.tsx))
+
+**Key Decisions:**
+- **Compact statistics line:** Single-line inline metrics (34 notified • 8 responses (24%) • 5 object • 2 support • 1 comment)
+- **Color-coded sentiment:** Object in red, Support in green, inline with statistics
+- **Side-by-side layout (50/50):** Topic list on left, AI summary on right
+- **Airbnb-style topic list:** Simple two-column layout showing topic name and comment count, sorted by frequency
+- **Plain English AI summary:** Full paragraph written in accessible language, avoiding jargon
+- **Only topics with comments shown:** Filtered to exclude zero-count topics for cleaner presentation
+- **Visual balance:** Statistics above, topic list + summary below in equal columns
+
+**Schema extensions:**
+- `ConsultationTopic` type: 7 standardized topics (design, privacy, loss-of-light, traffic, accessibility, noise, other) - removed conservation-area
+- `TopicSummary` interface: Topic metadata with label, count, AI-generated summary
+- `NeighbourResponse` interface: Added `topics[]` array to tag responses with relevant concerns
+- `NeighbourConsultation` interface: Contains `briefSummary` and `topicSummaries: TopicSummary[]`
+
+**Mock data:** App 1 includes realistic topic breakdown:
+- **Statistics:** 34 notified, 8 responses (24% response rate), 2 support, 5 object, 1 comment
+- **Plain English summary:** Full paragraph explaining overall sentiment, main concerns (loss of light as primary issue affecting properties 9 and 13), privacy concerns, design feedback about modern materials, construction impacts, and support reasoning
+- **5 topics with comments (sorted by count):**
+  - Loss of light: 4
+  - Design: 3
+  - Privacy: 2
+  - Noise: 2
+  - Traffic: 1
+- **8 detailed responses:** Each tagged with 1-3 relevant topics
+
+**Layout details:**
+- Statistics use inline text with bullet separators and medium-weight numbers
+- Two-column grid: `grid-cols-1 lg:grid-cols-2 gap-8` (stacks on mobile, side-by-side on desktop)
+- Left column: "Most commented topics" heading + Airbnb-style list (topic name left, count right)
+- Right column: "Summary" heading with "AI generated" badge + full paragraph in plain English
+- Topics list: `py-4` padding per row, `border-b` between items (no border after last)
+- Topics automatically sorted descending by count
+- Consistent heading spacing: `mb-4` for both columns
+
+**Files created:** [neighbour-consultation.tsx](components/shared/neighbour-consultation.tsx)
+
+**Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [application-sections.tsx](components/shared/application-sections.tsx)
+
+---
+
+## 2025-10-19 | Split Consultation into Separate Consultees and Neighbours Sections
+
+**Components:** ApplicationDetailLayout ([application-detail-layout.tsx](components/shared/application-detail-layout.tsx)), ApplicationSections ([application-sections.tsx](components/shared/application-sections.tsx))
+
+**Key Decisions:**
+- **Separated consultation types:** Split single "Consultation" section into two distinct top-level sections
+- **Navigation update:** Added separate nav items for "Consultees" and "Neighbours" (replacing single "Consultation")
+- **Section IDs:** `consultees` and `neighbours` for proper scrollspy and anchor behavior
+- **Visual hierarchy:** Both sections get full section treatment with `text-xl font-bold` headings and proper spacing
+- **Consistent dividers:** Horizontal rule before each section maintains visual separation
+
+**Layout changes:**
+- Removed subsection structure (h3 headings for Consultees/Neighbours within Consultation)
+- Promoted both to full sections with h2 headings
+- Navigation now shows 7 items: Overview, Application Progress, Documents, Constraints, Site history, Consultees, Neighbours
+- Each section maintains `scroll-mt-[160px]` for sticky header offset
+- Consultees placeholder remains (for future implementation)
+- Neighbours section contains NeighbourConsultation component
+
+**Files modified:** [application-detail-layout.tsx](components/shared/application-detail-layout.tsx), [application-sections.tsx](components/shared/application-sections.tsx)
+
+---
+
+## 2025-10-19 | Update Neighbour Sentiments to Three Categories
+
+**Component:** NeighbourConsultation ([components/shared/neighbour-consultation.tsx](components/shared/neighbour-consultation.tsx))
+
+**Key Decisions:**
+- **Three sentiment categories:** Changed from support/object/comment to support/object/neutral
+- **Schema alignment:** Updated `NeighbourResponse.position` and `NeighbourConsultation` to use consistent terminology
+- **Statistics display:** Changed "comment" to "neutral" in compact statistics line
+- **Clearer categorization:** "Neutral" better represents responses that neither support nor object
+
+**Schema changes:**
+- `NeighbourResponse.position`: Changed from `'support' | 'object' | 'comment'` to `'support' | 'object' | 'neutral'`
+- `NeighbourConsultation`: Renamed `commentCount` to `neutralCount`
+
+**Mock data updates:**
+- Statistics now show: 5 object, 2 support, 1 neutral
+- Emma Roberts response changed from `position: 'comment'` to `position: 'neutral'`
+
+**Display updates:**
+- Statistics line now shows: "34 notified • 8 responses (24%) • 5 object • 2 support • 1 neutral"
+- Neutral count displayed in default text color (no special color-coding)
+
+**Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [neighbour-consultation.tsx](components/shared/neighbour-consultation.tsx)
+
+---

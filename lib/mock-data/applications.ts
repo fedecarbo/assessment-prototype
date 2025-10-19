@@ -181,15 +181,127 @@ export const mockApplications: PlanningApplication[] = [
         tags: ['Site photos', 'Neighbor context']
       },
     ],
-    // Stage workflow - validated, both consultation and assessment active
-    validationStatus: 'validated',
-    validationDate: '2025-10-06',
-    consultationStatus: 'in-progress',
-    consultationStartDate: '2025-10-06',
-    assessmentStatus: 'in-progress',
-    assessmentStartDate: '2025-10-08',
-    reviewStatus: 'not-started',
-    // Enhanced stage workflow with tasks
+    neighbourConsultation: {
+      totalNotified: 34,
+      totalResponses: 8,
+      supportCount: 2,
+      objectCount: 5,
+      neutralCount: 1,
+      briefSummary: 'Most neighbours are against this proposal, with five objections, two in support, and one neutral comment. The main worry is about losing natural light - four people who live nearby say their kitchens and gardens will be darker, especially those at numbers 9 and 13 who share a boundary with the property. People also raised concerns about privacy from the new windows overlooking their gardens, the appearance of the modern materials like bi-fold doors in this Victorian street, construction noise and traffic, and potential damage to the shared access road. The two neighbours who support the application think the design is well thought out and won\'t negatively affect surrounding properties.',
+      topicSummaries: [
+        {
+          topic: 'design',
+          label: 'Design',
+          count: 3,
+          aiSummary: ''
+        },
+        {
+          topic: 'privacy',
+          label: 'Privacy',
+          count: 2,
+          aiSummary: ''
+        },
+        {
+          topic: 'loss-of-light',
+          label: 'Loss of light',
+          count: 4,
+          aiSummary: ''
+        },
+        {
+          topic: 'traffic',
+          label: 'Traffic',
+          count: 1,
+          aiSummary: ''
+        },
+        {
+          topic: 'accessibility',
+          label: 'Accessibility',
+          count: 0,
+          aiSummary: ''
+        },
+        {
+          topic: 'noise',
+          label: 'Noise',
+          count: 2,
+          aiSummary: ''
+        },
+      ],
+      responses: [
+        {
+          id: 'nr1',
+          respondentName: 'Sarah Mitchell',
+          address: '9 Abbey Gardens',
+          responseDate: '2025-10-12',
+          position: 'object',
+          topics: ['loss-of-light', 'privacy'],
+          summary: 'Concerned about loss of light to kitchen and dining room. Property shares boundary with proposed extension.',
+        },
+        {
+          id: 'nr2',
+          respondentName: 'David Chen',
+          address: '13 Abbey Gardens',
+          responseDate: '2025-10-13',
+          position: 'object',
+          topics: ['loss-of-light', 'privacy', 'noise'],
+          summary: 'Objects due to overlooking from proposed first-floor windows and potential noise during construction.',
+        },
+        {
+          id: 'nr3',
+          respondentName: 'Margaret Thompson',
+          address: '15 Abbey Gardens',
+          responseDate: '2025-10-14',
+          position: 'support',
+          topics: ['design'],
+          summary: 'Supports the application. Notes the design is sympathetic and will improve the streetscape.',
+        },
+        {
+          id: 'nr4',
+          respondentName: 'James Wilson',
+          address: '7 Abbey Gardens',
+          responseDate: '2025-10-14',
+          position: 'object',
+          topics: ['design'],
+          summary: 'Concerned about impact on conservation area character. Modern materials not appropriate for Victorian terrace.',
+        },
+        {
+          id: 'nr5',
+          respondentName: 'Emma Roberts',
+          address: '17 Abbey Gardens',
+          responseDate: '2025-10-15',
+          position: 'neutral',
+          topics: ['noise'],
+          summary: 'No objection but requests construction hours be limited to 8am-6pm Monday to Friday.',
+        },
+        {
+          id: 'nr6',
+          respondentName: 'Peter Johnson',
+          address: '5 Abbey Gardens',
+          responseDate: '2025-10-16',
+          position: 'object',
+          topics: ['loss-of-light', 'design'],
+          summary: 'Extension is too large and will dominate neighbouring gardens. Concerns about precedent for similar developments.',
+        },
+        {
+          id: 'nr7',
+          respondentName: 'Lisa Anderson',
+          address: '19 Abbey Gardens',
+          responseDate: '2025-10-17',
+          position: 'support',
+          topics: ['design'],
+          summary: 'Well-designed extension that respects the character of the area. No impact on our property.',
+        },
+        {
+          id: 'nr8',
+          respondentName: 'Robert Davies',
+          address: '3 Abbey Gardens',
+          responseDate: '2025-10-18',
+          position: 'object',
+          topics: ['traffic', 'loss-of-light'],
+          summary: 'Concerned about increased traffic during construction and potential damage to shared access road.',
+        },
+      ],
+    },
+    // Stage workflow with tasks - validated, both consultation and assessment active
     validation: {
       status: 'validated',
       validatedDate: '2025-10-06',
@@ -246,12 +358,7 @@ export const mockApplications: PlanningApplication[] = [
     consultationEnd: '2025-02-22',
     expiryDate: '2025-05-01',
     isPublic: true,
-    // Stage workflow - still pending validation
-    validationStatus: 'pending',
-    consultationStatus: 'not-started',
-    assessmentStatus: 'not-started',
-    reviewStatus: 'not-started',
-    // Enhanced stage workflow with tasks
+    // Stage workflow with tasks - still pending validation
     validation: {
       status: 'pending',
       tasks: [
@@ -309,16 +416,7 @@ export const mockApplications: PlanningApplication[] = [
       id: 'officer-bs',
       name: 'Bob Smith',
     },
-    // Stage workflow - completed all stages
-    validationStatus: 'validated',
-    validationDate: '2024-12-10',
-    consultationStatus: 'completed',
-    consultationStartDate: '2024-12-10',
-    assessmentStatus: 'completed',
-    assessmentStartDate: '2024-12-12',
-    reviewStatus: 'completed',
-    reviewStartDate: '2025-01-05',
-    // Enhanced stage workflow with tasks
+    // Stage workflow with tasks - completed all stages
     validation: {
       status: 'validated',
       validatedDate: '2024-12-10',

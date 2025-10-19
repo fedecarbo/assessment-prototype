@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ApplicationStatusBadges } from './application-status-badges'
 
 interface ApplicationDetailLayoutProps {
@@ -27,7 +27,8 @@ function getSections(documentsCount?: number, constraintsCount?: number): Sectio
     { id: 'documents', label: documentsCount ? `Documents (${documentsCount})` : 'Documents' },
     { id: 'constraints', label: constraintsCount ? `Constraints (${constraintsCount})` : 'Constraints' },
     { id: 'site-history', label: 'Site history' },
-    { id: 'consultation', label: 'Consultation' },
+    { id: 'consultees', label: 'Consultees' },
+    { id: 'neighbours', label: 'Neighbours' },
   ]
 }
 
@@ -51,7 +52,12 @@ export function ApplicationDetailLayout({
   const [activeSection, setActiveSection] = useState<string>('overview')
   const heroRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
-  const sections = getSections(documentsCount, constraintsCount)
+
+  // Memoize sections to prevent unnecessary recalculations
+  const sections = useMemo(
+    () => getSections(documentsCount, constraintsCount),
+    [documentsCount, constraintsCount]
+  )
 
   // Hero collapse effect using IntersectionObserver
   useEffect(() => {
@@ -77,6 +83,33 @@ export function ApplicationDetailLayout({
     }
   }, [])
 
+  // Memoize scrollspy callback to prevent observer recreation
+  const handleScrollspyIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
+    // Collect all intersecting sections with their positions
+    const intersectingSections: Array<{ id: string; ratio: number; top: number }> = []
+
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        intersectingSections.push({
+          id: entry.target.id,
+          ratio: entry.intersectionRatio,
+          top: entry.boundingClientRect.top,
+        })
+      }
+    })
+
+    if (intersectingSections.length > 0) {
+      // Sort by position (topmost first)
+      intersectingSections.sort((a, b) => a.top - b.top)
+
+      // Set the topmost visible section as active
+      const topSection = intersectingSections[0]
+      if (topSection) {
+        setActiveSection(topSection.id)
+      }
+    }
+  }, [])
+
   // Scrollspy effect using IntersectionObserver
   useEffect(() => {
     const sectionElements = sections.map((section) =>
@@ -84,31 +117,7 @@ export function ApplicationDetailLayout({
     )
 
     observerRef.current = new IntersectionObserver(
-      (entries) => {
-        // Collect all intersecting sections with their positions
-        const intersectingSections: Array<{ id: string; ratio: number; top: number }> = []
-
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            intersectingSections.push({
-              id: entry.target.id,
-              ratio: entry.intersectionRatio,
-              top: entry.boundingClientRect.top,
-            })
-          }
-        })
-
-        if (intersectingSections.length > 0) {
-          // Sort by position (topmost first)
-          intersectingSections.sort((a, b) => a.top - b.top)
-
-          // Set the topmost visible section as active
-          const topSection = intersectingSections[0]
-          if (topSection) {
-            setActiveSection(topSection.id)
-          }
-        }
-      },
+      handleScrollspyIntersection,
       {
         threshold: SCROLLSPY_THRESHOLDS,
         rootMargin: `-${SCROLLSPY_TOP_OFFSET_PX}px 0px -${SCROLLSPY_BOTTOM_OFFSET_PERCENT}% 0px`,
@@ -124,7 +133,7 @@ export function ApplicationDetailLayout({
     return () => {
       observerRef.current?.disconnect()
     }
-  }, [])
+  }, [sections, handleScrollspyIntersection])
 
   const handleNavClick = (sectionId: string) => {
     if (sectionId === 'overview') {

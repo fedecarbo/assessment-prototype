@@ -4,6 +4,7 @@ import { ApplicationMetadata } from './application-metadata'
 import { ApplicationStageTimeline } from './application-stage-timeline'
 import { DocumentList } from './document-list'
 import { ConstraintsSummary } from './constraints-summary'
+import { NeighbourConsultation } from './neighbour-consultation'
 import { Badge } from '@/components/ui/badge'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
@@ -103,35 +104,42 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
 
       <hr className="border-border" />
 
-      {/* Consultation Section */}
+      {/* Consultees Section */}
       <section
-        id="consultation"
+        id="consultees"
         className="scroll-mt-[160px] pb-8 pt-8"
-        aria-labelledby="consultation-heading"
+        aria-labelledby="consultees-heading"
       >
-        <h2 id="consultation-heading" className="text-xl font-bold text-foreground mb-4">
-          Consultation
+        <h2 id="consultees-heading" className="text-xl font-bold text-foreground mb-4">
+          Consultees
         </h2>
-
-        {/* Consultees Subsection */}
-        <div className="mb-6">
-          <h3 className="text-base font-semibold text-foreground mb-3">Consultees</h3>
-          <div className="min-h-[200px] border-2 border-dashed border-border bg-muted p-4">
-            <p className="text-sm text-muted-foreground">
-              Statutory consultees and consultation responses will be displayed here.
-            </p>
-          </div>
+        <div className="min-h-[200px] border-2 border-dashed border-border bg-muted p-4">
+          <p className="text-sm text-muted-foreground">
+            Statutory consultees and consultation responses will be displayed here.
+          </p>
         </div>
+      </section>
 
-        {/* Neighbours Subsection */}
-        <div>
-          <h3 className="text-base font-semibold text-foreground mb-3">Neighbours</h3>
+      <hr className="border-border" />
+
+      {/* Neighbours Section */}
+      <section
+        id="neighbours"
+        className="scroll-mt-[160px] pb-8 pt-8"
+        aria-labelledby="neighbours-heading"
+      >
+        <h2 id="neighbours-heading" className="text-xl font-bold text-foreground mb-4">
+          Neighbours
+        </h2>
+        {application.neighbourConsultation ? (
+          <NeighbourConsultation consultation={application.neighbourConsultation} />
+        ) : (
           <div className="min-h-[200px] border-2 border-dashed border-border bg-muted p-4">
             <p className="text-sm text-muted-foreground">
               Neighbour notifications and responses will appear here.
             </p>
           </div>
-        </div>
+        )}
       </section>
     </>
   )
