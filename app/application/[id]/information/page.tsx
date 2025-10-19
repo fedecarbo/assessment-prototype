@@ -25,7 +25,7 @@ export default async function ApplicationInformationPage({ params }: Application
       <CaseSummaryHeader
         reference={application.reference}
         address={application.address}
-        description={application.proposal}
+        description={application.description}
         variant="info"
         constrained={true}
       />

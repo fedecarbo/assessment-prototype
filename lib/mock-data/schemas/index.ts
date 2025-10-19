@@ -159,4 +159,7 @@ export interface PlanningApplication {
   review: ReviewStage;
 }
 
+// Type alias for backward compatibility
+export type Application = PlanningApplication
+
 // Add more schemas as needed
