@@ -26,7 +26,6 @@ function getSections(documentsCount?: number, constraintsCount?: number): Sectio
     { id: 'progress', label: 'Application Progress' },
     { id: 'documents', label: documentsCount ? `Documents (${documentsCount})` : 'Documents' },
     { id: 'constraints', label: constraintsCount ? `Constraints (${constraintsCount})` : 'Constraints' },
-    { id: 'site-history', label: 'Site history' },
     { id: 'consultees', label: 'Consultees' },
     { id: 'neighbours', label: 'Neighbours' },
   ]
@@ -237,6 +236,8 @@ export function ApplicationDetailLayout({
       {/* Main Content */}
       <div className="mx-auto max-w-[1100px] px-4 py-8">
         {children}
+        {/* Bottom padding to ensure last sections can scroll into view */}
+        <div className="h-[75vh]" aria-hidden="true" />
       </div>
     </div>
   )

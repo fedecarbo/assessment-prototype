@@ -1,11 +1,13 @@
 import { Badge } from '@/components/ui/badge'
 import type { NeighbourConsultation } from '@/lib/mock-data/schemas'
+import Link from 'next/link'
 
 interface NeighbourConsultationProps {
   consultation: NeighbourConsultation
+  applicationId: string
 }
 
-export function NeighbourConsultation({ consultation }: NeighbourConsultationProps) {
+export function NeighbourConsultation({ consultation, applicationId }: NeighbourConsultationProps) {
   const responseRate = consultation.totalNotified > 0
     ? Math.round((consultation.totalResponses / consultation.totalNotified) * 100)
     : 0
@@ -23,9 +25,9 @@ export function NeighbourConsultation({ consultation }: NeighbourConsultationPro
         {' • '}
         <span className="text-foreground font-medium">{consultation.totalResponses}</span> responses ({responseRate}%)
         {' • '}
-        <span className="text-red-600 dark:text-red-400 font-medium">{consultation.objectCount}</span> object
+        <span className="text-foreground font-medium">{consultation.objectCount}</span> object
         {' • '}
-        <span className="text-green-600 dark:text-green-400 font-medium">{consultation.supportCount}</span> support
+        <span className="text-foreground font-medium">{consultation.supportCount}</span> support
         {' • '}
         <span className="text-foreground font-medium">{consultation.neutralCount}</span> neutral
       </div>
@@ -61,6 +63,16 @@ export function NeighbourConsultation({ consultation }: NeighbourConsultationPro
           </div>
           <p className="text-foreground leading-relaxed">{consultation.briefSummary}</p>
         </div>
+      </div>
+
+      {/* Link to view all comments */}
+      <div>
+        <Link
+          href={`/application/${applicationId}/neighbours`}
+          className="text-base text-primary underline underline-offset-4"
+        >
+          View all neighbour comments ({consultation.totalResponses})
+        </Link>
       </div>
     </div>
   )

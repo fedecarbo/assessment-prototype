@@ -55,10 +55,10 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
     <div>
       {activeConstraints.length > 0 ? (
         <>
-          {/* Two Column Layout: Map (33%) + Detailed List (66%) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-6">
+          {/* Two Column Layout: Map (50%) + Detailed List (50%) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
             {/* Left: Map Placeholder */}
-            <div className="lg:col-span-1">
+            <div>
               <div className="aspect-square w-full border-2 border-dashed border-border bg-muted flex items-center justify-center">
                 <div className="text-center">
                   <svg
@@ -81,7 +81,7 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
             </div>
 
             {/* Right: Detailed List with Icons */}
-            <div className="lg:col-span-2">
+            <div>
               {sortedTypes.map((type, index) => {
                 const constraintsOfType = groupedConstraints[type]
                 if (!constraintsOfType) return null
@@ -93,7 +93,7 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
                     <div className="flex gap-3 py-4">
                       {getConstraintIcon(type as Constraint['type'])}
                       <div className="flex-1">
-                        <div className="font-medium text-foreground">{firstConstraint?.label}</div>
+                        <div className="text-base font-medium text-foreground">{firstConstraint?.label}</div>
                         {constraintsOfType.length === 1 ? (
                           // Single constraint - show details normally
                           firstConstraint?.details && (
@@ -101,7 +101,7 @@ export function ConstraintsSummary({ constraints = [], applicationId }: Constrai
                           )
                         ) : (
                           // Multiple constraints - show as compact list
-                          <div className="text-sm text-muted-foreground mt-1">
+                          <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
                             {constraintsOfType.map((constraint) => (
                               <div key={constraint.id}>
                                 {constraint.details}
