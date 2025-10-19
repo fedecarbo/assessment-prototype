@@ -86,7 +86,9 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '2.4 MB',
         fileType: 'pdf' as const,
-        tags: ['Site plan - proposed']
+        tags: ['Site plan - proposed'],
+        version: 'v2',
+        visibility: 'public' as const
       },
       {
         id: 'd2',
@@ -95,7 +97,9 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '3.9 MB',
         fileType: 'pdf' as const,
-        tags: ['Elevations - existing', 'Floor plan - existing', 'Elevations - proposed', 'Floor plan - proposed']
+        tags: ['Elevations - existing', 'Floor plan - existing', 'Elevations - proposed', 'Floor plan - proposed'],
+        version: 'v1',
+        visibility: 'public' as const
       },
       {
         id: 'd3',
@@ -104,7 +108,9 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '2.1 MB',
         fileType: 'pdf' as const,
-        tags: ['Sections - existing', 'Sections - proposed']
+        tags: ['Sections - existing', 'Sections - proposed'],
+        version: 'v1',
+        visibility: 'public' as const
       },
       // Supporting documents
       {
@@ -114,7 +120,8 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '456 KB',
         fileType: 'pdf' as const,
-        tags: ['Application form']
+        tags: ['Application form'],
+        visibility: 'sensitive' as const
       },
       {
         id: 's2',
@@ -123,7 +130,9 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '3.2 MB',
         fileType: 'pdf' as const,
-        tags: ['Design statement', 'Access statement']
+        tags: ['Design statement', 'Access statement'],
+        version: 'v3',
+        visibility: 'public' as const
       },
       {
         id: 's3',
@@ -132,7 +141,9 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '1.1 MB',
         fileType: 'pdf' as const,
-        tags: ['Planning statement']
+        tags: ['Planning statement'],
+        version: 'v2',
+        visibility: 'public' as const
       },
       {
         id: 's4',
@@ -141,7 +152,9 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-07',
         fileSize: '2.8 MB',
         fileType: 'pdf' as const,
-        tags: ['Heritage assessment']
+        tags: ['Heritage assessment'],
+        version: 'v1',
+        visibility: 'public' as const
       },
       // Evidence
       {
@@ -151,7 +164,8 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '3.5 MB',
         fileType: 'jpg' as const,
-        tags: ['Site photos']
+        tags: ['Site photos'],
+        visibility: 'public' as const
       },
       {
         id: 'e2',
@@ -160,7 +174,8 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '4.1 MB',
         fileType: 'jpg' as const,
-        tags: ['Site photos']
+        tags: ['Site photos'],
+        visibility: 'public' as const
       },
       {
         id: 'e3',
@@ -169,7 +184,8 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-06',
         fileSize: '3.8 MB',
         fileType: 'jpg' as const,
-        tags: ['Site photos', 'Street scene']
+        tags: ['Site photos', 'Street scene'],
+        visibility: 'public' as const
       },
       {
         id: 'e4',
@@ -178,7 +194,8 @@ export const mockApplications: PlanningApplication[] = [
         uploadedDate: '2025-10-08',
         fileSize: '5.2 MB',
         fileType: 'jpg' as const,
-        tags: ['Site photos', 'Neighbor context']
+        tags: ['Site photos', 'Neighbor context'],
+        visibility: 'sensitive' as const
       },
     ],
     consulteeConsultation: {

@@ -68,6 +68,25 @@ Quick reference for what's been built and key architectural decisions.
 
 **Badge** - CVA-based with variants: blue, yellow, green, gray, muted, black
 **ThemeToggle** - Dark mode (next-themes) with sun/moon icons
+**Table** - Shadcn table component for data display
+
+### Shared Data Display Components
+
+**DocumentsTable** - Table view for document listings
+- **Columns:** Thumbnail, Document name, Category, Version, Visibility (5 columns total)
+- **Column headers:** text-base, font-bold, text-foreground (black), empty header for thumbnail column
+- **Thumbnail column:** 80px width
+  - 64px × 64px light grey placeholder box (bg-muted), rounded corners
+  - Will be replaced with actual document preview images in future
+- **Document name cell:** Stacked layout with 10px margin-top between name and tags
+  - Primary text link: text-base, font-medium, text-primary with hover underline
+  - Tags displayed below name (small badge variant, muted, flex-wrap with 1.5 gap)
+  - No tags shown if document has no tags (cleaner than placeholder)
+- **Category:** Formatted labels (Drawings, Supporting, Evidence)
+- **Version:** Optional version string (v1, v2, Rev A) or em dash if not present
+- **Visibility:** Public or Sensitive label
+- Reduces horizontal clutter by stacking tags under document names
+- Used in ApplicationInfoDocuments tab
 
 ---
 
@@ -99,7 +118,7 @@ Quick reference for what's been built and key architectural decisions.
 
 **Stage Workflows:** ValidationStage, ConsultationStage, AssessmentStage, ReviewStage
 **Stage Tasks:** id, title, completed, completedDate
-**Documents:** id, name, category, tags[], fileSize, fileType
+**Documents:** id, name, category, tags[], fileSize, fileType, version?, visibility (public/sensitive)
 **Constraints:** id, type, label, status, details?, value?
 **Consultees:** ConsulteeResponse with position, responseDate, summary
 **Neighbours:** NeighbourResponse with position, topics[]
@@ -264,19 +283,23 @@ Quick reference for what's been built and key architectural decisions.
 
 ### Tab Section Components
 
-All tabs currently use placeholder components for future granular content implementation:
-
 **ApplicationInfoOverview** - Placeholder for granular overview
 - **Title:** "Overview" (text-xl font-bold)
 - **Last updated:** "Last updated: 12 October 2024" (text-sm text-muted-foreground, mt-1)
 - Will include detailed proposal description, application type, requested services, metadata
 - More granular than Application Details page overview
 
-**ApplicationInfoDocuments** - Placeholder for document management
+**ApplicationInfoDocuments** - Document management with search, filters, and table view (client component)
 - **Title:** "Documents" (text-xl font-bold)
 - **Last updated:** "Last updated: 15 October 2024" (text-sm text-muted-foreground, mt-1)
-- Will include detailed document listings, categories, metadata
-- More comprehensive document view than Application Details page
+- **Search and filters bar:** Horizontal layout with 3px gap
+  - Search input: Full-width with Search icon, searches document names and tags
+  - Category filter: Select dropdown (180px width) - All categories, Drawings, Supporting, Evidence
+  - Visibility filter: Select dropdown (180px width) - All visibility, Public, Sensitive
+- **Table view:** Uses **DocumentsTable** component
+- **Filtering logic:** Real-time filtering on search query, category, and visibility
+- **Empty states:** "No documents match search criteria" when filtered, "No documents submitted" when none exist
+- Client-side state management with React hooks
 
 **ApplicationInfoConstraints** - Placeholder for constraint details
 - **Title:** "Constraints" (text-xl font-bold)

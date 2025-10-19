@@ -75,6 +75,8 @@ export interface Document {
   fileSize: string;
   fileType: 'pdf' | 'jpg' | 'png' | 'doc' | 'docx';
   tags?: string[]; // Tags describing what the document contains
+  version?: string; // Document version (e.g., "v1", "v2", "Rev A")
+  visibility: 'public' | 'sensitive'; // Whether document is publicly visible or sensitive
 }
 
 export type ConsultationTopic = 'design' | 'privacy' | 'loss-of-light' | 'traffic' | 'accessibility' | 'noise' | 'other';
