@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 function getStatusBadge(status: TaskStatus) {
   switch (status) {
     case 'completed':
-      return <Badge variant="default" className="bg-green-600 hover:bg-green-600">Completed</Badge>
+      return <Badge variant="green">Completed</Badge>
     case 'in-progress':
       return <Badge variant="blue">In progress</Badge>
     case 'not-started':
