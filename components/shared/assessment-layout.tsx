@@ -50,7 +50,7 @@ function AssessmentLayoutContent({
 
         {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
         <main className="flex flex-1 justify-center overflow-y-auto">
-          <div className="w-full max-w-content px-4">
+          <div className="w-full px-4" style={{ maxWidth: '1100px' }}>
             {children}
           </div>
         </main>

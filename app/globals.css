@@ -106,4 +106,8 @@
   /* Layout spacing */
   --spacing-sticky-header-offset: 160px;
   --spacing-section-placeholder: 384px;
+
+  /* Custom max-widths */
+  --max-width-content: 1100px;
+  --max-width-readable: 723px;
 }
