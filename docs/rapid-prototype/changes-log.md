@@ -38,3 +38,21 @@ Track all bug fixes and modifications.
 **Status:** ✅ Resolved - Clean responsive layout with TaskPanel at 370px, content constrained to 1100px max-width
 
 ---
+
+## 2025-10-19 | Application Information Link Not Working
+
+**Issue:** "Application information" link in CaseSummaryHeader was using `href="#"` placeholder, not navigating to the application information page
+
+**Resolution:**
+- Added `applicationId` prop to CaseSummaryHeader component
+- Updated link to use Next.js Link component with proper route `/application/${applicationId}/information`
+- Added `target="_blank"` and `rel="noopener noreferrer"` to open page in new tab
+- Updated AssessmentLayout to pass applicationId prop to CaseSummaryHeader
+
+**Files Changed:**
+- [case-summary-header.tsx](components/shared/case-summary-header.tsx) - Added applicationId prop, replaced <a> with Link, added target="_blank"
+- [assessment-layout.tsx](components/shared/assessment-layout.tsx) - Pass applicationId to CaseSummaryHeader
+
+**Status:** ✅ Resolved - Application information link now navigates to `/application/[id]/information` in new tab
+
+---

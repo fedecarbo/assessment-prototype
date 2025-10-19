@@ -40,7 +40,7 @@ function AssessmentLayoutContent({
         <Breadcrumbs items={breadcrumbItems} variant="full" />
 
         {/* Case Summary Header - Full width */}
-        <CaseSummaryHeader reference={reference} address={address} description={description} />
+        <CaseSummaryHeader reference={reference} address={address} description={description} applicationId={applicationId} />
       </div>
 
       {/* Scrollable Content Area - Two column layout */}
@@ -50,7 +50,7 @@ function AssessmentLayoutContent({
 
         {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
         <main className="flex flex-1 justify-center overflow-y-auto">
-          <div className="w-full max-w-[1100px] px-4">
+          <div className="w-full max-w-content px-4">
             {children}
           </div>
         </main>

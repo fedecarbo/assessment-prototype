@@ -239,3 +239,85 @@ Quick reference for what's been built and key architectural decisions.
 - Uses Shadcn UI Button component with `size="lg"`
 
 ---
+
+## Application Information Page
+
+**Route:** `/application/[id]/information`
+**Pattern:** Full-width page with tabbed navigation, opens in new tab
+**Layout:** Site header + case summary (without quick links) + tabbed content
+
+### Core Components
+
+**ApplicationInfoLayout** - Tabbed navigation wrapper (client component)
+- **Layout structure:** Full-width nav bar background with 1100px max-width content
+- **Tab navigation:** Horizontal tabs with active indicator (3px blue bottom border)
+- **6 tabs:** Overview, Documents, Constraints, Site history, Consultees, Neighbours
+- **Active state:** Foreground text color with blue border, inactive tabs use blue text with hover underline
+- **Tab spacing:** 6-unit gap between tabs (gap-6, matches Application Details)
+- **Content area:** 1100px max-width, centered, px-4 py-8 padding
+
+**CaseSummaryHeader** - Updated with variant and constrained support
+- **Variant support:** `default` (with quick links) | `info` (without quick links)
+- **Constrained support:** `constrained={true}` centers content at 1100px max-width with full-width background
+- Assessment page: `default` variant, not constrained (full width)
+- Application information page: `info` variant, `constrained={true}` (1100px max-width)
+
+### Tab Section Components
+
+All tabs currently use placeholder components for future granular content implementation:
+
+**ApplicationInfoOverview** - Placeholder for granular overview
+- **Title:** "Overview" (text-xl font-bold)
+- **Last updated:** "Last updated: 12 October 2024" (text-sm text-muted-foreground, mt-1)
+- Will include detailed proposal description, application type, requested services, metadata
+- More granular than Application Details page overview
+
+**ApplicationInfoDocuments** - Placeholder for document management
+- **Title:** "Documents" (text-xl font-bold)
+- **Last updated:** "Last updated: 15 October 2024" (text-sm text-muted-foreground, mt-1)
+- Will include detailed document listings, categories, metadata
+- More comprehensive document view than Application Details page
+
+**ApplicationInfoConstraints** - Placeholder for constraint details
+- **Title:** "Constraints" (text-xl font-bold)
+- **Last updated:** "Last updated: 10 October 2024" (text-sm text-muted-foreground, mt-1)
+- Will include detailed constraint information, impacts, planning policy considerations
+- More granular analysis than Application Details page summary
+
+**ApplicationInfoSiteHistory** - Placeholder component
+- **Title:** "Site history" (text-xl font-bold)
+- **Last updated:** "Last updated: 8 October 2024" (text-sm text-muted-foreground, mt-1)
+- Will show site history and previous planning applications
+
+**ApplicationInfoConsultees** - Placeholder for consultee details
+- **Title:** "Consultees" (text-xl font-bold)
+- **Last updated:** "Last updated: 14 October 2024" (text-sm text-muted-foreground, mt-1)
+- Will include statutory consultee information, responses, recommended conditions
+- More detailed than Application Details page summary
+
+**ApplicationInfoNeighbours** - Placeholder for neighbour details
+- **Title:** "Neighbours" (text-xl font-bold)
+- **Last updated:** "Last updated: 13 October 2024" (text-sm text-muted-foreground, mt-1)
+- Will include neighbour consultation information, responses, objections, support comments
+- More detailed than Application Details page summary
+
+### Design Patterns
+
+**Tab Navigation:** (Styled to match Application Details scrollspy navigation)
+- Active tab: 3px blue bottom border (`border-primary`), black text (`text-foreground`)
+- Inactive tab: transparent border, blue text (`text-primary`), underline on hover
+- Font: text-base (matches Application Details)
+- Padding: py-3 (matches Application Details)
+- Gap: gap-6 between tabs (24px, matches Application Details)
+- Border approach: `border-b-[3px]` (matches Application Details)
+
+**Placeholder Style:**
+- 400px min-height, dashed border, muted background, rounded corners
+- Descriptive text explaining future content purpose
+
+**Design Philosophy:**
+- Application Information page: Granular, detailed content for deep dives
+- Application Details page: High-level summaries for quick overview
+- Both pages should feel consistent in styling and patterns
+
+---
