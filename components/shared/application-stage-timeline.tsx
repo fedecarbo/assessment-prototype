@@ -1,18 +1,10 @@
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
+import { formatDate } from '@/lib/utils'
 
 interface ApplicationStageTimelineProps {
   application: PlanningApplication
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
 }
 
 function getStatusBadge(status: string, isBlocked: boolean = false) {

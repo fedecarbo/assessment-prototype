@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge'
 import type { NeighbourConsultation } from '@/lib/mock-data/schemas'
 import Link from 'next/link'
+import { calculateResponseRate } from '@/lib/utils'
+import { ConsultationStatistics } from './consultation-statistics'
 
 interface NeighbourConsultationProps {
   consultation: NeighbourConsultation
@@ -8,29 +10,24 @@ interface NeighbourConsultationProps {
 }
 
 export function NeighbourConsultation({ consultation, applicationId }: NeighbourConsultationProps) {
-  const responseRate = consultation.totalNotified > 0
-    ? Math.round((consultation.totalResponses / consultation.totalNotified) * 100)
-    : 0
+  const responseRate = calculateResponseRate(consultation.totalResponses, consultation.totalNotified)
 
   // Filter to only show topics with comments, sorted by count descending
   const topicsWithComments = consultation.topicSummaries
     .filter(topic => topic.count > 0)
     .sort((a, b) => b.count - a.count)
 
+  const statistics = [
+    { label: 'notified', value: consultation.totalNotified },
+    { label: `responses (${responseRate}%)`, value: consultation.totalResponses },
+    { label: 'object', value: consultation.objectCount },
+    { label: 'support', value: consultation.supportCount },
+    { label: 'neutral', value: consultation.neutralCount },
+  ]
+
   return (
     <div className="space-y-6">
-      {/* Compact Statistics Line */}
-      <div className="text-base text-muted-foreground">
-        <span className="text-foreground font-medium">{consultation.totalNotified}</span> notified
-        {' • '}
-        <span className="text-foreground font-medium">{consultation.totalResponses}</span> responses ({responseRate}%)
-        {' • '}
-        <span className="text-foreground font-medium">{consultation.objectCount}</span> object
-        {' • '}
-        <span className="text-foreground font-medium">{consultation.supportCount}</span> support
-        {' • '}
-        <span className="text-foreground font-medium">{consultation.neutralCount}</span> neutral
-      </div>
+      <ConsultationStatistics items={statistics} />
 
       {/* Two Column Layout: Topic List (Left) + AI Summary (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

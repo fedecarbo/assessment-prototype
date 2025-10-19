@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge'
 import type { ConsulteeConsultation } from '@/lib/mock-data/schemas'
 import Link from 'next/link'
+import { calculateResponseRate } from '@/lib/utils'
+import { ConsultationStatistics } from './consultation-statistics'
 
 interface ConsulteeSummaryProps {
   consultation: ConsulteeConsultation
@@ -8,9 +10,7 @@ interface ConsulteeSummaryProps {
 }
 
 export function ConsulteeSummary({ consultation, applicationId }: ConsulteeSummaryProps) {
-  const responseRate = consultation.totalConsultees > 0
-    ? Math.round((consultation.totalResponses / consultation.totalConsultees) * 100)
-    : 0
+  const responseRate = calculateResponseRate(consultation.totalResponses, consultation.totalConsultees)
 
   // Get consultees sorted by response date (most recent first), with non-responders at the end
   const sortedConsultees = [...consultation.responses].sort((a, b) => {
@@ -32,44 +32,20 @@ export function ConsulteeSummary({ consultation, applicationId }: ConsulteeSumma
     }
   }
 
+  // Build statistics array with only non-zero counts
+  const statistics = [
+    { label: 'consulted', value: consultation.totalConsultees },
+    { label: `responses (${responseRate}%)`, value: consultation.totalResponses },
+    ...(consultation.objectionCount > 0 ? [{ label: 'objection', value: consultation.objectionCount }] : []),
+    ...(consultation.noObjectionCount > 0 ? [{ label: 'no objection', value: consultation.noObjectionCount }] : []),
+    ...(consultation.amendmentsNeededCount > 0 ? [{ label: 'amendments needed', value: consultation.amendmentsNeededCount }] : []),
+    ...(consultation.notContactedCount > 0 ? [{ label: 'not contacted', value: consultation.notContactedCount }] : []),
+    ...(consultation.awaitingResponseCount > 0 ? [{ label: 'awaiting response', value: consultation.awaitingResponseCount }] : []),
+  ]
+
   return (
     <div className="space-y-6">
-      {/* Compact Statistics Line */}
-      <div className="text-base text-muted-foreground">
-        <span className="text-foreground font-medium">{consultation.totalConsultees}</span> consulted
-        {' • '}
-        <span className="text-foreground font-medium">{consultation.totalResponses}</span> responses ({responseRate}%)
-        {consultation.objectionCount > 0 && (
-          <>
-            {' • '}
-            <span className="text-foreground font-medium">{consultation.objectionCount}</span> objection
-          </>
-        )}
-        {consultation.noObjectionCount > 0 && (
-          <>
-            {' • '}
-            <span className="text-foreground font-medium">{consultation.noObjectionCount}</span> no objection
-          </>
-        )}
-        {consultation.amendmentsNeededCount > 0 && (
-          <>
-            {' • '}
-            <span className="text-foreground font-medium">{consultation.amendmentsNeededCount}</span> amendments needed
-          </>
-        )}
-        {consultation.notContactedCount > 0 && (
-          <>
-            {' • '}
-            <span className="text-foreground font-medium">{consultation.notContactedCount}</span> not contacted
-          </>
-        )}
-        {consultation.awaitingResponseCount > 0 && (
-          <>
-            {' • '}
-            <span className="text-foreground font-medium">{consultation.awaitingResponseCount}</span> awaiting response
-          </>
-        )}
-      </div>
+      <ConsultationStatistics items={statistics} />
 
       {/* Two Column Layout: Consultee List (Left) + AI Summary (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

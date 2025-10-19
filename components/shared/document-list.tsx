@@ -9,14 +9,19 @@ interface DocumentListProps {
   documents?: Document[]
 }
 
-const categoryLabels = {
+const DOCUMENT_CATEGORIES = ['drawings', 'supporting', 'evidence'] as const
+type DocumentCategory = typeof DOCUMENT_CATEGORIES[number]
+
+const categoryLabels: Record<DocumentCategory, string> = {
   drawings: 'Drawings',
   supporting: 'Supporting documents',
   evidence: 'Evidence',
 } as const
 
+type ExpandedState = Record<DocumentCategory, boolean>
+
 export function DocumentList({ documents }: DocumentListProps) {
-  const [expandedCategories, setExpandedCategories] = useState({
+  const [expandedCategories, setExpandedCategories] = useState<ExpandedState>({
     drawings: true,
     supporting: false,
     evidence: false,
@@ -40,7 +45,7 @@ export function DocumentList({ documents }: DocumentListProps) {
     {} as Record<Document['category'], Document[]>
   )
 
-  const toggleCategory = (category: keyof typeof expandedCategories) => {
+  const toggleCategory = (category: DocumentCategory) => {
     setExpandedCategories((prev) => ({
       ...prev,
       [category]: !prev[category],
@@ -49,7 +54,7 @@ export function DocumentList({ documents }: DocumentListProps) {
 
   return (
     <div className="space-y-5">
-      {(['drawings', 'supporting', 'evidence'] as const).map((category) => {
+      {DOCUMENT_CATEGORIES.map((category) => {
         const categoryDocs = groupedDocuments[category]
         if (!categoryDocs || categoryDocs.length === 0) return null
 

@@ -508,3 +508,8 @@ export const mockApplications: PlanningApplication[] = [
     },
   },
 ];
+
+// Helper function to get application by ID
+export function getApplicationById(id: string): PlanningApplication | undefined {
+  return mockApplications.find(app => app.id === id);
+}

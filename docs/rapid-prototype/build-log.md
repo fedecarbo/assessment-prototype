@@ -106,9 +106,78 @@ Quick reference for what's been built and key architectural decisions.
 
 ---
 
+## Assessment Page
+
+**Route:** `/application/[id]/assessment`
+**Layout Pattern:** Full-width layout with site header, breadcrumbs, and case summary
+
+### Core Components
+
+**AssessmentLayout** - Full-width layout wrapper with two-column structure and independent scrolling (client component)
+- **Fixed headers:** Site header, breadcrumbs, and case summary remain at top (flex-none)
+- **Viewport height:** Uses `h-screen` with flexbox column layout
+- **Two-column scrollable layout:**
+  - Left: TaskPanel (320px fixed width, `overflow-y-auto`)
+  - Right: Main content (centered with 1100px max-width, `overflow-y-auto`)
+- **Independent scrolling:** Each content area scrolls independently with its own scrollbar
+- **Task selection state:** Manages `selectedTaskId` state (default: 1)
+- **Render prop pattern:** Children function receives `selectedTaskId` to render task-specific content
+- Headers stay fixed while content areas scroll
+
+**SiteHeader** - Global navigation header
+- Southwark branding with "Back-office Planning System"
+- User name and logout link
+- 10px blue border bottom (matches GDS primary color)
+- Theme toggle integration
+- **Variant support:** `constrained` (default, 1100px max-width) | `full` (no max-width)
+
+**Breadcrumbs** - Navigation trail component
+- Light blue background (GDS primary 95% lightness)
+- Slash separators between items
+- Links to previous pages, current page as plain text
+
+**CaseSummaryHeader** - Condensed application header (client component)
+- Reference number + address in single line (left side)
+- Quick links: "Application information", "Documents" (right side)
+- Optional "Show/Hide proposal description" toggle button
+- Expandable description panel with smooth transition (300ms)
+- Description constrained to max-w-4xl (896px) for readability
+- Replaces the collapsing hero pattern from detail page
+
+**TaskPanel** - Fixed sidebar for assessment tasks with independent scroll
+- Fixed width: 320px (w-80, flex-none)
+- Independent scrolling: `overflow-y-auto`
+- Border right separator
+- **Interactive task list:** Click to select task
+- **Visual states:**
+  - Selected: Primary background with white text
+  - Unselected: Default background with hover state
+- Scrolls independently from main content area
+- Callbacks: `onTaskSelect(taskId)` updates parent state
+
+### Layout Differences from Application Detail Page
+
+| Feature | Application Detail | Assessment Page |
+|---------|-------------------|-----------------|
+| Width | 1100px max-width | Full width |
+| Hero | Collapsing with map | Case summary (no map) |
+| Navigation | Sticky scrollspy tabs | Breadcrumbs only |
+| Header | Conditional condensed | Always visible summary |
+
+---
+
 ## Key Files
 
-**Layouts:** [application-detail-layout.tsx](components/shared/application-detail-layout.tsx), [application-sections.tsx](components/shared/application-sections.tsx)
+**Layouts:**
+- [application-detail-layout.tsx](components/shared/application-detail-layout.tsx) - Constrained width with collapsing hero
+- [assessment-layout.tsx](components/shared/assessment-layout.tsx) - Full-width with case summary
+- [application-sections.tsx](components/shared/application-sections.tsx)
+
+**Headers:**
+- [site-header.tsx](components/shared/site-header.tsx) - Global navigation
+- [case-summary-header.tsx](components/shared/case-summary-header.tsx) - Application summary
+- [breadcrumbs.tsx](components/shared/breadcrumbs.tsx) - Navigation trail
+
 **Schemas:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts)
 **Mock Data:** [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
 **Utilities:** [lib/utils.ts](lib/utils.ts) - formatDate, calculateResponseRate
