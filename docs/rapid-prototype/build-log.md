@@ -148,12 +148,32 @@ Quick reference for what's been built and key architectural decisions.
 - Fixed width: 320px (w-80, flex-none)
 - Independent scrolling: `overflow-y-auto`
 - Border right separator
-- **Interactive task list:** Click to select task
+- **Interactive task list:** Click to select task (7 tasks)
 - **Visual states:**
   - Selected: Primary background with white text
   - Unselected: Default background with hover state
+- **Status icons** (right-aligned):
+  - Completed: Green checkmark icon (lucide-react Check)
+  - In progress: Blue circle-dot icon (lucide-react CircleDot)
+  - Not started: Gray circle outline icon (lucide-react Circle)
 - Scrolls independently from main content area
 - Callbacks: `onTaskSelect(taskId)` updates parent state
+
+**AssessmentContent** - Dynamic task content renderer (client component)
+- Displays selected task content
+- **Status badge** above task title:
+  - Completed: Green badge
+  - In progress: Blue badge
+  - Not started: Gray badge
+- Task title and description
+- Placeholder content sections (30 items for scroll demo)
+
+**AssessmentContext** - React Context for task state management
+- `TaskStatus` type: `'not-started' | 'in-progress' | 'completed'`
+- `Task` interface: id, title, status
+- Mock data: 7 tasks (2 completed, 1 in-progress, 4 not-started)
+- Provides `selectedTaskId`, `setSelectedTaskId`, and `tasks` array
+- `useAssessment()` hook for consuming context
 
 ### Layout Differences from Application Detail Page
 
