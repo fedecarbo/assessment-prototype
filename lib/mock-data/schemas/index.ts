@@ -114,9 +114,11 @@ export type ConsulteePosition = 'no-objection' | 'objection' | 'amendments-neede
 export interface ConsulteeResponse {
   id: string;
   consulteeOrg: string;
+  type: 'internal' | 'external';
   responseDate?: string;
   position: ConsulteePosition;
-  summary?: string;
+  summary?: string; // AI-generated 2-3 line summary
+  commentCount: number; // Total number of comments in the conversation
 }
 
 export interface ConsulteeConsultation {

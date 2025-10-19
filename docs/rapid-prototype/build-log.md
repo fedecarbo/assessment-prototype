@@ -339,11 +339,38 @@ Quick reference for what's been built and key architectural decisions.
 - **Last updated:** "Last updated: 8 October 2024" (text-sm text-muted-foreground, mt-1)
 - Will show site history and previous planning applications
 
-**ApplicationInfoConsultees** - Placeholder for consultee details
+**ApplicationInfoConsultees** - Consultee management with tabbed filtering and card/forum-style layout (client component)
 - **Title:** "Consultees" (text-xl font-bold)
 - **Last updated:** "Last updated: 14 October 2024" (text-sm text-muted-foreground, mt-1)
-- Will include statutory consultee information, responses, recommended conditions
+- **Tab navigation:** Horizontal tabs with counts for filtering consultee positions
+  - 4 tabs: All, No objection, Amendments needed, Objected
+  - Tab styling matches ApplicationInfoLayout pattern (3px blue border, gap-6)
+  - Active tab shows count in parentheses
+- **Card layout:** Modern forum-style with minimalist design, supports email-chain-like conversation view
+  - Vertical stack of cards with 3-unit gap (space-y-3)
+  - Each card: border, rounded corners, padding, subtle hover effect (hover:bg-muted/50)
+  - **ConsulteeCard component structure:**
+    - **Header section:**
+      - **Left column:** Organisation name (font-semibold) with type in parentheses as secondary text (e.g., "Historic England (External)"), stacked vertically
+      - **Type text:** Inline with name, smaller muted text in parentheses (Internal/External)
+      - **Last response date:** Below organisation name in extra-small muted text (e.g., "Last response 15 Oct 2025")
+      - **Right column:** Position badge (top-aligned)
+    - **Summary:** AI-generated summary (max 30 words) in text-base with foreground color, relaxed line-height, 3-unit bottom margin
+    - **Footer:** Border-top separator with "View comments (X)" link showing total comment count in blue (text-primary with hover underline)
+- **Position badge component:** Color-coded with dark mode support
+  - No objection: Green badge
+  - Objection: Red badge
+  - Amendments needed: Yellow badge
+  - Not contacted: Gray badge
+  - Awaiting response: Blue badge
+- **Filtering logic:** Real-time filtering based on selected tab
+- **Empty state:** "No consultees match this filter" when filtered
+- Client-side state management with React hooks (activeTab state)
 - More detailed than Application Details page summary
+- **Schema updates:**
+  - `type: 'internal' | 'external'` field for consultee type
+  - `commentCount: number` field tracks total comments in conversation thread
+  - `summary?: string` is AI-generated 2-3 line preview of the conversation
 
 **ApplicationInfoNeighbours** - Placeholder for neighbour details
 - **Title:** "Neighbours" (text-xl font-bold)
