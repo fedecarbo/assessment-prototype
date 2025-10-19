@@ -26,7 +26,7 @@ export function ConsulteeSummary({ consultation, applicationId }: ConsulteeSumma
       case 'no-objection': return 'No objection'
       case 'objection': return 'Objection'
       case 'amendments-needed': return 'Amendments needed'
-      case 'no-comment': return 'No comment'
+      case 'not-contacted': return 'Not contacted'
       case 'awaiting-response': return 'Awaiting response'
       default: return position
     }
@@ -57,10 +57,10 @@ export function ConsulteeSummary({ consultation, applicationId }: ConsulteeSumma
             <span className="text-foreground font-medium">{consultation.amendmentsNeededCount}</span> amendments needed
           </>
         )}
-        {consultation.noCommentCount > 0 && (
+        {consultation.notContactedCount > 0 && (
           <>
             {' • '}
-            <span className="text-foreground font-medium">{consultation.noCommentCount}</span> no comment
+            <span className="text-foreground font-medium">{consultation.notContactedCount}</span> not contacted
           </>
         )}
         {consultation.awaitingResponseCount > 0 && (

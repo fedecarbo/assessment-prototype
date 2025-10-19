@@ -530,3 +530,87 @@ Track all features, components, and pages built by Forge (Builder).
 **Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [application-sections.tsx](components/shared/application-sections.tsx)
 
 ---
+
+## 2025-10-19 | Consultee Section Updates - Not Contacted Status & Reduced List
+
+**Key Decisions:**
+- **Position terminology change:** Changed "no-comment" to "not-contacted" to better reflect planning workflow
+- **Reduced consultee list:** Decreased from 7 to 5 consultees for cleaner presentation
+- **Thames Water status:** Changed from "No comment" to "Not contacted" - not consulted as proposal doesn't impact water infrastructure
+
+**Schema changes:**
+- `ConsulteePosition` type: Changed `'no-comment'` to `'not-contacted'`
+- `ConsulteeConsultation` interface: Renamed `noCommentCount` to `notContactedCount`
+
+**Mock data updates:**
+- Reduced consultees from 7 to 5 (removed Environment Agency and Local Highway Authority)
+- Updated statistics: 5 consulted, 4 responses (80% response rate), 3 no objection, 1 amendments needed, 1 not contacted, 0 awaiting response
+- Thames Water position changed from "no-comment" to "not-contacted"
+- Updated AI summary to reflect Thames Water not being contacted
+
+**Component updates:**
+- ConsulteeSummary: Updated `getPositionText()` to display "Not contacted" instead of "No comment"
+- Statistics line now shows "not contacted" count instead of "no comment" count
+
+**Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [consultee-summary.tsx](components/shared/consultee-summary.tsx)
+
+---
+
+## 2025-10-19 | Navigation Label Change to Timeline
+
+**Key Decision:** Changed "Application Progress" to "Timeline" in navigation and section heading
+
+**Rationale:** Navigation was getting crowded with longer labels. "Timeline" is concise and accurately represents the section's dual purpose: showing workflow progression over time AND providing access to tasks for officers to validate, assess, and advance applications.
+
+**Files modified:** [application-detail-layout.tsx](components/shared/application-detail-layout.tsx), [application-sections.tsx](components/shared/application-sections.tsx), [application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)
+
+---
+
+## 2025-10-19 | Overview Section Spacing Fix
+
+**Issue:** Excessive spacing between navigation and Overview section content (64px total)
+
+**Fix:** Removed `pt-8` from Overview section container - main content container already provides `py-8` (32px) padding, so the additional top padding was unnecessary
+
+**Files modified:** [application-sections.tsx](components/shared/application-sections.tsx)
+
+---
+
+## 2025-10-19 | Timeline - Contextual Date Information
+
+**Component:** ApplicationStageTimeline ([application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx))
+
+**Key Decisions:**
+- **Contextual date display:** Added important dates beneath relevant stage titles for better visibility
+- **Validation stage:** "Valid from [date]" shown when status is 'validated'
+- **Consultation stage:** "Consultation ends [date]" shown when status is 'in-progress' or 'completed'
+- **Review stage:** "Expiry date [date]" always shown (application-wide deadline)
+- **Visual hierarchy:** Dates in muted text, positioned between stage title and action link
+- **Spacing adjustment:** Stage titles now use `mb-1` instead of `mb-2` to accommodate date line
+
+**UX rationale:** Critical deadline information (consultation end, expiry) is now visible in context within the timeline, eliminating need to reference other sections or hero badges. Officers can see relevant dates at the appropriate workflow stage. Expiry date is always visible as it's a fixed deadline for the entire application.
+
+**Files modified:** [application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)
+
+---
+
+## 2025-10-19 | Timeline - Status Badges
+
+**Components:** ApplicationStageTimeline ([application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx)), Badge ([badge.tsx](components/ui/badge.tsx))
+
+**Key Decisions:**
+- **Badge display:** Converted status labels from plain text to visual badges
+- **Color coding:**
+  - **Completed:** White background with black text, no border (`variant="black"`) - clean, finished look
+  - **In progress:** Light blue badge (`variant="blue"`) - indicates active work
+  - **Cannot start yet / Not started:** Grey badge (`variant="gray"`) - subdued for blocked/pending stages
+- **Badge component update:** Added new `black` variant (`bg-background text-foreground`) for completed status
+- **Sizing:** All status badges use default size for better readability
+- **Function rename:** `getStatusLabel()` → `getStatusBadge()` to return Badge component instead of string
+
+**UX rationale:** Badges provide better visual hierarchy and quicker status recognition through color coding. White badges for completed stages create clean visual confirmation of progress. Blue badges draw attention to active stages requiring officer action.
+
+**Files modified:** [application-stage-timeline.tsx](components/shared/application-stage-timeline.tsx), [badge.tsx](components/ui/badge.tsx)
+
+---
+

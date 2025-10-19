@@ -23,7 +23,7 @@ interface Section {
 function getSections(documentsCount?: number, constraintsCount?: number): Section[] {
   return [
     { id: 'overview', label: 'Overview' },
-    { id: 'progress', label: 'Application Progress' },
+    { id: 'progress', label: 'Timeline' },
     { id: 'documents', label: documentsCount ? `Documents (${documentsCount})` : 'Documents' },
     { id: 'constraints', label: constraintsCount ? `Constraints (${constraintsCount})` : 'Constraints' },
     { id: 'consultees', label: 'Consultees' },

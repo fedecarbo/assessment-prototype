@@ -107,7 +107,7 @@ export interface NeighbourConsultation {
   responses?: NeighbourResponse[];
 }
 
-export type ConsulteePosition = 'no-objection' | 'objection' | 'amendments-needed' | 'no-comment' | 'awaiting-response';
+export type ConsulteePosition = 'no-objection' | 'objection' | 'amendments-needed' | 'not-contacted' | 'awaiting-response';
 
 export interface ConsulteeResponse {
   id: string;
@@ -123,7 +123,7 @@ export interface ConsulteeConsultation {
   noObjectionCount: number;
   objectionCount: number;
   amendmentsNeededCount: number;
-  noCommentCount: number;
+  notContactedCount: number;
   awaitingResponseCount: number;
   briefSummary: string;
   responses: ConsulteeResponse[];

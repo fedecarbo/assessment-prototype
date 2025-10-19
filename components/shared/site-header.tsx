@@ -8,10 +8,10 @@ export function SiteHeader() {
           <span className="font-bold">Southwark</span> Back-office Planning System
         </div>
 
-        <div className="flex items-center gap-4 text-sm">
-          <span>Federico Carbo</span>
+        <div className="flex items-center gap-4">
           <ThemeToggle />
-          <a href="#" className="underline-offset-4 hover:underline">
+          <span className="text-base">Federico Carbo</span>
+          <a href="#" className="text-base underline-offset-4 hover:underline">
             Log out
           </a>
         </div>

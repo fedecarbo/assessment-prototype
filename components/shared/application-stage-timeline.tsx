@@ -1,5 +1,6 @@
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
 
 interface ApplicationStageTimelineProps {
   application: PlanningApplication
@@ -14,22 +15,37 @@ function formatDate(dateString: string): string {
   })
 }
 
-function getStatusLabel(status: string, isBlocked: boolean = false): string {
+function getStatusBadge(status: string, isBlocked: boolean = false) {
   if (isBlocked) {
-    return 'Cannot start yet'
+    return (
+      <Badge variant="gray">
+        Cannot start yet
+      </Badge>
+    )
   }
 
   switch (status) {
     case 'validated':
     case 'completed':
-      return 'Completed'
+      return (
+        <Badge variant="black">
+          Completed
+        </Badge>
+      )
     case 'in-progress':
     case 'pending':
-      return 'In progress'
+      return (
+        <Badge variant="blue">
+          In progress
+        </Badge>
+      )
     case 'not-started':
-      return 'Not started'
     default:
-      return 'Not started'
+      return (
+        <Badge variant="gray">
+          Not started
+        </Badge>
+      )
   }
 }
 
@@ -37,7 +53,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
   return (
     <div>
       <h2 id="progress-heading" className="text-xl font-bold text-foreground mb-6">
-        Application Progress
+        Timeline
       </h2>
 
       <div className="space-y-0">
@@ -63,7 +79,12 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           <div className="flex-1">
             <div className="flex items-start justify-between pb-4 mb-6 border-b border-border">
               <div>
-                <h4 className="text-base font-semibold mb-2">Validation</h4>
+                <h4 className="text-base font-semibold mb-1">Validation</h4>
+                {application.validation.status === 'validated' && application.validFrom && (
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Valid from {formatDate(application.validFrom)}
+                  </p>
+                )}
                 <Link
                   href={`/application/${application.id}/validation`}
                   className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors"
@@ -71,8 +92,8 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                   {application.validation.status === 'validated' ? 'View or change validation' : 'Check and validate'}
                 </Link>
               </div>
-              <div className="text-sm text-muted-foreground">
-                {getStatusLabel(application.validation.status)}
+              <div>
+                {getStatusBadge(application.validation.status)}
               </div>
             </div>
           </div>
@@ -100,7 +121,12 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           <div className="flex-1">
             <div className="flex items-start justify-between pb-4 mb-6 border-b border-border">
               <div>
-                <h4 className="text-base font-semibold mb-2">Consultation</h4>
+                <h4 className="text-base font-semibold mb-1">Consultation</h4>
+                {(application.consultation.status === 'in-progress' || application.consultation.status === 'completed') && application.consultationEnd && (
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Consultation ends {formatDate(application.consultationEnd)}
+                  </p>
+                )}
                 <Link
                   href={`/application/${application.id}/consultation`}
                   className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors"
@@ -108,8 +134,8 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                   {application.consultation.status === 'completed' ? 'View or change consultation' : 'Check and consult'}
                 </Link>
               </div>
-              <div className="text-sm text-muted-foreground">
-                {getStatusLabel(application.consultation.status)}
+              <div>
+                {getStatusBadge(application.consultation.status)}
               </div>
             </div>
           </div>
@@ -137,7 +163,7 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           <div className="flex-1">
             <div className="flex items-start justify-between pb-4 mb-6 border-b border-border">
               <div>
-                <h4 className="text-base font-semibold mb-2">Assessment</h4>
+                <h4 className="text-base font-semibold mb-1">Assessment</h4>
                 <Link
                   href={`/application/${application.id}/assessment`}
                   className="text-base text-primary hover:text-foreground underline underline-offset-4 transition-colors"
@@ -145,8 +171,8 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                   {application.assessment.status === 'completed' ? 'View or change assessment' : 'Check and assess'}
                 </Link>
               </div>
-              <div className="text-sm text-muted-foreground">
-                {getStatusLabel(application.assessment.status)}
+              <div>
+                {getStatusBadge(application.assessment.status)}
               </div>
             </div>
           </div>
@@ -169,7 +195,12 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
           <div className="flex-1">
             <div className="flex items-start justify-between pb-4">
               <div>
-                <h4 className="text-base font-semibold mb-2">Review and decision</h4>
+                <h4 className="text-base font-semibold mb-1">Review and decision</h4>
+                {application.expiryDate && (
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Expiry date {formatDate(application.expiryDate)}
+                  </p>
+                )}
                 {application.assessment.status === 'completed' ? (
                   <Link
                     href={`/application/${application.id}/review`}
@@ -183,8 +214,8 @@ export function ApplicationStageTimeline({ application }: ApplicationStageTimeli
                   </span>
                 )}
               </div>
-              <div className="text-sm text-muted-foreground">
-                {getStatusLabel(application.review.status, application.assessment.status !== 'completed')}
+              <div>
+                {getStatusBadge(application.review.status, application.assessment.status !== 'completed')}
               </div>
             </div>
           </div>

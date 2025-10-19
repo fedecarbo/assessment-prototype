@@ -161,3 +161,103 @@ Track all code improvements and refactors by Sentinel (QA Refactor).
 - [components/shared/application-status-badges.tsx](../../components/shared/application-status-badges.tsx) - New component
 
 ---
+
+## 2025-10-19 | React Performance & Schema Cleanup
+
+**Reviewed by:** Sentinel (QA Refactor)
+
+### Refactors Applied
+
+#### 1. Fix React useEffect Dependency Warning
+**Files:** [application-detail-layout.tsx:56-59](../../components/shared/application-detail-layout.tsx#L56)
+
+**Changes:**
+- Wrapped `getSections()` call in `useMemo` hook with proper dependencies
+- Added `[documentsCount, constraintsCount]` dependency array
+- Prevents unnecessary recalculations when props haven't changed
+
+**Rationale:**
+- React strict mode was missing dependency declaration for `sections` variable
+- The `sections` array depends on `documentsCount` and `constraintsCount` props
+- Without memoization, sections array is recreated on every render
+- Memoization ensures referential stability for useEffect dependencies
+
+**Impact:**
+- ✅ Fixes React dependency exhaustive-deps warning
+- ✅ Prevents unnecessary section array recreation
+- ✅ Improves component render performance
+- ✅ Ensures predictable useEffect behavior
+
+---
+
+#### 2. Add useCallback Optimization for IntersectionObserver
+**Files:** [application-detail-layout.tsx:86-110](../../components/shared/application-detail-layout.tsx#L86)
+
+**Changes:**
+- Extracted scrollspy callback into `handleScrollspyIntersection` function
+- Wrapped callback with `useCallback` hook (empty dependency array)
+- Updated useEffect to use memoized callback: `[sections, handleScrollspyIntersection]`
+- Added proper TypeScript typing: `IntersectionObserverEntry[]`
+
+**Rationale:**
+- IntersectionObserver callback was recreated on every render
+- Observer instance was disconnected and recreated unnecessarily
+- useCallback prevents callback function recreation unless dependencies change
+- Stable callback reference improves observer performance
+
+**Impact:**
+- ✅ Reduces observer churn (no unnecessary disconnect/reconnect cycles)
+- ✅ Improves scroll performance by preventing observer recreation
+- ✅ Better memory efficiency with stable function references
+- ✅ Follows React performance best practices
+
+---
+
+#### 3. Remove Deprecated Schema Fields
+**Files:**
+- [schemas/index.ts:96-107](../../lib/mock-data/schemas/index.ts#L96) - Schema definition
+- [applications.ts:184,241,299](../../lib/mock-data/applications.ts) - Mock data
+
+**Changes:**
+- **Removed 8 deprecated fields from `PlanningApplication` interface:**
+  - `validationStatus`, `validationDate`
+  - `consultationStatus`, `consultationStartDate`
+  - `assessmentStatus`, `assessmentStartDate`
+  - `reviewStatus`, `reviewStartDate`
+- **Removed from all 3 mock applications**
+- **Updated comments:** "Enhanced stage workflow" → "Stage workflow with tasks"
+
+**Rationale:**
+- Fields marked as "legacy - kept for backward compatibility"
+- Grep search confirmed **zero usage** in any component files
+- Dead code increases schema complexity and bundle size
+- Enhanced stage objects (`validation`, `consultation`, `assessment`, `review`) provide all needed data
+- No actual backward compatibility requirement exists
+
+**Impact:**
+- ✅ Reduced schema interface by 8 fields (-25% fields)
+- ✅ Cleaner type definitions (removed technical debt)
+- ✅ Smaller bundle size (less mock data to serialize)
+- ✅ Eliminates potential confusion about which fields to use
+- ✅ Encourages use of proper stage workflow objects
+
+---
+
+### Build Verification
+
+✅ **TypeScript Build:** Passed with strict mode enabled (`npx tsc --noEmit`)
+✅ **Type Checking:** No errors - all components type-safe
+✅ **Component Usage:** Verified deprecated fields not used anywhere
+✅ **React Hooks:** All dependency arrays properly declared
+
+### Files Modified
+- [components/shared/application-detail-layout.tsx](../../components/shared/application-detail-layout.tsx) - Performance optimizations
+- [lib/mock-data/schemas/index.ts](../../lib/mock-data/schemas/index.ts) - Removed deprecated fields
+- [lib/mock-data/applications.ts](../../lib/mock-data/applications.ts) - Cleaned up mock data
+
+### Performance Improvements
+- **Render performance:** Memoized sections array prevents unnecessary recalculations
+- **Scroll performance:** Stable IntersectionObserver callback reduces observer churn
+- **Bundle size:** Removed 24 lines of unused legacy code across 3 mock applications
+
+---
