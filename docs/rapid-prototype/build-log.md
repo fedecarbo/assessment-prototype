@@ -88,6 +88,21 @@ Quick reference for what's been built and key architectural decisions.
 - Reduces horizontal clutter by stacking tags under document names
 - Used in ApplicationInfoDocuments tab
 
+**ConstraintsTable** - Simplified table view for constraint listings with individual visibility toggles
+- **Columns:** Show, Constraint, Details (3 columns total)
+- **Column headers:** text-base, font-bold, text-foreground (black)
+- **Show column:** Checkbox to toggle constraint visibility on map
+  - Width: w-12 (48px)
+  - Controls whether constraint appears on the map
+  - State managed by parent component (visibleConstraints Set)
+- **Constraint column:** Icon + label layout
+  - Constraint type icons: Building2 (conservation-area), Landmark (listed-building), TreeDeciduous (tpo), Droplets (flood-risk), Trees (green-belt), FileText (article-4), Castle (archaeology)
+  - Icon size: h-5 w-5, text-foreground color
+  - Label: text-base, font-medium, 10px gap from icon
+- **Details column:** Optional constraint details or em dash if not present
+- **Props:** constraints[], visibleConstraints (Set<string>), onToggleConstraint callback
+- Used in ApplicationInfoConstraints tab
+
 ---
 
 ## Design System
@@ -301,10 +316,22 @@ Quick reference for what's been built and key architectural decisions.
 - **Empty states:** "No documents match search criteria" when filtered, "No documents submitted" when none exist
 - Client-side state management with React hooks
 
-**ApplicationInfoConstraints** - Placeholder for constraint details
+**ApplicationInfoConstraints** - Constraint management with vertical layout and individual constraint toggles (client component)
 - **Title:** "Constraints" (text-xl font-bold)
 - **Last updated:** "Last updated: 10 October 2024" (text-sm text-muted-foreground, mt-1)
-- Will include detailed constraint information, impacts, planning policy considerations
+- **Vertical layout:** Map above, table below with 16px gap (space-y-4)
+  - Map: Full-width, 400px height, always visible
+  - Table: Full-width below map
+- **Map placeholder:** Interactive constraints map placeholder with muted background
+  - Will display only constraints that are checked in the table
+- **Table view:** Uses **ConstraintsTable** component with individual constraint toggles
+  - Each row has checkbox to control visibility of that constraint on the map
+  - Checkboxes control which constraints appear on the map
+- **Constraint visibility state:** Set<string> tracks which constraints are visible on map (default: all visible)
+  - Toggle handler adds/removes constraint IDs from the Set
+  - State managed at component level, passed down to table
+- **Empty state:** "No constraints identified" when none exist
+- Client-side state management with React hooks (constraint visibility Set)
 - More granular analysis than Application Details page summary
 
 **ApplicationInfoSiteHistory** - Placeholder component
