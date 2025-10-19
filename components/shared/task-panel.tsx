@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { Check, Circle, CircleDot } from 'lucide-react'
 import Link from 'next/link'
@@ -19,11 +20,11 @@ function getStatusIcon(status: TaskStatus) {
   }
 }
 
-export function TaskPanel({ selectedTaskId, onTaskSelect }: TaskPanelProps) {
+const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) => {
   const { taskGroups } = useAssessment()
 
   return (
-    <aside className="w-[338px] flex-none overflow-y-auto border-r border-border bg-background p-4">
+    <aside className="w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-4">
       <h2 className="text-base font-bold text-foreground mb-5">Tasks</h2>
       <div className="space-y-0">
         {taskGroups.map((group, groupIndex) => (
@@ -59,3 +60,5 @@ export function TaskPanel({ selectedTaskId, onTaskSelect }: TaskPanelProps) {
     </aside>
   )
 }
+
+export const TaskPanel = memo(TaskPanelComponent)

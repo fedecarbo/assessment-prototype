@@ -20,6 +20,7 @@ interface AssessmentContextType {
   selectedTaskId: number
   setSelectedTaskId: (id: number) => void
   taskGroups: TaskGroup[]
+  taskMap: Map<number, Task>
 }
 
 // Mock task data organized in groups
@@ -91,11 +92,24 @@ const mockTaskGroups: TaskGroup[] = [
 
 const AssessmentContext = createContext<AssessmentContextType | null>(null)
 
+// Create task map for O(1) lookups
+const createTaskMap = (groups: TaskGroup[]): Map<number, Task> => {
+  const map = new Map<number, Task>()
+  for (const group of groups) {
+    for (const task of group.tasks) {
+      map.set(task.id, task)
+    }
+  }
+  return map
+}
+
+const taskMap = createTaskMap(mockTaskGroups)
+
 export function AssessmentProvider({ children }: { children: ReactNode }) {
   const [selectedTaskId, setSelectedTaskId] = useState(1)
 
   return (
-    <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, taskGroups: mockTaskGroups }}>
+    <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, taskGroups: mockTaskGroups, taskMap }}>
       {children}
     </AssessmentContext.Provider>
   )
