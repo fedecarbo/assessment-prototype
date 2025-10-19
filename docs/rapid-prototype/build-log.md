@@ -460,3 +460,73 @@ Track all features, components, and pages built by Forge (Builder).
 **Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [neighbour-consultation.tsx](components/shared/neighbour-consultation.tsx)
 
 ---
+
+## 2025-10-19 | Neighbour AI Summary - General Summary with Topic References
+
+**Component:** NeighbourConsultation ([components/shared/neighbour-consultation.tsx](components/shared/neighbour-consultation.tsx))
+
+**Key Decision:** Display general AI summary paragraph that references most frequent topics
+
+**Changes:**
+- **Summary display:** Single paragraph using `briefSummary` field
+- **Content:** General overview mentioning the most frequently raised topics (loss of light, privacy, design, noise, traffic)
+- **Layout:** Topic list on left (sorted by frequency), concise summary paragraph on right
+- **Length:** Paragraph or less for quick scanning
+
+**Mock data:**
+- Populated `aiSummary` fields for all topics (for potential future use)
+- `briefSummary` includes overall sentiment and mentions key topics by frequency
+
+**Result:** Concise text-based summary that gives quick overview while referencing the main concerns shown in the topic list.
+
+**Files modified:** [neighbour-consultation.tsx](components/shared/neighbour-consultation.tsx), [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
+
+---
+
+## 2025-10-19 | Consultees Section - Statutory Consultee Responses
+
+**Component:** ConsulteeSummary ([components/shared/consultee-summary.tsx](components/shared/consultee-summary.tsx))
+
+**Key Decisions:**
+- **Minimalistic layout:** Matches Neighbours section design - compact statistics line, side-by-side layout, AI summary
+- **Five position categories using planning terminology:**
+  - "No objection" (not "support") - standard consultee approval language
+  - "Objection" - formal objection to the proposal
+  - "Amendments needed" - suggests changes before approval
+  - "No comment" - consultee has nothing to add
+  - "Awaiting response" - consultee has not yet responded
+- **Consultee list sorting:** Responses sorted by date (most recent first), non-responders at the end
+- **Neutral styling:** All positions displayed in standard text (no color coding) - matches Neighbours section format
+- **Statistics display:** Shows total consulted, responses with response rate, and breakdown by position (only shows non-zero counts)
+- **AI summary:** Brief paragraph summarizing consultee feedback with "AI generated" badge
+
+**Schema extensions:**
+- `ConsulteePosition` type: 'no-objection' | 'objection' | 'amendments-needed' | 'no-comment' | 'awaiting-response'
+- `ConsulteeResponse` interface: `id`, `consulteeOrg`, `responseDate?`, `position`, `summary?`
+- `ConsulteeConsultation` interface: Contains totals, position counts (noObjectionCount, objectionCount, amendmentsNeededCount, noCommentCount, awaitingResponseCount), `briefSummary`, and `responses[]` array
+- Added `consulteeConsultation?: ConsulteeConsultation` to `PlanningApplication`
+
+**Mock data:** App 1 includes 7 statutory consultees with realistic responses:
+- **Statistics:** 7 consulted, 5 responses (71% response rate), 3 no objection, 1 amendments needed, 1 no comment, 2 awaiting response
+- **Consultees:**
+  - Historic England: No objection - Design respects conservation area character
+  - Conservation Officer: No objection - Subject to materials approval condition
+  - Thames Water: No comment
+  - Tree Officer: No objection - Recommends tree protection condition
+  - Design Review Panel: Amendments needed - Revise fenestration on east elevation for historic context
+  - Environment Agency: Awaiting response
+  - Local Highway Authority: Awaiting response
+- **AI Summary:** Paragraph explaining overall consultee sentiment, highlighting no objections from Historic England/Conservation Officer/Tree Officer, Design Review Panel suggested amendments, Thames Water no comment, and outstanding responses
+
+**Layout details:**
+- Compact statistics line with inline metrics and bullet separators
+- Two-column grid: Consultee list (left) + AI summary (right)
+- Consultee list: Organization name on left, position on right, sorted by response date
+- Bottom link: "View all consultee responses" for detailed page
+- Consistent with Neighbours section: `py-4` per row, `border-b` between items, `mb-4` heading spacing
+
+**Files created:** [consultee-summary.tsx](components/shared/consultee-summary.tsx)
+
+**Files modified:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts), [lib/mock-data/applications.ts](lib/mock-data/applications.ts), [application-sections.tsx](components/shared/application-sections.tsx)
+
+---

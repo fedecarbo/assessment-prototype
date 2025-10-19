@@ -181,6 +181,62 @@ export const mockApplications: PlanningApplication[] = [
         tags: ['Site photos', 'Neighbor context']
       },
     ],
+    consulteeConsultation: {
+      totalConsultees: 7,
+      totalResponses: 5,
+      noObjectionCount: 3,
+      objectionCount: 0,
+      amendmentsNeededCount: 1,
+      noCommentCount: 1,
+      awaitingResponseCount: 2,
+      briefSummary: 'Most statutory consultees have no objections to the proposal. Historic England has no objection, noting the design respects the conservation area character. The Conservation Officer has no objection subject to materials being approved, and the Tree Officer recommends a condition for tree protection during construction. The Design Review Panel suggests amendments to improve the interface with the neighboring listed building. Thames Water has no comments. The Environment Agency and Local Highway Authority have not yet responded.',
+      responses: [
+        {
+          id: 'cr1',
+          consulteeOrg: 'Historic England',
+          responseDate: '2025-10-15',
+          position: 'no-objection',
+          summary: 'No objection. Design respects the conservation area character and the scale is appropriate for the context.',
+        },
+        {
+          id: 'cr2',
+          consulteeOrg: 'Conservation Officer',
+          responseDate: '2025-10-14',
+          position: 'no-objection',
+          summary: 'No objection subject to the submission of samples of external materials for approval prior to commencement.',
+        },
+        {
+          id: 'cr3',
+          consulteeOrg: 'Thames Water',
+          responseDate: '2025-10-13',
+          position: 'no-comment',
+        },
+        {
+          id: 'cr4',
+          consulteeOrg: 'Tree Officer',
+          responseDate: '2025-10-16',
+          position: 'no-objection',
+          summary: 'No objection. Recommends condition requiring tree protection fencing in accordance with BS5837 during construction.',
+        },
+        {
+          id: 'cr5',
+          consulteeOrg: 'Design Review Panel',
+          responseDate: '2025-10-17',
+          position: 'amendments-needed',
+          summary: 'Amendments needed to improve the relationship with the adjacent listed building. Recommend revising the fenestration on the east elevation to better reflect the historic context.',
+        },
+        {
+          id: 'cr6',
+          consulteeOrg: 'Environment Agency',
+          position: 'awaiting-response',
+        },
+        {
+          id: 'cr7',
+          consulteeOrg: 'Local Highway Authority',
+          position: 'awaiting-response',
+        },
+      ],
+    },
     neighbourConsultation: {
       totalNotified: 34,
       totalResponses: 8,
@@ -193,25 +249,25 @@ export const mockApplications: PlanningApplication[] = [
           topic: 'design',
           label: 'Design',
           count: 3,
-          aiSummary: ''
+          aiSummary: 'Three neighbours commented on the design of the proposed extension. Concerns were raised about the modern materials, particularly the bi-fold doors, which some feel are not in keeping with the Victorian character of the surrounding properties. However, other respondents found the design to be well-considered and appropriate for the context.'
         },
         {
           topic: 'privacy',
           label: 'Privacy',
           count: 2,
-          aiSummary: ''
+          aiSummary: 'Two neighbours raised concerns about privacy impacts from the proposed extension. The main issue is the new windows that will overlook adjacent gardens, particularly affecting properties at numbers 9 and 11. Residents worry about the loss of privacy in their outdoor spaces.'
         },
         {
           topic: 'loss-of-light',
           label: 'Loss of light',
           count: 4,
-          aiSummary: ''
+          aiSummary: 'Loss of light is the most frequently raised concern, with four neighbours commenting on this issue. Residents at numbers 9 and 13, who share boundaries with the property, are particularly worried about reduced natural light to their kitchens and gardens. The proposed rear extension is seen as likely to cause significant overshadowing during key times of the day.'
         },
         {
           topic: 'traffic',
           label: 'Traffic',
           count: 1,
-          aiSummary: ''
+          aiSummary: 'One neighbour raised concerns about construction traffic and potential damage to the shared access road during the building works. There are also worries about parking impacts during the construction period.'
         },
         {
           topic: 'accessibility',
@@ -223,7 +279,7 @@ export const mockApplications: PlanningApplication[] = [
           topic: 'noise',
           label: 'Noise',
           count: 2,
-          aiSummary: ''
+          aiSummary: 'Two neighbours commented on noise concerns, primarily focused on construction noise during the building works. There are worries about the duration of the works and the impact on working from home arrangements and young children in adjacent properties.'
         },
       ],
       responses: [

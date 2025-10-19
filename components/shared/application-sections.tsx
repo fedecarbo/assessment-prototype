@@ -4,6 +4,7 @@ import { ApplicationMetadata } from './application-metadata'
 import { ApplicationStageTimeline } from './application-stage-timeline'
 import { DocumentList } from './document-list'
 import { ConstraintsSummary } from './constraints-summary'
+import { ConsulteeSummary } from './consultee-summary'
 import { NeighbourConsultation } from './neighbour-consultation'
 import { Badge } from '@/components/ui/badge'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
@@ -95,11 +96,15 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         <h2 id="consultees-heading" className="text-xl font-bold text-foreground mb-4">
           Consultees
         </h2>
-        <div className="min-h-[200px] border-2 border-dashed border-border bg-muted p-4">
-          <p className="text-sm text-muted-foreground">
-            Statutory consultees and consultation responses will be displayed here.
-          </p>
-        </div>
+        {application.consulteeConsultation ? (
+          <ConsulteeSummary consultation={application.consulteeConsultation} applicationId={application.id} />
+        ) : (
+          <div className="min-h-[200px] border-2 border-dashed border-border bg-muted p-4">
+            <p className="text-sm text-muted-foreground">
+              Statutory consultees and consultation responses will be displayed here.
+            </p>
+          </div>
+        )}
       </section>
 
       <hr className="border-border" />

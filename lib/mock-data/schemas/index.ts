@@ -107,6 +107,28 @@ export interface NeighbourConsultation {
   responses?: NeighbourResponse[];
 }
 
+export type ConsulteePosition = 'no-objection' | 'objection' | 'amendments-needed' | 'no-comment' | 'awaiting-response';
+
+export interface ConsulteeResponse {
+  id: string;
+  consulteeOrg: string;
+  responseDate?: string;
+  position: ConsulteePosition;
+  summary?: string;
+}
+
+export interface ConsulteeConsultation {
+  totalConsultees: number;
+  totalResponses: number;
+  noObjectionCount: number;
+  objectionCount: number;
+  amendmentsNeededCount: number;
+  noCommentCount: number;
+  awaitingResponseCount: number;
+  briefSummary: string;
+  responses: ConsulteeResponse[];
+}
+
 export interface PlanningApplication {
   id: string;
   reference: string;
@@ -126,6 +148,7 @@ export interface PlanningApplication {
   requestedServices?: RequestedService[];
   documents?: Document[];
   constraints?: Constraint[];
+  consulteeConsultation?: ConsulteeConsultation;
   neighbourConsultation?: NeighbourConsultation;
   // Stage workflow with tasks
   validation: ValidationStage;
