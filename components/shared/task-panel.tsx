@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
+import { Separator } from '@/components/ui/separator'
 
 interface TaskPanelProps {
   selectedTaskId: number
@@ -11,23 +12,31 @@ interface TaskPanelProps {
 function getCheckbox(status: TaskStatus, isSelected: boolean) {
   if (status === 'completed') {
     return (
-      <div className="flex h-4 w-4 flex-none items-center justify-center rounded-sm border-2 border-foreground bg-foreground">
-        <Check className="h-3 w-3 text-background" strokeWidth={3} />
+      <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm ${
+        isSelected ? 'bg-white/20' : 'bg-muted-foreground/25'
+      }`}>
+        <Check className={`h-3.5 w-3.5 ${
+          isSelected ? 'text-white' : 'text-foreground'
+        }`} strokeWidth={2.5} />
       </div>
     )
   }
 
   if (status === 'in-progress') {
     return (
-      <div className="flex h-4 w-4 flex-none items-center justify-center rounded-sm border-2 border-primary bg-background">
-        <div className="h-1.5 w-1.5 rounded-sm bg-primary" />
+      <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm ${
+        isSelected ? 'bg-white/20' : 'bg-[hsl(211,66%,41%)]/10'
+      }`}>
+        <div className={`h-0.5 w-2.5 ${
+          isSelected ? 'bg-white' : 'bg-[hsl(211,66%,41%)]'
+        }`} />
       </div>
     )
   }
 
   return (
-    <div className={`h-4 w-4 flex-none rounded-sm border-2 ${
-      isSelected ? 'border-foreground' : 'border-muted-foreground'
+    <div className={`h-5 w-5 flex-none rounded-sm ${
+      isSelected ? 'bg-white/20' : 'bg-muted-foreground/25'
     }`} />
   )
 }
@@ -41,10 +50,10 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
       <div className="space-y-6">
         {taskGroups.map((group, groupIndex) => (
           <div key={groupIndex}>
-            <h3 className="text-sm font-bold text-foreground mb-3">
+            <h3 className="text-base text-foreground mb-2">
               {group.title}
             </h3>
-            <div className="space-y-1">
+            <div className="space-y-0">
               {group.tasks.map((task) => {
                 const isSelected = selectedTaskId === task.id
                 const isCompleted = task.status === 'completed'
@@ -54,18 +63,16 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
                     key={task.id}
                     href={`?task=${task.id}`}
                     onClick={() => onTaskSelect(task.id)}
-                    className={`flex items-center justify-between gap-3 rounded-md p-1.5 transition-colors no-underline ${
+                    className={`flex items-center justify-between gap-3 p-2 transition-colors no-underline ${
                       isSelected
-                        ? 'bg-muted'
+                        ? 'bg-[hsl(211,66%,41%)]'
                         : 'hover:bg-muted/50'
                     }`}
                   >
-                    <span className={`text-sm leading-tight ${
-                      isCompleted
-                        ? 'text-muted-foreground'
-                        : isSelected
-                        ? 'text-foreground font-medium'
-                        : 'text-foreground'
+                    <span className={`text-base leading-tight ${
+                      isSelected
+                        ? 'text-white'
+                        : 'text-primary hover:underline'
                     }`}>
                       {task.title}
                     </span>
@@ -74,6 +81,9 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
                 )
               })}
             </div>
+            {groupIndex < taskGroups.length - 1 && (
+              <Separator className="mt-6" />
+            )}
           </div>
         ))}
       </div>
