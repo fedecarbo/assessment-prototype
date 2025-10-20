@@ -150,3 +150,31 @@ Track all bug fixes and modifications.
 **Status:** ✅ Resolved - All badges across Application Information page now use shared Badge component with consistent styling (no border radius)
 
 ---
+
+## 2025-10-20 | Vercel Deployment 500 Error Fix
+
+**Issue:** Application deployed to Vercel was throwing `INTERNAL_FUNCTION_INVOCATION_FAILED` 500 error on dynamic routes. The Start button on the home page wasn't working, and navigating to `/application/1` resulted in internal server errors.
+
+**Root Cause:** Next.js 15's async params API in dynamic routes was not generating static paths during build time, causing runtime failures in Vercel's serverless environment.
+
+**Resolution:**
+- Added `generateStaticParams()` function to all three dynamic route pages
+- This function pre-generates all valid application IDs at build time
+- Next.js now statically generates pages for all mock applications during the build process
+- Changed from dynamic Server-Side Rendering (SSR) to Static Site Generation (SSG) for better performance and reliability
+
+**Files Changed:**
+- [app/application/[id]/page.tsx](app/application/[id]/page.tsx) - Added generateStaticParams
+- [app/application/[id]/assessment/page.tsx](app/application/[id]/assessment/page.tsx) - Added generateStaticParams, imported mockApplications
+- [app/application/[id]/information/page.tsx](app/application/[id]/information/page.tsx) - Added generateStaticParams
+
+**Build Output:**
+```
+● /application/[id]                    (SSG - prerendered for: /1, /2, /3)
+● /application/[id]/assessment         (SSG - prerendered for: /1, /2, /3)
+● /application/[id]/information        (SSG - prerendered for: /1, /2, /3)
+```
+
+**Status:** ✅ Resolved - All pages now build successfully with static generation. Should deploy correctly to Vercel.
+
+---

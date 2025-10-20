@@ -10,6 +10,13 @@ interface ApplicationDetailsPageProps {
   }>
 }
 
+// Generate static params for all mock applications
+export async function generateStaticParams() {
+  return mockApplications.map((application) => ({
+    id: application.id,
+  }))
+}
+
 export default async function ApplicationDetailsPage({ params }: ApplicationDetailsPageProps) {
   const { id } = await params
 
