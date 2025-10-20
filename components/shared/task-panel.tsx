@@ -13,11 +13,9 @@ function getCheckbox(status: TaskStatus, isSelected: boolean) {
   if (status === 'completed') {
     return (
       <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm ${
-        isSelected ? 'bg-white/20' : 'bg-muted-foreground/25'
+        isSelected ? 'bg-white/20' : 'bg-muted-foreground/10'
       }`}>
-        <Check className={`h-3.5 w-3.5 ${
-          isSelected ? 'text-white' : 'text-foreground'
-        }`} strokeWidth={2.5} />
+        <Check className="h-3.5 w-3.5 text-foreground" strokeWidth={2.5} />
       </div>
     )
   }
@@ -36,7 +34,7 @@ function getCheckbox(status: TaskStatus, isSelected: boolean) {
 
   return (
     <div className={`h-5 w-5 flex-none rounded-sm ${
-      isSelected ? 'bg-white/20' : 'bg-muted-foreground/25'
+      isSelected ? 'bg-white/20' : 'bg-[hsl(211,66%,41%)]/10'
     }`} />
   )
 }
