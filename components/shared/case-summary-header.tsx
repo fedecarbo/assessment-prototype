@@ -19,8 +19,9 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
     <div className="border-b border-border bg-background">
       <div className={constrained ? "mx-auto max-w-[1100px] px-4 py-4" : "px-4 py-4"}>
         <div className="flex items-baseline justify-between">
-          <div className="flex items-baseline gap-4">
+          <div className="flex items-center gap-4">
             <h1 className="text-base font-bold text-foreground">{reference}</h1>
+            <div className="h-4 w-px bg-border"></div>
             <h2 className="text-base text-foreground">{address}</h2>
             {description && (
               <button
@@ -34,24 +35,15 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
             )}
           </div>
           {variant === 'default' && applicationId && (
-            <div className="flex gap-4 text-sm">
-              <Link
-                href={`/application/${applicationId}/information`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-                aria-label={`View application information for ${reference}`}
-              >
-                Application information
-              </Link>
-              <a
-                href="#"
-                className="text-primary hover:underline"
-                aria-label={`View documents for ${reference}`}
-              >
-                Documents
-              </a>
-            </div>
+            <Link
+              href={`/application/${applicationId}/information`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-base text-primary hover:underline"
+              aria-label={`View application information for ${reference}`}
+            >
+              Application information
+            </Link>
           )}
         </div>
 
@@ -65,9 +57,7 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
               showDescription ? 'mt-4 max-h-96 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            <div className="rounded border border-border bg-muted p-4 max-w-4xl">
-              <p className="text-sm text-foreground leading-relaxed">{description}</p>
-            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-4xl">{description}</p>
           </div>
         )}
       </div>

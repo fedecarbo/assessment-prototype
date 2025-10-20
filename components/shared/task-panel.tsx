@@ -46,7 +46,7 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
 
   return (
     <aside className="w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-4">
-      <h2 className="text-xl font-bold text-foreground mb-6">Tasks</h2>
+      <h2 className="text-lg font-bold text-foreground mb-6">Assessment tasks</h2>
       <div className="space-y-6">
         {taskGroups.map((group, groupIndex) => (
           <div key={groupIndex}>
@@ -72,7 +72,7 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
                     <span className={`text-base leading-tight ${
                       isSelected
                         ? 'text-white'
-                        : 'text-primary hover:underline'
+                        : 'text-primary'
                     }`}>
                       {task.title}
                     </span>
