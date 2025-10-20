@@ -186,28 +186,32 @@ Quick reference for what's been built and key architectural decisions.
 - Description constrained to max-w-4xl (896px) for readability
 - Replaces the collapsing hero pattern from detail page
 
-**TaskPanel** - Fixed sidebar for assessment tasks with independent scroll
+**TaskPanel** - To-do list style task sidebar with independent scroll
 - Fixed width: 338px + 16px padding each side = 370px total
 - Independent scrolling: `overflow-y-auto`
 - Border right separator
-- **Grouped task structure:** Tasks organized under parent titles (3 groups: Check application, Additional services, Assessment summaries)
-- **Interactive task list:** Text links to select task (8 tasks total)
+- **To-do list design pattern:**
+  - Main heading: "Tasks" (text-xl font-bold, 24px bottom margin)
+  - Group titles: text-sm font-semibold, uppercase, muted foreground, wide tracking, 12px bottom margin
+  - Task items: Rounded cards with checkbox-left, text-right layout
+  - Hover state: Muted background (hover:bg-muted/50)
+  - Selected state: Full muted background (bg-muted)
+- **Checkbox states** (left-aligned):
+  - Completed: Filled black checkbox with white checkmark (border-2 border-foreground bg-foreground)
+  - In progress: Hollow checkbox with small blue square inside (border-2 border-primary, 8px blue square)
+  - Not started: Empty checkbox (border-2, dynamically colored: foreground when selected, muted-foreground otherwise)
+  - Size: 20px × 20px (h-5 w-5), rounded-sm
+- **Task text:**
+  - Completed: Muted foreground with line-through
+  - Selected: Foreground color, font-medium
+  - Default: Foreground color
+  - Size: text-sm with leading-tight
+- **Spacing:**
+  - Between task groups: 24px (space-y-6)
+  - Between tasks within group: 8px (space-y-2)
+  - Task padding: 8px (p-2)
+  - Checkbox to text gap: 12px (gap-3)
 - **Link behavior:** Uses Next.js Link with query params `?task={id}`, maintains onClick callback
-- **Visual states:**
-  - Selected: Black (foreground) text with font-semibold, no underline
-  - Unselected: Blue (primary) text with hover to black, underline with 3px offset
-  - Links: text-sm size with py-1.5 padding
-  - Group titles: text-sm font-bold, 10px bottom margin
-- **Spacing hierarchy:**
-  - Main "Tasks" heading to first group: 20px (mb-5)
-  - Between task groups: 16px separator with my-4
-  - Group title to tasks: 10px (mb-2.5)
-  - Between tasks within group: 4px separator with my-1
-- **Status icons** (right-aligned):
-  - Completed: Black checkmark icon (lucide-react Check)
-  - In progress: Blue circle-dot icon (lucide-react CircleDot)
-  - Not started: Gray circle outline icon (lucide-react Circle)
-- **Dividers:** Separator components between tasks within groups (my-1) and between groups (my-4)
 - Scrolls independently from main content area
 - Callbacks: `onTaskSelect(taskId)` updates parent state
 
