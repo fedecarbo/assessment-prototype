@@ -8,13 +8,14 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format a date string to GB locale format
  * @param dateString - ISO date string
- * @returns Formatted date (e.g., "5 January 2025")
+ * @param format - Month format: 'long' for full month name, 'short' for abbreviated
+ * @returns Formatted date (e.g., "5 January 2025" or "5 Jan 2025")
  */
-export function formatDate(dateString: string): string {
+export function formatDate(dateString: string, format: 'long' | 'short' = 'long'): string {
   const date = new Date(dateString)
   return date.toLocaleDateString('en-GB', {
     day: 'numeric',
-    month: 'long',
+    month: format === 'long' ? 'long' : 'short',
     year: 'numeric'
   })
 }
@@ -56,3 +57,37 @@ export function getDocumentCategoryLabel(category: string): string {
 export function getDocumentVisibilityLabel(visibility: 'public' | 'sensitive'): string {
   return visibility === 'public' ? 'Public' : 'Sensitive'
 }
+
+/**
+ * Truncate text to a specified number of words
+ * @param text - Text to truncate
+ * @param wordLimit - Maximum number of words
+ * @returns Truncated text with ellipsis if needed
+ */
+export function truncateToWords(text: string, wordLimit: number): string {
+  const words = text.split(' ')
+  if (words.length <= wordLimit) return text
+  return words.slice(0, wordLimit).join(' ') + '...'
+}
+
+/**
+ * Format consultation topic label
+ * @param topic - Topic key
+ * @returns Human-readable topic label
+ */
+export function formatTopicLabel(topic: string): string {
+  const labels: Record<string, string> = {
+    'design': 'Design',
+    'privacy': 'Privacy',
+    'loss-of-light': 'Loss of light',
+    'traffic': 'Traffic',
+    'accessibility': 'Accessibility',
+    'noise': 'Noise',
+    'other': 'Other'
+  }
+  return labels[topic] || topic
+}
+
+// Constants for UI thresholds
+export const RESPONSE_PREVIEW_WORD_LIMIT = 40
+export const CONSULTEE_SUMMARY_WORD_LIMIT = 30
