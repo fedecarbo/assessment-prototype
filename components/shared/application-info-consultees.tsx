@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Application, ConsulteeResponse, ConsulteePosition } from '@/lib/mock-data/schemas'
+import { Badge } from '@/components/ui/badge'
 
 interface ApplicationInfoConsulteesProps {
   application: Application
@@ -158,35 +159,35 @@ interface PositionBadgeProps {
 }
 
 function PositionBadge({ position }: PositionBadgeProps) {
-  const config = {
+  const config: Record<ConsulteePosition, { label: string; variant: 'green' | 'red' | 'yellow' | 'gray' | 'blue' }> = {
     'no-objection': {
       label: 'No objection',
-      className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+      variant: 'green',
     },
     'objection': {
       label: 'Objection',
-      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+      variant: 'red',
     },
     'amendments-needed': {
       label: 'Amendments needed',
-      className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+      variant: 'yellow',
     },
     'not-contacted': {
       label: 'Not contacted',
-      className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400',
+      variant: 'gray',
     },
     'awaiting-response': {
       label: 'Awaiting response',
-      className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+      variant: 'blue',
     },
   }
 
-  const { label, className } = config[position]
+  const { label, variant } = config[position]
 
   return (
-    <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${className}`}>
+    <Badge variant={variant}>
       {label}
-    </span>
+    </Badge>
   )
 }
 

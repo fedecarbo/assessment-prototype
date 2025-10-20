@@ -128,3 +128,25 @@ Track all bug fixes and modifications.
 **Status:** ✅ Resolved - Thumbnail integrated with document name, cleaner table header
 
 ---
+
+## 2025-10-20 | Badge Component Consistency Across Application Information Page
+
+**Issue:** Position badges in Application Information page sections (Consultees and Neighbours) were using custom inline implementations with `rounded-md` corners instead of the shared Badge component which has no border radius
+
+**Resolution:**
+- Added red variant to Badge component for objection/object positions
+- Replaced custom inline badge implementations in ApplicationInfoConsultees with Badge component
+- Replaced custom inline badge implementations in ApplicationInfoNeighbours with Badge component
+- Updated topic tags in neighbours to use Badge component instead of custom spans
+- All badges now consistently use no border radius (sharp corners) per GDS design system
+- Position badges use small size with appropriate color variants (green/red/yellow/gray/blue)
+
+**Files Changed:**
+- [badge.tsx](components/ui/badge.tsx) - Added red variant
+- [application-info-consultees.tsx](components/shared/application-info-consultees.tsx) - Replaced PositionBadge inline implementation with Badge component
+- [application-info-neighbours.tsx](components/shared/application-info-neighbours.tsx) - Replaced PositionBadge and topic tag inline implementations with Badge component
+- [build-log.md](docs/rapid-prototype/build-log.md) - Updated Badge documentation to include red variant and usage notes
+
+**Status:** ✅ Resolved - All badges across Application Information page now use shared Badge component with consistent styling (no border radius)
+
+---

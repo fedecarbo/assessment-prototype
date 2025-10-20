@@ -66,7 +66,10 @@ Quick reference for what's been built and key architectural decisions.
 
 ### UI Components
 
-**Badge** - CVA-based with variants: blue, yellow, green, gray, muted, black
+**Badge** - CVA-based with variants: blue, yellow, green, red, gray, muted, black
+- No border radius (sharp corners for GDS compliance)
+- Two sizes: default (px-3 py-1 text-base), small (px-2 py-0.5 text-sm)
+- Used consistently across all position badges and topic tags
 **ThemeToggle** - Dark mode (next-themes) with sun/moon icons
 **Table** - Shadcn table component for data display
 
@@ -286,6 +289,12 @@ Quick reference for what's been built and key architectural decisions.
 - **Layout structure:** Full-width nav bar background with 1100px max-width content
 - **Tab navigation:** Horizontal tabs with active indicator (3px blue bottom border)
 - **6 tabs:** Overview, Documents, Constraints, Site history, Consultees, Neighbours
+- **Tab counts:** Dynamic counts displayed in parentheses for relevant tabs
+  - Documents: Total document count
+  - Constraints: Count of applicable constraints (excludes "does-not-apply")
+  - Consultees: Total consultees count
+  - Neighbours: Total responses count
+  - Overview and Site history: No count shown
 - **Active state:** Foreground text color with blue border, inactive tabs use blue text with hover underline
 - **Tab spacing:** 6-unit gap between tabs (gap-6, matches Application Details)
 - **Content area:** 1100px max-width, centered, px-4 py-8 padding
@@ -372,11 +381,42 @@ Quick reference for what's been built and key architectural decisions.
   - `commentCount: number` field tracks total comments in conversation thread
   - `summary?: string` is AI-generated 2-3 line preview of the conversation
 
-**ApplicationInfoNeighbours** - Placeholder for neighbour details
+**ApplicationInfoNeighbours** - Neighbour consultation management with tabbed filtering and card/forum-style layout (client component)
 - **Title:** "Neighbours" (text-xl font-bold)
 - **Last updated:** "Last updated: 13 October 2024" (text-sm text-muted-foreground, mt-1)
-- Will include neighbour consultation information, responses, objections, support comments
+- **Tab navigation:** Horizontal tabs with counts for filtering neighbour positions
+  - 4 tabs: All, Support, Object, Neutral
+  - Tab styling matches ApplicationInfoLayout and Consultees pattern (3px blue border, gap-6)
+  - Active tab shows count in parentheses
+- **Card layout:** Modern forum-style with minimalist design, matches Consultees pattern
+  - Vertical stack of cards with 3-unit gap (space-y-3)
+  - Each card: border, rounded corners, padding, subtle hover effect (hover:bg-muted/50)
+  - **NeighbourCard component structure:**
+    - **Header section:**
+      - **Left column:** Respondent name (font-semibold) with address in parentheses as secondary text (e.g., "John Smith (45 High Street)"), stacked vertically
+      - **Address text:** Inline with name, smaller muted text in parentheses
+      - **Response date:** Below respondent name in extra-small muted text (e.g., "Response received 15 Oct 2025")
+      - **Right column:** Position badge (top-aligned)
+    - **Response text:** Full response content (not summary) with expandable/collapsible behavior
+      - Text: text-base with foreground color, relaxed line-height
+      - Long responses (>40 words): Truncated to 40 words with ellipsis (...) by default
+      - "Show more"/"Show less" toggle appears for long responses (text-primary with hover underline)
+      - Component state: isExpanded tracks whether full response is visible
+      - Truncation logic: Word-based (not character-based) for cleaner breaks
+    - **Topics:** Topic tags displayed as small muted badges with flex-wrap (e.g., "Design", "Privacy", "Traffic")
+- **Position badge component:** Color-coded with dark mode support
+  - Support: Green badge
+  - Object: Red badge
+  - Neutral: Gray badge
+- **Filtering logic:** Real-time filtering based on selected tab (all/support/object/neutral)
+- **Empty state:** "No neighbours match this filter" when filtered
+- Client-side state management with React hooks (activeTab state)
 - More detailed than Application Details page summary
+- **Mock data updates:** Realistic neighbour responses with varied lengths, tones, and emotional content
+  - Mix of formal and informal language
+  - Range from brief (1-2 sentences) to lengthy (multiple paragraphs)
+  - Emotional variety: angry objections with capitals/exclamation marks, measured concerns, enthusiastic support
+  - Real-world concerns: construction noise, privacy, working from home, young children, property values
 
 ### Design Patterns
 

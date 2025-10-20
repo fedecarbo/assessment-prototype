@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import type { Application, NeighbourResponse } from '@/lib/mock-data/schemas'
 import { formatDate, truncateToWords, formatTopicLabel, RESPONSE_PREVIEW_WORD_LIMIT } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 interface ApplicationInfoNeighboursProps {
   application: Application
@@ -170,13 +171,13 @@ function NeighbourCard({ neighbour }: NeighbourCardProps) {
       {neighbour.topics && neighbour.topics.length > 0 && (
         <div className="flex flex-wrap gap-1.5" role="list" aria-label="Response topics">
           {neighbour.topics.map((topic) => (
-            <span
+            <Badge
               key={topic}
-              role="listitem"
-              className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+              variant="muted"
+              size="small"
             >
               {formatTopicLabel(topic)}
-            </span>
+            </Badge>
           ))}
         </div>
       )}
@@ -189,27 +190,27 @@ interface PositionBadgeProps {
 }
 
 function PositionBadge({ position }: PositionBadgeProps) {
-  const config = {
+  const config: Record<'support' | 'object' | 'neutral', { label: string; variant: 'green' | 'red' | 'gray' }> = {
     'support': {
       label: 'Support',
-      className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+      variant: 'green',
     },
     'object': {
       label: 'Object',
-      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+      variant: 'red',
     },
     'neutral': {
       label: 'Neutral',
-      className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400',
+      variant: 'gray',
     },
   }
 
-  const { label, className } = config[position]
+  const { label, variant } = config[position]
 
   return (
-    <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${className}`}>
+    <Badge variant={variant}>
       {label}
-    </span>
+    </Badge>
   )
 }
 
