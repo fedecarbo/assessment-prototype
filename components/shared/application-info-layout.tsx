@@ -27,15 +27,15 @@ export function ApplicationInfoLayout({ application }: ApplicationInfoLayoutProp
     { id: 'overview' as TabId, label: 'Overview', count: undefined },
     { id: 'documents' as TabId, label: 'Documents', count: documentCount },
     { id: 'constraints' as TabId, label: 'Constraints', count: constraintCount },
-    { id: 'site-history' as TabId, label: 'Site history', count: undefined },
     { id: 'consultees' as TabId, label: 'Consultees', count: consulteeCount },
     { id: 'neighbours' as TabId, label: 'Neighbours', count: neighbourCount },
+    { id: 'site-history' as TabId, label: 'Site history', count: undefined },
   ]
 
   return (
-    <div>
+    <div className="flex flex-col flex-1 overflow-hidden">
       {/* Tabbed Navigation - Full width background with constrained content */}
-      <nav className="border-b border-border bg-background">
+      <nav className="border-b border-border bg-background flex-shrink-0">
         <div className="mx-auto max-w-[1100px] flex gap-6 px-4" role="tablist" aria-label="Application information sections">
           {tabs.map((tab) => (
             <button
@@ -56,14 +56,42 @@ export function ApplicationInfoLayout({ application }: ApplicationInfoLayoutProp
         </div>
       </nav>
 
-      {/* Tab Content - Constrained width */}
-      <div id="application-info-panel" role="tabpanel" className="mx-auto max-w-[1100px] px-4 py-8">
-        {activeTab === 'overview' && <ApplicationInfoOverview application={application} />}
-        {activeTab === 'documents' && <ApplicationInfoDocuments application={application} />}
+      {/* Tab Content - Full width for Constraints, constrained for others */}
+      <div
+        id="application-info-panel"
+        role="tabpanel"
+        className={
+          activeTab === 'constraints'
+            ? 'flex-1 overflow-hidden'
+            : 'flex-1 overflow-y-auto'
+        }
+      >
+        {activeTab === 'overview' && (
+          <div className="mx-auto max-w-[1100px] px-4 py-8">
+            <ApplicationInfoOverview application={application} />
+          </div>
+        )}
+        {activeTab === 'documents' && (
+          <div className="mx-auto max-w-[1100px] px-4 py-8">
+            <ApplicationInfoDocuments application={application} />
+          </div>
+        )}
         {activeTab === 'constraints' && <ApplicationInfoConstraints application={application} />}
-        {activeTab === 'site-history' && <ApplicationInfoSiteHistory application={application} />}
-        {activeTab === 'consultees' && <ApplicationInfoConsultees application={application} />}
-        {activeTab === 'neighbours' && <ApplicationInfoNeighbours application={application} />}
+        {activeTab === 'site-history' && (
+          <div className="mx-auto max-w-[1100px] px-4 py-8">
+            <ApplicationInfoSiteHistory application={application} />
+          </div>
+        )}
+        {activeTab === 'consultees' && (
+          <div className="mx-auto max-w-[1100px] px-4 py-8">
+            <ApplicationInfoConsultees application={application} />
+          </div>
+        )}
+        {activeTab === 'neighbours' && (
+          <div className="mx-auto max-w-[1100px] px-4 py-8">
+            <ApplicationInfoNeighbours application={application} />
+          </div>
+        )}
       </div>
     </div>
   )
