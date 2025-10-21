@@ -178,3 +178,40 @@ Track all bug fixes and modifications.
 **Status:** ✅ Resolved - All pages now build successfully with static generation. Should deploy correctly to Vercel.
 
 ---
+
+## 2025-10-21 | Leaflet Map SSR Build Error Fix
+
+**Issue:** Build failing on Vercel (future-development branch) with `ReferenceError: window is not defined` during static page generation for `/application/[id]/information`. The error occurred during pre-rendering when Leaflet's client-side code (specifically the icon configuration on lines 10-15 of map-view.tsx) was executed during server-side rendering.
+
+**Root Cause:** The MapView component imports Leaflet and manipulates `L.Icon.Default.prototype` at the module level. This code runs during SSR when Next.js pre-renders pages, but Leaflet is a browser-only library that requires the `window` object.
+
+**Resolution:**
+- Wrapped the MapView component import with Next.js `dynamic()` function with `ssr: false` option
+- This prevents the MapView component from being rendered during server-side generation
+- Added a loading state placeholder that displays "Loading map..." while the map component hydrates on the client
+- The map now only loads in the browser after the page has hydrated
+
+**Files Changed:**
+- [application-info-constraints.tsx](components/shared/application-info-constraints.tsx) - Changed MapView import to use dynamic() with ssr: false
+
+**Technical Details:**
+```typescript
+// Before: Direct import (causes SSR error)
+import { MapView } from './map-view'
+
+// After: Dynamic import with SSR disabled
+const MapView = dynamic(() => import('./map-view').then(mod => ({ default: mod.MapView })), {
+  ssr: false,
+  loading: () => <div>Loading map...</div>,
+})
+```
+
+**Build Output:**
+```
+✓ Generating static pages (13/13)
+● /application/[id]/information        (SSG - prerendered for: /1, /2, /3)
+```
+
+**Status:** ✅ Resolved - Build succeeds locally, static pages generated successfully. Ready for Vercel deployment.
+
+---

@@ -1,9 +1,19 @@
 'use client'
 
 import React, { useState } from 'react'
+import dynamic from 'next/dynamic'
 import type { Application, Constraint } from '@/lib/mock-data/schemas'
 import { Building2, Landmark, TreeDeciduous, Droplets, Trees, FileText, Castle, type LucideIcon } from 'lucide-react'
-import { MapView } from './map-view'
+
+// Dynamically import MapView with SSR disabled to prevent Leaflet window errors during build
+const MapView = dynamic(() => import('./map-view').then(mod => ({ default: mod.MapView })), {
+  ssr: false,
+  loading: () => (
+    <div className="h-full w-full bg-muted rounded flex items-center justify-center">
+      <p className="text-sm text-muted-foreground">Loading map...</p>
+    </div>
+  ),
+})
 
 interface ApplicationInfoConstraintsProps {
   application: Application
