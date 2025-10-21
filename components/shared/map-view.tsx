@@ -59,7 +59,7 @@ export function MapView({ visibleConstraints, constraints }: MapViewProps) {
   return (
     <MapContainer
       center={center}
-      zoom={14}
+      zoom={18}
       style={{ height: '100%', width: '100%' }}
       className="rounded"
     >

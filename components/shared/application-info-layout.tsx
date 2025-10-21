@@ -34,9 +34,9 @@ export function ApplicationInfoLayout({ application }: ApplicationInfoLayoutProp
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Tabbed Navigation - Full width background with constrained content */}
+      {/* Tabbed Navigation - Full width */}
       <nav className="border-b border-border bg-background flex-shrink-0">
-        <div className="mx-auto max-w-[1100px] flex gap-6 px-4" role="tablist" aria-label="Application information sections">
+        <div className="flex gap-6 px-4" role="tablist" aria-label="Application information sections">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -60,36 +60,42 @@ export function ApplicationInfoLayout({ application }: ApplicationInfoLayoutProp
       <div
         id="application-info-panel"
         role="tabpanel"
-        className={
-          activeTab === 'constraints'
-            ? 'flex-1 overflow-hidden'
-            : 'flex-1 overflow-y-auto'
-        }
+        className="flex-1 overflow-hidden"
       >
         {activeTab === 'overview' && (
-          <div className="mx-auto max-w-[1100px] px-4 py-8">
-            <ApplicationInfoOverview application={application} />
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoOverview application={application} />
+            </div>
           </div>
         )}
         {activeTab === 'documents' && (
-          <div className="mx-auto max-w-[1100px] px-4 py-8">
-            <ApplicationInfoDocuments application={application} />
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoDocuments application={application} />
+            </div>
           </div>
         )}
         {activeTab === 'constraints' && <ApplicationInfoConstraints application={application} />}
         {activeTab === 'site-history' && (
-          <div className="mx-auto max-w-[1100px] px-4 py-8">
-            <ApplicationInfoSiteHistory application={application} />
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoSiteHistory application={application} />
+            </div>
           </div>
         )}
         {activeTab === 'consultees' && (
-          <div className="mx-auto max-w-[1100px] px-4 py-8">
-            <ApplicationInfoConsultees application={application} />
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoConsultees application={application} />
+            </div>
           </div>
         )}
         {activeTab === 'neighbours' && (
-          <div className="mx-auto max-w-[1100px] px-4 py-8">
-            <ApplicationInfoNeighbours application={application} />
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoNeighbours application={application} />
+            </div>
           </div>
         )}
       </div>
