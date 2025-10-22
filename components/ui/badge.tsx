@@ -8,11 +8,21 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        blue: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100",
-        yellow: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100",
-        green: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-        red: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
-        gray: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
+        // GOV.UK Tag Colors
+        grey: "text-[var(--tag-grey-text)] bg-[var(--tag-grey-bg)]",
+        green: "text-[var(--tag-green-text)] bg-[var(--tag-green-bg)]",
+        turquoise: "text-[var(--tag-turquoise-text)] bg-[var(--tag-turquoise-bg)]",
+        blue: "text-[var(--tag-blue-text)] bg-[var(--tag-blue-bg)]",
+        "light-blue": "text-[var(--tag-light-blue-text)] bg-[var(--tag-light-blue-bg)]",
+        purple: "text-[var(--tag-purple-text)] bg-[var(--tag-purple-bg)]",
+        pink: "text-[var(--tag-pink-text)] bg-[var(--tag-pink-bg)]",
+        red: "text-[var(--tag-red-text)] bg-[var(--tag-red-bg)]",
+        orange: "text-[var(--tag-orange-text)] bg-[var(--tag-orange-bg)]",
+        yellow: "text-[var(--tag-yellow-text)] bg-[var(--tag-yellow-bg)]",
+        // Monotone variants
+        white: "bg-background text-foreground border border-border",
+        gray: "text-[var(--tag-grey-text)] bg-[var(--tag-grey-bg)]", // Alias for grey
+        // Legacy variants
         black: "bg-background text-foreground",
         muted: "bg-muted text-foreground",
       },

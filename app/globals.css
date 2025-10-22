@@ -18,7 +18,7 @@
   --accent-foreground: 0 0% 5%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
+  --border: oklch(0.7681 0.0044 236.52);
   --input: 214.3 31.8% 91.4%;
   --ring: 211 66% 41%;
 
@@ -42,7 +42,7 @@
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 20%;
+  --border: oklch(0.30 0.0044 236.52);
   --input: 0 0% 20%;
   --ring: 0 0% 85%;
 }
@@ -64,7 +64,7 @@
   --color-accent-foreground: hsl(var(--accent-foreground));
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
-  --color-border: hsl(var(--border));
+  --color-border: var(--border);
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
@@ -110,4 +110,26 @@
   /* Custom max-widths */
   --max-width-content: 1100px;
   --max-width-readable: 723px;
+
+  /* GOV.UK Tag Colors */
+  --tag-grey-text: #484949;
+  --tag-grey-bg: #f3f3f3;
+  --tag-green-text: #09442d;
+  --tag-green-bg: #cfe7de;
+  --tag-turquoise-text: #0b4144;
+  --tag-turquoise-bg: #d0e6e7;
+  --tag-blue-text: #0c2d4a;
+  --tag-blue-bg: #bbd4ea;
+  --tag-light-blue-text: #0c2d4a;
+  --tag-light-blue-bg: #e8f1f8;
+  --tag-purple-text: #2a1950;
+  --tag-purple-bg: #ddd6ec;
+  --tag-pink-text: #651b3e;
+  --tag-pink-bg: #f4d7e5;
+  --tag-red-text: #651b1b;
+  --tag-red-bg: #f4d7d7;
+  --tag-orange-text: #7a3c1c;
+  --tag-orange-bg: #fde4d7;
+  --tag-yellow-text: #806f00;
+  --tag-yellow-bg: #fff8cc;
 }

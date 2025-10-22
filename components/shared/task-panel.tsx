@@ -12,8 +12,8 @@ interface TaskPanelProps {
 function getCheckbox(status: TaskStatus, isSelected: boolean) {
   if (status === 'completed') {
     return (
-      <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm ${
-        isSelected ? 'bg-white/20' : 'bg-muted-foreground/10'
+      <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm border ${
+        isSelected ? 'bg-white/20 border-white/40' : 'bg-background border-border'
       }`}>
         <Check className={`h-3.5 w-3.5 ${
           isSelected ? 'text-white' : 'text-foreground'
@@ -25,10 +25,10 @@ function getCheckbox(status: TaskStatus, isSelected: boolean) {
   if (status === 'in-progress') {
     return (
       <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm ${
-        isSelected ? 'bg-white/20' : 'bg-[hsl(211,66%,41%)]/10'
+        isSelected ? 'bg-white/20' : 'bg-[var(--tag-light-blue-bg)]'
       }`}>
         <div className={`h-0.5 w-2.5 ${
-          isSelected ? 'bg-white' : 'bg-[hsl(211,66%,41%)]'
+          isSelected ? 'bg-white' : 'bg-[var(--tag-light-blue-text)]'
         }`} />
       </div>
     )
@@ -36,7 +36,7 @@ function getCheckbox(status: TaskStatus, isSelected: boolean) {
 
   return (
     <div className={`h-5 w-5 flex-none rounded-sm ${
-      isSelected ? 'bg-white/20' : 'bg-[hsl(211,66%,41%)]/10'
+      isSelected ? 'bg-white/20' : 'bg-[var(--tag-blue-bg)]'
     }`} />
   )
 }

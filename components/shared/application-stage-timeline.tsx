@@ -10,7 +10,7 @@ interface ApplicationStageTimelineProps {
 function getStatusBadge(status: string, isBlocked: boolean = false) {
   if (isBlocked) {
     return (
-      <Badge variant="gray">
+      <Badge variant="blue">
         Cannot start yet
       </Badge>
     )
@@ -20,21 +20,21 @@ function getStatusBadge(status: string, isBlocked: boolean = false) {
     case 'validated':
     case 'completed':
       return (
-        <Badge variant="black">
+        <Badge variant="white">
           Completed
         </Badge>
       )
     case 'in-progress':
     case 'pending':
       return (
-        <Badge variant="blue">
+        <Badge variant="light-blue">
           In progress
         </Badge>
       )
     case 'not-started':
     default:
       return (
-        <Badge variant="gray">
+        <Badge variant="blue">
           Not started
         </Badge>
       )
