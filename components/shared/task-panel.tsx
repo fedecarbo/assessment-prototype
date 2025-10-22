@@ -9,35 +9,25 @@ interface TaskPanelProps {
   onTaskSelect: (taskId: number) => void
 }
 
-function getCheckbox(status: TaskStatus, isSelected: boolean) {
+function getCheckbox(status: TaskStatus) {
   if (status === 'completed') {
     return (
-      <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm border ${
-        isSelected ? 'bg-white/20 border-white/40' : 'bg-background border-border'
-      }`}>
-        <Check className={`h-3.5 w-3.5 ${
-          isSelected ? 'text-white' : 'text-foreground'
-        }`} strokeWidth={2.5} />
+      <div className="flex h-5 w-5 flex-none items-center justify-center rounded-sm border border-border bg-background">
+        <Check className="h-3.5 w-3.5 text-foreground" strokeWidth={2.5} />
       </div>
     )
   }
 
   if (status === 'in-progress') {
     return (
-      <div className={`flex h-5 w-5 flex-none items-center justify-center rounded-sm ${
-        isSelected ? 'bg-white/20' : 'bg-[var(--tag-light-blue-bg)]'
-      }`}>
-        <div className={`h-0.5 w-2.5 ${
-          isSelected ? 'bg-white' : 'bg-[var(--tag-light-blue-text)]'
-        }`} />
+      <div className="flex h-5 w-5 flex-none items-center justify-center rounded-sm bg-[var(--tag-light-blue-bg)]">
+        <div className="h-0.5 w-2.5 bg-[var(--tag-light-blue-text)]" />
       </div>
     )
   }
 
   return (
-    <div className={`h-5 w-5 flex-none rounded-sm ${
-      isSelected ? 'bg-white/20' : 'bg-[var(--tag-blue-bg)]'
-    }`} />
+    <div className="h-5 w-5 flex-none rounded-sm bg-[var(--tag-blue-bg)]" />
   )
 }
 
@@ -50,7 +40,7 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
       <div className="space-y-6">
         {taskGroups.map((group, groupIndex) => (
           <div key={groupIndex}>
-            <h3 className="text-base text-foreground mb-2">
+            <h3 className="text-base font-bold text-foreground mb-2">
               {group.title}
             </h3>
             <div className="space-y-0">
@@ -63,26 +53,26 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
                     key={task.id}
                     href={`?task=${task.id}`}
                     onClick={() => onTaskSelect(task.id)}
-                    className={`flex items-center justify-between gap-3 p-2 transition-colors no-underline ${
+                    className={`flex items-center justify-between gap-3 py-2 pr-2 transition-colors no-underline ${
                       isSelected
-                        ? 'bg-[hsl(211,66%,41%)]'
-                        : 'hover:bg-muted/50'
+                        ? 'border-l-4 border-l-primary pl-1.5'
+                        : 'pl-2 hover:bg-muted/50'
                     }`}
                   >
                     <span className={`text-base leading-tight ${
                       isSelected
-                        ? 'text-white'
+                        ? 'text-foreground'
                         : 'text-primary'
                     }`}>
                       {task.title}
                     </span>
-                    {getCheckbox(task.status, isSelected)}
+                    {getCheckbox(task.status)}
                   </Link>
                 )
               })}
             </div>
             {groupIndex < taskGroups.length - 1 && (
-              <Separator className="mt-6" />
+              <Separator className="mt-4" />
             )}
           </div>
         ))}
