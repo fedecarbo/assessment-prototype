@@ -39,7 +39,8 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
               href={`/application/${applicationId}/information`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-base text-primary hover:underline"
+              className="text-base text-primary underline decoration-1 hover:decoration-2 transition-all"
+              style={{ textUnderlineOffset: '0.1578em' }}
               aria-label={`View application information for ${reference}`}
             >
               Application information

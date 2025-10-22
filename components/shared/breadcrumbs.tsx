@@ -17,16 +17,22 @@ export function Breadcrumbs({ items, variant = 'constrained' }: BreadcrumbsProps
         <ol className="flex items-center gap-2 text-sm">
           {items.map((item, index) => (
             <li key={index} className="flex items-center gap-2">
-              {index > 0 && <span className="text-muted-foreground">/</span>}
+              {index > 0 && <span className="text-muted-foreground">&gt;</span>}
               {item.href ? (
                 <Link
                   href={item.href}
-                  className="text-primary hover:underline"
+                  className="text-foreground underline decoration-1 hover:decoration-2 transition-all"
+                  style={{ textUnderlineOffset: '0.1578em' }}
                 >
                   {item.label}
                 </Link>
               ) : (
-                <span className="text-foreground">{item.label}</span>
+                <span
+                  className="text-foreground underline decoration-1"
+                  style={{ textUnderlineOffset: '0.1578em' }}
+                >
+                  {item.label}
+                </span>
               )}
             </li>
           ))}

@@ -14,14 +14,14 @@ function getStatusIcon(status: TaskStatus, isSelected: boolean) {
   if (status === 'completed') {
     if (isSelected) {
       return (
-        <div className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-white">
-          <Check className="h-3.5 w-3.5 text-primary" strokeWidth={2.5} />
+        <div className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-background dark:bg-foreground">
+          <Check className="h-3.5 w-3.5 text-primary dark:text-background" strokeWidth={2.5} />
         </div>
       )
     }
     return (
-      <div className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-primary">
-        <Check className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+      <div className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-primary dark:bg-foreground">
+        <Check className="h-3.5 w-3.5 text-background dark:text-background" strokeWidth={2.5} />
       </div>
     )
   }
@@ -29,14 +29,14 @@ function getStatusIcon(status: TaskStatus, isSelected: boolean) {
   // In progress: grey clock icon
   if (status === 'in-progress') {
     return (
-      <Clock className={`h-5.5 w-5.5 flex-none ${isSelected ? 'text-white' : 'text-muted-foreground'}`} strokeWidth={1.5} />
+      <Clock className={`h-5.5 w-5.5 flex-none ${isSelected ? 'text-background dark:text-white' : 'text-muted-foreground'}`} strokeWidth={1.5} />
     )
   }
 
   // Not started: dashed border (default grey or white when selected) - 1.5px thickness
   if (isSelected) {
     return (
-      <div className="h-5 w-5 flex-none rounded-full border-[1.5px] border-dashed border-white" />
+      <div className="h-5 w-5 flex-none rounded-full border-[1.5px] border-dashed border-background dark:border-white" />
     )
   }
   return (
@@ -68,11 +68,11 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
                     onClick={() => onTaskSelect(task.id)}
                     className={`flex items-center justify-between gap-3 py-2 pr-2 border-b border-border transition-colors no-underline ${
                       isSelected
-                        ? 'bg-primary border-l-[3px] border-l-primary pl-[7px]'
+                        ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-l-[3px] border-l-primary dark:border-l-[hsl(211,66%,43%)] pl-[7px]'
                         : 'pl-2 hover:bg-muted/50'
                     }`}
                   >
-                    <span className={`text-base leading-tight ${isSelected ? 'text-white' : 'text-primary'}`}>
+                    <span className={`text-base leading-tight ${isSelected ? 'text-background dark:text-white' : 'text-primary dark:text-foreground'}`}>
                       {task.title}
                     </span>
                     {getStatusIcon(task.status, isSelected)}

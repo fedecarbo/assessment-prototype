@@ -172,8 +172,10 @@ Quick reference for what's been built and key architectural decisions.
 
 **Breadcrumbs** - Navigation trail component
 - Light blue background (GDS primary 95% lightness)
-- Slash separators between items
-- Links to previous pages, current page as plain text
+- Greater-than (>) separators between items
+- All text in black (foreground color) with underline
+- Underline styling: `decoration-1` default, `decoration-2` on hover with smooth transition
+- Underline offset: `0.1578em` (using Tailwind arbitrary value syntax)
 - **Variant support:** `constrained` (default, 1100px max-width) | `full` (no max-width)
 - Application detail page: `constrained` variant with trail Home → Application details
 - Assessment page: `full` variant with trail Home → Application details → Check and assess
