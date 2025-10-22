@@ -7,11 +7,11 @@ import { Separator } from '@/components/ui/separator'
 function getStatusBadge(status: TaskStatus) {
   switch (status) {
     case 'completed':
-      return <Badge variant="white">Completed</Badge>
+      return <Badge variant="green">Completed</Badge>
     case 'in-progress':
       return <Badge variant="light-blue">In progress</Badge>
     case 'not-started':
-      return <Badge variant="blue">Not started</Badge>
+      return <Badge variant="gray">Not started</Badge>
   }
 }
 
