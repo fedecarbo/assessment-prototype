@@ -88,6 +88,29 @@ const mockTaskGroups: TaskGroup[] = [
       },
     ]
   },
+  {
+    title: 'Complete assessment',
+    tasks: [
+      {
+        id: 9,
+        title: 'Choose application type',
+        description: 'Select the appropriate application type based on the proposal and assessment findings.',
+        status: 'not-started'
+      },
+      {
+        id: 10,
+        title: 'Check and add requirements',
+        description: 'Review and confirm all requirements for the selected application type, adding any additional documentation or information needed.',
+        status: 'not-started'
+      },
+      {
+        id: 11,
+        title: 'Review and submit pre-application',
+        description: 'Conduct final review of the pre-application assessment and submit advice to the applicant.',
+        status: 'not-started'
+      },
+    ]
+  },
 ]
 
 const AssessmentContext = createContext<AssessmentContextType | null>(null)

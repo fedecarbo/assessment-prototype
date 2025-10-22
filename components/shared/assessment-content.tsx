@@ -47,7 +47,7 @@ export function AssessmentContent() {
       <Separator className="mt-6" />
 
       {/* Content coming soon placeholder */}
-      <div className="mt-6 flex items-center justify-center bg-muted" style={{ minHeight: '300px' }}>
+      <div className="mt-6 flex items-center justify-center bg-muted" style={{ minHeight: '1200px' }}>
         <p className="text-lg text-muted-foreground">Content coming soon</p>
       </div>
     </div>
