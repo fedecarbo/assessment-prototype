@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
-import { Check } from 'lucide-react'
+import { Check, Clock } from 'lucide-react'
 import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
 
@@ -26,15 +26,10 @@ function getStatusIcon(status: TaskStatus, isSelected: boolean) {
     )
   }
 
-  // In progress: dashed border (default blue or white when selected) - 1.5px thickness
+  // In progress: grey clock icon
   if (status === 'in-progress') {
-    if (isSelected) {
-      return (
-        <div className="h-5 w-5 flex-none rounded-full border-[1.5px] border-dashed border-white" />
-      )
-    }
     return (
-      <div className="h-5 w-5 flex-none rounded-full border-[1.5px] border-dashed border-primary" />
+      <Clock className={`h-5.5 w-5.5 flex-none ${isSelected ? 'text-white' : 'text-muted-foreground'}`} strokeWidth={1.5} />
     )
   }
 
@@ -58,7 +53,7 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
       <div className="space-y-6">
         {taskGroups.map((group, groupIndex) => (
           <div key={groupIndex}>
-            <h3 className="text-base text-muted-foreground mb-2">
+            <h3 className="text-base font-bold text-foreground mb-2">
               {group.title}
             </h3>
             <div>
