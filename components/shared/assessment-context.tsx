@@ -23,7 +23,7 @@ interface AssessmentContextType {
   taskGroups: TaskGroup[]
   taskMap: Map<number, Task>
   updateTaskStatus: (taskId: number, status: TaskStatus) => void
-  contentScrollRef: RefObject<HTMLElement> | null
+  contentScrollRef: RefObject<HTMLElement | null>
 }
 
 // Mock task data organized in groups
