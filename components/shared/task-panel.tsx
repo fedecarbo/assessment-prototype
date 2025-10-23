@@ -26,7 +26,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
     if (isSelected) {
       return (
         <div className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-[1.5px] border-background dark:border-white bg-background dark:bg-white">
-          <Check className="h-3.5 w-3.5 text-primary dark:text-foreground" strokeWidth={2.5} />
+          <Check className="h-3.5 w-3.5 text-primary dark:text-[hsl(211,66%,43%)]" strokeWidth={2.5} />
         </div>
       )
     }
