@@ -22,7 +22,7 @@ function AssessmentLayoutContent({
   description,
   children,
 }: AssessmentLayoutProps) {
-  const { selectedTaskId, setSelectedTaskId } = useAssessment()
+  const { selectedTaskId, setSelectedTaskId, contentScrollRef } = useAssessment()
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Application Details', href: `/application/${applicationId}` },
@@ -49,7 +49,7 @@ function AssessmentLayoutContent({
         <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
 
         {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
-        <main className="flex flex-1 justify-center overflow-y-auto">
+        <main ref={contentScrollRef} className="flex flex-1 justify-center overflow-y-auto">
           <div className="w-full px-4" style={{ maxWidth: '1100px' }}>
             {children}
           </div>

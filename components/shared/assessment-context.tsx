@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useState, useRef, type ReactNode, type RefObject } from 'react'
 
 export type TaskStatus = 'not-started' | 'in-progress' | 'completed'
 
@@ -21,6 +21,8 @@ interface AssessmentContextType {
   setSelectedTaskId: (id: number) => void
   taskGroups: TaskGroup[]
   taskMap: Map<number, Task>
+  updateTaskStatus: (taskId: number, status: TaskStatus) => void
+  contentScrollRef: RefObject<HTMLElement> | null
 }
 
 // Mock task data organized in groups
@@ -126,13 +128,28 @@ const createTaskMap = (groups: TaskGroup[]): Map<number, Task> => {
   return map
 }
 
-const taskMap = createTaskMap(mockTaskGroups)
 
 export function AssessmentProvider({ children }: { children: ReactNode }) {
   const [selectedTaskId, setSelectedTaskId] = useState(1)
+  const [taskGroups, setTaskGroups] = useState(mockTaskGroups)
+  const contentScrollRef = useRef<HTMLElement>(null)
+
+  const updateTaskStatus = (taskId: number, status: TaskStatus) => {
+    setTaskGroups(groups =>
+      groups.map(group => ({
+        ...group,
+        tasks: group.tasks.map(task =>
+          task.id === taskId ? { ...task, status } : task
+        )
+      }))
+    )
+  }
+
+  // Recreate task map when taskGroups changes
+  const taskMap = createTaskMap(taskGroups)
 
   return (
-    <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, taskGroups: mockTaskGroups, taskMap }}>
+    <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, taskGroups, taskMap, updateTaskStatus, contentScrollRef }}>
       {children}
     </AssessmentContext.Provider>
   )
