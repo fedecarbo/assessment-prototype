@@ -29,6 +29,11 @@ function AssessmentLayoutContent({
     { label: 'Check and assess' },
   ]
 
+  // On mobile: show TaskPanel when no task is selected, show content when task is selected
+  // On desktop: always show both side-by-side
+  const showTaskPanel = selectedTaskId === 0 // No task selected
+  const showContent = selectedTaskId > 0 // Task is selected
+
   return (
     <div className="flex h-screen flex-col">
       {/* Fixed Headers at Top */}
@@ -43,13 +48,21 @@ function AssessmentLayoutContent({
         <CaseSummaryHeader reference={reference} address={address} description={description} applicationId={applicationId} />
       </div>
 
-      {/* Scrollable Content Area - Two column layout */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left: Task Panel - Fixed 338px + 32px padding = 370px total */}
-        <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
+      {/* Scrollable Content Area - Responsive layout */}
+      <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
+        {/* Left: Task Panel - Full width on mobile, fixed 338px on desktop */}
+        {/* Mobile: Show only when no task selected. Desktop: Always show */}
+        {/* Mobile: Takes full remaining height and allows scrolling */}
+        <div className={`${showTaskPanel ? 'flex' : 'hidden'} md:flex flex-1 md:flex-none overflow-hidden`}>
+          <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
+        </div>
 
-        {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
-        <main ref={contentScrollRef} className="flex flex-1 justify-center overflow-y-auto">
+        {/* Right: Main Content - Full width on mobile, flex-1 on desktop */}
+        {/* Mobile: Show only when task selected. Desktop: Always show */}
+        <main
+          ref={contentScrollRef}
+          className={`${showContent ? 'flex' : 'hidden'} md:flex flex-1 justify-center overflow-y-auto`}
+        >
           <div className="w-full px-4" style={{ maxWidth: '1100px' }}>
             {children}
           </div>

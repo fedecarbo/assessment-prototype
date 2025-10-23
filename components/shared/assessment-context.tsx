@@ -1,6 +1,7 @@
 'use client'
 
-import { createContext, useContext, useState, useRef, type ReactNode, type RefObject } from 'react'
+import { createContext, useContext, useState, useRef, useEffect, type ReactNode, type RefObject } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export type TaskStatus = 'not-started' | 'in-progress' | 'completed'
 
@@ -130,9 +131,22 @@ const createTaskMap = (groups: TaskGroup[]): Map<number, Task> => {
 
 
 export function AssessmentProvider({ children }: { children: ReactNode }) {
-  const [selectedTaskId, setSelectedTaskId] = useState(1)
+  const searchParams = useSearchParams()
+  const taskParam = searchParams.get('task')
+
+  // Initialize from URL or default to 0 (no task selected)
+  const [selectedTaskId, setSelectedTaskId] = useState(() => {
+    return taskParam ? parseInt(taskParam, 10) : 0
+  })
+
   const [taskGroups, setTaskGroups] = useState(mockTaskGroups)
   const contentScrollRef = useRef<HTMLElement>(null)
+
+  // Sync selectedTaskId with URL changes
+  useEffect(() => {
+    const newTaskId = taskParam ? parseInt(taskParam, 10) : 0
+    setSelectedTaskId(newTaskId)
+  }, [taskParam])
 
   const updateTaskStatus = (taskId: number, status: TaskStatus) => {
     setTaskGroups(groups =>

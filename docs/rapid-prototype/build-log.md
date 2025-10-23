@@ -147,19 +147,26 @@ Quick reference for what's been built and key architectural decisions.
 
 **Route:** `/application/[id]/assessment`
 **Layout Pattern:** Full-width layout with site header, breadcrumbs, and case summary
+**Mobile Pattern:** Task list view with page navigation to individual tasks
 
 ### Core Components
 
 **AssessmentLayout** - Full-width layout wrapper with two-column structure and independent scrolling (client component)
 - **Fixed headers:** Site header, breadcrumbs, and case summary remain at top (flex-none)
 - **Viewport height:** Uses `h-screen` with flexbox column layout
-- **Two-column scrollable layout:**
-  - Left: TaskPanel (370px total: 338px + 32px padding, `overflow-y-auto`)
-  - Right: Main content area (`flex-1`, takes remaining space, centered, `overflow-y-auto`)
-  - Content constraint: 1100px max-width with 16px horizontal padding (px-4), centered within main area
-  - Responsive: Content stays centered and constrained on all screen sizes
+- **Responsive two-column layout:**
+  - **Desktop (md+):** Side-by-side layout
+    - Left: TaskPanel (370px total: 338px + 32px padding, `overflow-y-auto`)
+    - Right: Main content area (`flex-1`, takes remaining space, centered, `overflow-y-auto`)
+    - Both panels always visible
+  - **Mobile (<md):** Stacked layout with conditional visibility
+    - Shows TaskPanel OR Content based on `selectedTaskId` state
+    - TaskPanel: Full-width, scrollable, shown when `selectedTaskId === 0`
+    - Content: Full-width, scrollable, shown when `selectedTaskId > 0`
+    - Layout changes from `flex-col` on mobile to `flex-row` on desktop
+- **Content constraint:** 1100px max-width with 16px horizontal padding (px-4), centered within main area
 - **Independent scrolling:** Each content area scrolls independently with its own scrollbar
-- **Task selection state:** Manages `selectedTaskId` state (default: 1)
+- **Task selection state:** URL-driven via query params (`?task=X`), synced with context state
 - **Render prop pattern:** Children function receives `selectedTaskId` to render task-specific content
 - Headers stay fixed while content areas scroll
 
@@ -181,15 +188,20 @@ Quick reference for what's been built and key architectural decisions.
 - Assessment page: `full` variant with trail Home → Application details → Check and assess
 
 **CaseSummaryHeader** - Condensed application header (client component)
-- Reference number + address in single line (left side)
-- Quick links: "Application information", "Documents" (right side)
+- **Desktop layout:** Reference number + address in single line (left side), quick links on right side
+- **Mobile layout:** Stacked vertically with responsive gap spacing
+  - Reference and address stack on separate lines (removed vertical divider on mobile)
+  - "Show/Hide proposal description" button below
+  - "Application information" link at bottom
+- Quick links: "Application information", "Documents" (right side on desktop)
 - Optional "Show/Hide proposal description" toggle button
 - Expandable description panel with smooth transition (300ms)
 - Description constrained to max-w-4xl (896px) for readability
 - Replaces the collapsing hero pattern from detail page
 
 **TaskPanel** - To-do list style task sidebar with independent scroll
-- Fixed width: 338px + 16px padding each side = 370px total
+- **Desktop:** Fixed width (338px + 16px padding each side = 370px total)
+- **Mobile:** Full-width (`w-full`)
 - Independent scrolling: `overflow-y-auto`
 - Border right separator
 - **To-do list design pattern:**
@@ -218,6 +230,9 @@ Quick reference for what's been built and key architectural decisions.
 - Callbacks: `onTaskSelect(taskId)` updates parent state
 
 **AssessmentContent** - Dynamic task content renderer (client component)
+- **Mobile:** "Back to tasks" button with chevron icon at top (only visible on mobile)
+  - Links to base URL (removes `?task=X` param)
+  - Triggers `setSelectedTaskId(0)` to show task panel
 - Text-based layout displaying task details:
   - **Status badge** at top (green/blue/gray)
   - **Task title** (text-xl font-bold)
@@ -231,11 +246,16 @@ Quick reference for what's been built and key architectural decisions.
 - `TaskStatus` type: `'not-started' | 'in-progress' | 'completed'`
 - `Task` interface: id, title, description, status
 - `TaskGroup` interface: title, tasks array
-- Mock data: 8 realistic planning assessment tasks organized in 3 groups
+- Mock data: 11 realistic planning assessment tasks organized in 4 groups
   - Check application: Check application details (completed), Check consultees consulted (completed), Check site history (in-progress)
   - Additional services: Site visit (not-started), Meeting (not-started)
   - Assessment summaries: Site description (not-started), Summary of advice (not-started), Planning considerations and advice (not-started)
-- Provides `selectedTaskId`, `setSelectedTaskId`, and `taskGroups` array
+  - Complete assessment: Choose application type (not-started), Check and add requirements (not-started), Review and submit pre-application (not-started)
+- **URL synchronization:** Reads `?task=X` query param to initialize and sync `selectedTaskId`
+  - Default: `selectedTaskId = 0` (no task selected, shows task panel on mobile)
+  - With param: `selectedTaskId = parseInt(task)` (shows content on mobile)
+  - Updates when URL changes via `useEffect` hook
+- Provides `selectedTaskId`, `setSelectedTaskId`, `taskGroups` array, and `taskMap` for O(1) lookups
 - `useAssessment()` hook for consuming context
 
 ### Layout Differences from Application Detail Page

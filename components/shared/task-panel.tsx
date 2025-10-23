@@ -70,7 +70,7 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
   const { taskGroups } = useAssessment()
 
   return (
-    <aside className="w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-4">
+    <aside className="w-full md:w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-4">
       <h2 className="text-lg font-bold text-foreground mb-6">Assessment tasks</h2>
       <div className="space-y-6">
         {taskGroups.map((group, groupIndex) => (

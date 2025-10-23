@@ -18,15 +18,19 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
   return (
     <div className="border-b border-border bg-background">
       <div className={constrained ? "mx-auto max-w-[1100px] px-4 py-4" : "px-4 py-4"}>
-        <div className="flex items-baseline justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-base font-bold text-foreground">{reference}</h1>
-            <div className="h-4 w-px bg-border"></div>
-            <h2 className="text-base text-foreground">{address}</h2>
+        {/* Mobile: Stack vertically, Desktop: Horizontal layout */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-baseline md:justify-between">
+          {/* Reference, address, and description toggle */}
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
+              <h1 className="text-base font-bold text-foreground whitespace-nowrap">{reference}</h1>
+              <div className="h-4 w-px bg-border hidden md:block"></div>
+              <h2 className="text-base text-foreground break-words">{address}</h2>
+            </div>
             {description && (
               <button
                 onClick={() => setShowDescription(!showDescription)}
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-primary hover:underline text-left whitespace-nowrap"
                 aria-expanded={showDescription}
                 aria-controls="proposal-description"
               >
@@ -34,12 +38,13 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
               </button>
             )}
           </div>
+          {/* Application information link */}
           {variant === 'default' && applicationId && (
             <Link
               href={`/application/${applicationId}/information`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-base text-primary underline decoration-1 hover:decoration-2 transition-all"
+              className="text-base text-primary underline decoration-1 hover:decoration-2 transition-all whitespace-nowrap"
               style={{ textUnderlineOffset: '0.1578em' }}
               aria-label={`View application information for ${reference}`}
             >
