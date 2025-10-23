@@ -97,7 +97,7 @@ export function AssessmentContent() {
       <div style={{ maxWidth: '723px' }}>
         {/* Status Badge */}
         <div className="flex items-center gap-3">
-          {getStatusBadge(currentTask.status)}
+          {getStatusBadge(currentTask.status || 'not-started')}
         </div>
 
         {/* Task Title */}
