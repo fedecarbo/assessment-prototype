@@ -25,7 +25,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   if (status === 'completed') {
     if (isSelected) {
       return (
-        <div className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-background dark:bg-white">
+        <div className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-[1.5px] border-background dark:border-white bg-background dark:bg-white">
           <Check className="h-3.5 w-3.5 text-primary dark:text-foreground" strokeWidth={2.5} />
         </div>
       )
@@ -55,7 +55,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
     )
   }
 
-  // Not started: Dashed border, grey
+  // Not started: Dashed border, grey (white when selected)
   if (isSelected) {
     return (
       <div className="h-5 w-5 flex-none rounded-full border-[1.5px] border-dashed border-background dark:border-white" />
@@ -88,10 +88,10 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
                     key={task.id}
                     href={`?task=${task.id}`}
                     onClick={() => onTaskSelect(task.id)}
-                    className={`flex items-center gap-3 py-2 pr-2 border-b border-border transition-colors no-underline ${
+                    className={`flex items-center gap-3 py-2 pr-2 transition-colors no-underline ${
                       isSelected
-                        ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-l-[3px] border-l-primary dark:border-l-[hsl(211,66%,43%)] pl-[7px]'
-                        : 'pl-2 hover:bg-muted/50'
+                        ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-l-[3px] border-l-primary dark:border-l-[hsl(211,66%,43%)] border-b border-b-primary pl-[7px]'
+                        : 'pl-2 border-b border-border hover:bg-muted/50'
                     }`}
                   >
                     {getStatusIcon(task.status, isSelected, task.id)}
