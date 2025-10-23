@@ -56,13 +56,13 @@ const mockTaskGroups: TaskGroup[] = [
     tasks: [
       {
         id: 4,
-        title: 'Site visit',
+        title: 'Record site visit',
         description: 'Conduct site visit to assess the existing conditions, verify details in the application, and evaluate the impact of the proposed development.',
         status: 'not-started'
       },
       {
         id: 5,
-        title: 'Meeting',
+        title: 'Record meeting',
         description: 'Arrange and conduct meetings with applicant, consultees, or other stakeholders as necessary to discuss the proposal and resolve issues.',
         status: 'not-started'
       },
@@ -79,14 +79,14 @@ const mockTaskGroups: TaskGroup[] = [
       },
       {
         id: 7,
-        title: 'Summary of advice',
-        description: 'Summarize advice received from consultees, technical specialists, and other relevant parties. Highlight key recommendations and concerns.',
+        title: 'Planning advice',
+        description: 'Provide comprehensive planning assessment covering policy compliance, material considerations, and planning balance. Draft recommendation with supporting reasoning.',
         status: 'not-started'
       },
       {
         id: 8,
-        title: 'Planning considerations and advice',
-        description: 'Provide comprehensive planning assessment covering policy compliance, material considerations, and planning balance. Draft recommendation with supporting reasoning.',
+        title: 'Summary of advice',
+        description: 'Summarize advice received from consultees, technical specialists, and other relevant parties. Highlight key recommendations and concerns.',
         status: 'not-started'
       },
     ]
@@ -108,7 +108,7 @@ const mockTaskGroups: TaskGroup[] = [
       },
       {
         id: 11,
-        title: 'Review and submit pre-application',
+        title: 'Review and submit',
         description: 'Conduct final review of the pre-application assessment and submit advice to the applicant.',
         status: 'not-started'
       },

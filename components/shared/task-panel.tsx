@@ -88,14 +88,14 @@ const TaskPanelComponent = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) =>
                     key={task.id}
                     href={`?task=${task.id}`}
                     onClick={() => onTaskSelect(task.id)}
-                    className={`flex items-center gap-2 py-2 pr-2 transition-colors no-underline ${
+                    className={`flex items-center gap-2 py-2 pl-2 pr-2 transition-colors no-underline ${
                       isSelected
-                        ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-l-[3px] border-l-primary dark:border-l-[hsl(211,66%,43%)] border-b border-b-primary pl-[7px]'
-                        : 'pl-2 border-b border-border hover:bg-muted/50'
+                        ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-b border-b-primary dark:border-b-[hsl(211,66%,53%)]'
+                        : 'border-b border-border hover:bg-muted/50'
                     }`}
                   >
                     {getStatusIcon(task.status, isSelected, task.id)}
-                    <span className={`text-sm leading-tight ${isSelected ? 'text-background dark:text-white' : 'text-primary dark:text-foreground'}`}>
+                    <span className={`text-sm leading-tight flex-1 ${isSelected ? 'text-background dark:text-white' : 'text-primary dark:text-foreground'}`}>
                       {task.title}
                     </span>
                   </Link>
