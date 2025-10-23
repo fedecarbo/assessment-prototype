@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useRef, useEffect, type ReactNode, type RefObject } from 'react'
+import { createContext, useContext, useState, useRef, useEffect, Suspense, type ReactNode, type RefObject } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 export type TaskStatus = 'not-started' | 'in-progress' | 'completed'
@@ -130,7 +130,7 @@ const createTaskMap = (groups: TaskGroup[]): Map<number, Task> => {
 }
 
 
-export function AssessmentProvider({ children }: { children: ReactNode }) {
+function AssessmentProviderContent({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams()
   const taskParam = searchParams.get('task')
 
@@ -166,6 +166,14 @@ export function AssessmentProvider({ children }: { children: ReactNode }) {
     <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, taskGroups, taskMap, updateTaskStatus, contentScrollRef }}>
       {children}
     </AssessmentContext.Provider>
+  )
+}
+
+export function AssessmentProvider({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AssessmentProviderContent>{children}</AssessmentProviderContent>
+    </Suspense>
   )
 }
 
