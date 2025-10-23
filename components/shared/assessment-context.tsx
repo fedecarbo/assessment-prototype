@@ -8,7 +8,7 @@ export interface Task {
   id: number
   title: string
   description: string
-  status: TaskStatus
+  status?: TaskStatus
 }
 
 export interface TaskGroup {
@@ -62,6 +62,11 @@ const mockTaskGroups: TaskGroup[] = [
         title: 'Meeting',
         description: 'Arrange and conduct meetings with applicant, consultees, or other stakeholders as necessary to discuss the proposal and resolve issues.',
         status: 'not-started'
+      },
+      {
+        id: 12,
+        title: 'Add new service',
+        description: 'Add a new service to this application.',
       },
     ]
   },
