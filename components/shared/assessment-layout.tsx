@@ -30,8 +30,9 @@ function AssessmentLayoutContent({
   const currentContext = TASK_PANEL_VERSION === 'current' ? useAssessment() : null
   const futureContext = TASK_PANEL_VERSION === 'future' ? useFutureAssessment() : null
 
-  const { selectedTaskId, setSelectedTaskId, contentScrollRef } =
-    (TASK_PANEL_VERSION === 'future' ? futureContext : currentContext)!
+  const activeContext = TASK_PANEL_VERSION === 'future' ? futureContext : currentContext
+  const { selectedTaskId, setSelectedTaskId } = activeContext!
+  const contentScrollRef = TASK_PANEL_VERSION === 'future' ? futureContext!.contentScrollRef : undefined
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Application Details', href: `/application/${applicationId}` },

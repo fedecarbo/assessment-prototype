@@ -215,3 +215,45 @@ const MapView = dynamic(() => import('./map-view').then(mod => ({ default: mod.M
 **Status:** ✅ Resolved - Build succeeds locally, static pages generated successfully. Ready for Vercel deployment.
 
 ---
+
+## 2025-10-24 | TypeScript Build Errors with Future Task Panel
+
+**Issue:** Build failing with two TypeScript errors:
+1. `Property 'contentScrollRef' does not exist on type 'AssessmentContextType | FutureAssessmentContextType'` in assessment-layout.tsx
+2. `Type '"light-blue"' is not assignable to type '"blue" | "yellow" | "green" | "red" | "gray" | "black" | "muted"'` in future-assessment-content.tsx
+
+**Root Cause:**
+1. The `contentScrollRef` property only exists in `FutureAssessmentContextType` but not in `AssessmentContextType`, but the code was trying to destructure it unconditionally from both contexts
+2. The Badge component doesn't support a `"light-blue"` variant, only `"blue"`
+
+**Resolution:**
+1. Changed destructuring in assessment-layout.tsx to conditionally extract `contentScrollRef` only when using the future version:
+   - Destructure `selectedTaskId` and `setSelectedTaskId` from the active context
+   - Conditionally get `contentScrollRef` only from futureContext when TASK_PANEL_VERSION === 'future'
+2. Changed Badge variant from `"light-blue"` to `"blue"` in future-assessment-content.tsx
+
+**Files Changed:**
+- [assessment-layout.tsx](components/shared/assessment-layout.tsx) - Conditional contentScrollRef extraction
+- [future-assessment-content.tsx](components/shared/future-assessment-content.tsx) - Changed badge variant from "light-blue" to "blue"
+
+**Technical Details:**
+```typescript
+// Before: Unconditional destructuring (causes error)
+const { selectedTaskId, setSelectedTaskId, contentScrollRef } =
+  (TASK_PANEL_VERSION === 'future' ? futureContext : currentContext)!
+
+// After: Conditional extraction
+const activeContext = TASK_PANEL_VERSION === 'future' ? futureContext : currentContext
+const { selectedTaskId, setSelectedTaskId } = activeContext!
+const contentScrollRef = TASK_PANEL_VERSION === 'future' ? futureContext!.contentScrollRef : undefined
+```
+
+**Build Output:**
+```
+✓ Compiled successfully
+✓ Generating static pages (13/13)
+```
+
+**Status:** ✅ Resolved - Build passes successfully, all TypeScript errors fixed.
+
+---

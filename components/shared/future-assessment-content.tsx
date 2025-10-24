@@ -15,7 +15,7 @@ function getStatusBadge(status: TaskStatus) {
     case 'completed':
       return <Badge variant="green">Completed</Badge>
     case 'in-progress':
-      return <Badge variant="light-blue">In progress</Badge>
+      return <Badge variant="blue">In progress</Badge>
     case 'not-started':
       return <Badge variant="gray">Not started</Badge>
   }
