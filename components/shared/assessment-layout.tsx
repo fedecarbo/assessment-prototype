@@ -6,6 +6,10 @@ import { Breadcrumbs } from './breadcrumbs'
 import { CaseSummaryHeader } from './case-summary-header'
 import { TaskPanel } from './task-panel'
 import { AssessmentProvider, useAssessment } from './assessment-context'
+import { FutureAssessmentProvider, useFutureAssessment } from './future-assessment-context'
+
+// Feature flag to switch between versions
+const TASK_PANEL_VERSION = process.env.NEXT_PUBLIC_TASK_PANEL_VERSION || 'current'
 
 interface AssessmentLayoutProps {
   applicationId: string
@@ -22,7 +26,12 @@ function AssessmentLayoutContent({
   description,
   children,
 }: AssessmentLayoutProps) {
-  const { selectedTaskId, setSelectedTaskId } = useAssessment()
+  // Use appropriate context based on version flag
+  const currentContext = TASK_PANEL_VERSION === 'current' ? useAssessment() : null
+  const futureContext = TASK_PANEL_VERSION === 'future' ? useFutureAssessment() : null
+
+  const { selectedTaskId, setSelectedTaskId, contentScrollRef } =
+    (TASK_PANEL_VERSION === 'future' ? futureContext : currentContext)!
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Application Details', href: `/application/${applicationId}` },
@@ -49,7 +58,7 @@ function AssessmentLayoutContent({
         <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
 
         {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
-        <main className="flex flex-1 justify-center overflow-y-auto">
+        <main ref={contentScrollRef} className="flex flex-1 justify-center overflow-y-auto">
           <div className="w-full px-4" style={{ maxWidth: '1100px' }}>
             {children}
           </div>
@@ -60,9 +69,12 @@ function AssessmentLayoutContent({
 }
 
 export function AssessmentLayout(props: AssessmentLayoutProps) {
+  // Conditionally wrap with the appropriate provider
+  const Provider = TASK_PANEL_VERSION === 'future' ? FutureAssessmentProvider : AssessmentProvider
+
   return (
-    <AssessmentProvider>
+    <Provider>
       <AssessmentLayoutContent {...props} />
-    </AssessmentProvider>
+    </Provider>
   )
 }
