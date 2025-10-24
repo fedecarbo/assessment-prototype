@@ -13,15 +13,13 @@
  * FUTURE VERSION: Experimental version for development/testing
  */
 
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { useFutureAssessment } from './future-assessment-context'
 import { Check, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
-
-// Feature flag to switch between versions
-const TASK_PANEL_VERSION = process.env.NEXT_PUBLIC_TASK_PANEL_VERSION || 'current'
+import { getCurrentVersion } from './version-toggle'
 
 interface TaskPanelProps {
   selectedTaskId: number
@@ -215,7 +213,13 @@ const FutureTaskPanel = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) => {
 // ============================================================================
 
 const TaskPanelComponent = (props: TaskPanelProps) => {
-  if (TASK_PANEL_VERSION === 'future') {
+  const [version, setVersion] = useState<'current' | 'future'>('current')
+
+  useEffect(() => {
+    setVersion(getCurrentVersion())
+  }, [])
+
+  if (version === 'future') {
     return <FutureTaskPanel {...props} />
   }
   return <CurrentTaskPanel {...props} />

@@ -1,15 +1,14 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { useState, useEffect } from 'react'
 import { SiteHeader } from './site-header'
 import { Breadcrumbs } from './breadcrumbs'
 import { CaseSummaryHeader } from './case-summary-header'
 import { TaskPanel } from './task-panel'
 import { AssessmentProvider, useAssessment } from './assessment-context'
 import { FutureAssessmentProvider, useFutureAssessment } from './future-assessment-context'
-
-// Feature flag to switch between versions
-const TASK_PANEL_VERSION = process.env.NEXT_PUBLIC_TASK_PANEL_VERSION || 'current'
+import { getCurrentVersion } from './version-toggle'
 
 interface AssessmentLayoutProps {
   applicationId: string
@@ -26,13 +25,19 @@ function AssessmentLayoutContent({
   description,
   children,
 }: AssessmentLayoutProps) {
-  // Use appropriate context based on version flag
-  const currentContext = TASK_PANEL_VERSION === 'current' ? useAssessment() : null
-  const futureContext = TASK_PANEL_VERSION === 'future' ? useFutureAssessment() : null
+  const [version, setVersion] = useState<'current' | 'future'>('current')
 
-  const activeContext = TASK_PANEL_VERSION === 'future' ? futureContext : currentContext
+  useEffect(() => {
+    setVersion(getCurrentVersion())
+  }, [])
+
+  // Use appropriate context based on version
+  const currentContext = version === 'current' ? useAssessment() : null
+  const futureContext = version === 'future' ? useFutureAssessment() : null
+
+  const activeContext = version === 'future' ? futureContext : currentContext
   const { selectedTaskId, setSelectedTaskId } = activeContext!
-  const contentScrollRef = TASK_PANEL_VERSION === 'future' ? futureContext!.contentScrollRef : undefined
+  const contentScrollRef = version === 'future' ? futureContext!.contentScrollRef : undefined
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Application Details', href: `/application/${applicationId}` },
@@ -70,12 +75,12 @@ function AssessmentLayoutContent({
 }
 
 export function AssessmentLayout(props: AssessmentLayoutProps) {
-  // Conditionally wrap with the appropriate provider
-  const Provider = TASK_PANEL_VERSION === 'future' ? FutureAssessmentProvider : AssessmentProvider
-
+  // Wrap with both providers to avoid hook conditional errors
   return (
-    <Provider>
-      <AssessmentLayoutContent {...props} />
-    </Provider>
+    <AssessmentProvider>
+      <FutureAssessmentProvider>
+        <AssessmentLayoutContent {...props} />
+      </FutureAssessmentProvider>
+    </AssessmentProvider>
   )
 }
