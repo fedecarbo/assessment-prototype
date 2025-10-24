@@ -27,16 +27,16 @@ export function ApplicationInfoLayout({ application }: ApplicationInfoLayoutProp
     { id: 'overview' as TabId, label: 'Overview', count: undefined },
     { id: 'documents' as TabId, label: 'Documents', count: documentCount },
     { id: 'constraints' as TabId, label: 'Constraints', count: constraintCount },
-    { id: 'site-history' as TabId, label: 'Site history', count: undefined },
     { id: 'consultees' as TabId, label: 'Consultees', count: consulteeCount },
     { id: 'neighbours' as TabId, label: 'Neighbours', count: neighbourCount },
+    { id: 'site-history' as TabId, label: 'Site history', count: undefined },
   ]
 
   return (
-    <div>
-      {/* Tabbed Navigation - Full width background with constrained content */}
-      <nav className="border-b border-border bg-background">
-        <div className="mx-auto max-w-[1100px] flex gap-6 px-4" role="tablist" aria-label="Application information sections">
+    <div className="flex flex-col flex-1 overflow-hidden">
+      {/* Tabbed Navigation - Full width */}
+      <nav className="border-b border-border bg-background flex-shrink-0">
+        <div className="flex gap-6 px-4" role="tablist" aria-label="Application information sections">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -56,14 +56,48 @@ export function ApplicationInfoLayout({ application }: ApplicationInfoLayoutProp
         </div>
       </nav>
 
-      {/* Tab Content - Constrained width */}
-      <div id="application-info-panel" role="tabpanel" className="mx-auto max-w-[1100px] px-4 py-8">
-        {activeTab === 'overview' && <ApplicationInfoOverview application={application} />}
-        {activeTab === 'documents' && <ApplicationInfoDocuments application={application} />}
+      {/* Tab Content - Full width for Constraints, constrained for others */}
+      <div
+        id="application-info-panel"
+        role="tabpanel"
+        className="flex-1 overflow-hidden"
+      >
+        {activeTab === 'overview' && (
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoOverview application={application} />
+            </div>
+          </div>
+        )}
+        {activeTab === 'documents' && (
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoDocuments application={application} />
+            </div>
+          </div>
+        )}
         {activeTab === 'constraints' && <ApplicationInfoConstraints application={application} />}
-        {activeTab === 'site-history' && <ApplicationInfoSiteHistory application={application} />}
-        {activeTab === 'consultees' && <ApplicationInfoConsultees application={application} />}
-        {activeTab === 'neighbours' && <ApplicationInfoNeighbours application={application} />}
+        {activeTab === 'site-history' && (
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoSiteHistory application={application} />
+            </div>
+          </div>
+        )}
+        {activeTab === 'consultees' && (
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoConsultees application={application} />
+            </div>
+          </div>
+        )}
+        {activeTab === 'neighbours' && (
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoNeighbours application={application} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

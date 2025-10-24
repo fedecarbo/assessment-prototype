@@ -178,3 +178,82 @@ Track all bug fixes and modifications.
 **Status:** ✅ Resolved - All pages now build successfully with static generation. Should deploy correctly to Vercel.
 
 ---
+
+## 2025-10-21 | Leaflet Map SSR Build Error Fix
+
+**Issue:** Build failing on Vercel (future-development branch) with `ReferenceError: window is not defined` during static page generation for `/application/[id]/information`. The error occurred during pre-rendering when Leaflet's client-side code (specifically the icon configuration on lines 10-15 of map-view.tsx) was executed during server-side rendering.
+
+**Root Cause:** The MapView component imports Leaflet and manipulates `L.Icon.Default.prototype` at the module level. This code runs during SSR when Next.js pre-renders pages, but Leaflet is a browser-only library that requires the `window` object.
+
+**Resolution:**
+- Wrapped the MapView component import with Next.js `dynamic()` function with `ssr: false` option
+- This prevents the MapView component from being rendered during server-side generation
+- Added a loading state placeholder that displays "Loading map..." while the map component hydrates on the client
+- The map now only loads in the browser after the page has hydrated
+
+**Files Changed:**
+- [application-info-constraints.tsx](components/shared/application-info-constraints.tsx) - Changed MapView import to use dynamic() with ssr: false
+
+**Technical Details:**
+```typescript
+// Before: Direct import (causes SSR error)
+import { MapView } from './map-view'
+
+// After: Dynamic import with SSR disabled
+const MapView = dynamic(() => import('./map-view').then(mod => ({ default: mod.MapView })), {
+  ssr: false,
+  loading: () => <div>Loading map...</div>,
+})
+```
+
+**Build Output:**
+```
+✓ Generating static pages (13/13)
+● /application/[id]/information        (SSG - prerendered for: /1, /2, /3)
+```
+
+**Status:** ✅ Resolved - Build succeeds locally, static pages generated successfully. Ready for Vercel deployment.
+
+---
+
+## 2025-10-24 | TypeScript Build Errors with Future Task Panel
+
+**Issue:** Build failing with two TypeScript errors:
+1. `Property 'contentScrollRef' does not exist on type 'AssessmentContextType | FutureAssessmentContextType'` in assessment-layout.tsx
+2. `Type '"light-blue"' is not assignable to type '"blue" | "yellow" | "green" | "red" | "gray" | "black" | "muted"'` in future-assessment-content.tsx
+
+**Root Cause:**
+1. The `contentScrollRef` property only exists in `FutureAssessmentContextType` but not in `AssessmentContextType`, but the code was trying to destructure it unconditionally from both contexts
+2. The Badge component doesn't support a `"light-blue"` variant, only `"blue"`
+
+**Resolution:**
+1. Changed destructuring in assessment-layout.tsx to conditionally extract `contentScrollRef` only when using the future version:
+   - Destructure `selectedTaskId` and `setSelectedTaskId` from the active context
+   - Conditionally get `contentScrollRef` only from futureContext when TASK_PANEL_VERSION === 'future'
+2. Changed Badge variant from `"light-blue"` to `"blue"` in future-assessment-content.tsx
+
+**Files Changed:**
+- [assessment-layout.tsx](components/shared/assessment-layout.tsx) - Conditional contentScrollRef extraction
+- [future-assessment-content.tsx](components/shared/future-assessment-content.tsx) - Changed badge variant from "light-blue" to "blue"
+
+**Technical Details:**
+```typescript
+// Before: Unconditional destructuring (causes error)
+const { selectedTaskId, setSelectedTaskId, contentScrollRef } =
+  (TASK_PANEL_VERSION === 'future' ? futureContext : currentContext)!
+
+// After: Conditional extraction
+const activeContext = TASK_PANEL_VERSION === 'future' ? futureContext : currentContext
+const { selectedTaskId, setSelectedTaskId } = activeContext!
+const contentScrollRef = TASK_PANEL_VERSION === 'future' ? futureContext!.contentScrollRef : undefined
+```
+
+**Build Output:**
+```
+✓ Compiled successfully
+✓ Generating static pages (13/13)
+```
+
+**Status:** ✅ Resolved - Build passes successfully, all TypeScript errors fixed.
+
+---

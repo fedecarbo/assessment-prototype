@@ -1,11 +1,14 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { useState, useEffect } from 'react'
 import { SiteHeader } from './site-header'
 import { Breadcrumbs } from './breadcrumbs'
 import { CaseSummaryHeader } from './case-summary-header'
 import { TaskPanel } from './task-panel'
 import { AssessmentProvider, useAssessment } from './assessment-context'
+import { FutureAssessmentProvider, useFutureAssessment } from './future-assessment-context'
+import { getCurrentVersion } from './version-toggle'
 
 interface AssessmentLayoutProps {
   applicationId: string
@@ -22,17 +25,24 @@ function AssessmentLayoutContent({
   description,
   children,
 }: AssessmentLayoutProps) {
-  const { selectedTaskId, setSelectedTaskId, contentScrollRef } = useAssessment()
+  const [version, setVersion] = useState<'current' | 'future'>('current')
+
+  useEffect(() => {
+    setVersion(getCurrentVersion())
+  }, [])
+
+  // Use appropriate context based on version
+  const currentContext = version === 'current' ? useAssessment() : null
+  const futureContext = version === 'future' ? useFutureAssessment() : null
+
+  const activeContext = version === 'future' ? futureContext : currentContext
+  const { selectedTaskId, setSelectedTaskId } = activeContext!
+  const contentScrollRef = version === 'future' ? futureContext!.contentScrollRef : undefined
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Application Details', href: `/application/${applicationId}` },
     { label: 'Check and assess' },
   ]
-
-  // On mobile: show TaskPanel when no task is selected, show content when task is selected
-  // On desktop: always show both side-by-side
-  const showTaskPanel = selectedTaskId === 0 // No task selected
-  const showContent = selectedTaskId > 0 // Task is selected
 
   return (
     <div className="flex h-screen flex-col">
@@ -48,21 +58,13 @@ function AssessmentLayoutContent({
         <CaseSummaryHeader reference={reference} address={address} description={description} applicationId={applicationId} />
       </div>
 
-      {/* Scrollable Content Area - Responsive layout */}
-      <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
-        {/* Left: Task Panel - Full width on mobile, fixed 338px on desktop */}
-        {/* Mobile: Show only when no task selected. Desktop: Always show */}
-        {/* Mobile: Takes full remaining height and allows scrolling */}
-        <div className={`${showTaskPanel ? 'flex' : 'hidden'} md:flex flex-1 md:flex-none overflow-hidden`}>
-          <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
-        </div>
+      {/* Scrollable Content Area - Two column layout */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left: Task Panel - Fixed 338px + 32px padding = 370px total */}
+        <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
 
-        {/* Right: Main Content - Full width on mobile, flex-1 on desktop */}
-        {/* Mobile: Show only when task selected. Desktop: Always show */}
-        <main
-          ref={contentScrollRef}
-          className={`${showContent ? 'flex' : 'hidden'} md:flex flex-1 justify-center overflow-y-auto`}
-        >
+        {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
+        <main ref={contentScrollRef} className="flex flex-1 justify-center overflow-y-auto">
           <div className="w-full px-4" style={{ maxWidth: '1100px' }}>
             {children}
           </div>
@@ -73,9 +75,12 @@ function AssessmentLayoutContent({
 }
 
 export function AssessmentLayout(props: AssessmentLayoutProps) {
+  // Wrap with both providers to avoid hook conditional errors
   return (
     <AssessmentProvider>
-      <AssessmentLayoutContent {...props} />
+      <FutureAssessmentProvider>
+        <AssessmentLayoutContent {...props} />
+      </FutureAssessmentProvider>
     </AssessmentProvider>
   )
 }

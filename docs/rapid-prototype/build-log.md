@@ -307,14 +307,22 @@ Quick reference for what's been built and key architectural decisions.
 
 **Route:** `/application/[id]/information`
 **Pattern:** Full-width page with tabbed navigation, opens in new tab
-**Layout:** Site header + case summary (without quick links) + tabbed content
+**Layout:** Full viewport height flexbox layout
+- **Page structure:** h-screen flex flex-col with overflow-hidden
+  - Site header (flex-shrink-0)
+  - Case summary header (flex-shrink-0)
+  - ApplicationInfoLayout (flex-1, takes remaining height)
 
 ### Core Components
 
 **ApplicationInfoLayout** - Tabbed navigation wrapper (client component)
-- **Layout structure:** Full-width nav bar background with 1100px max-width content
+- **Layout structure:** Flexbox column (flex flex-col flex-1 overflow-hidden) that fills parent height
+  - Takes remaining height from parent (flex-1)
+  - Prevents overflow from propagating up (overflow-hidden)
 - **Tab navigation:** Horizontal tabs with active indicator (3px blue bottom border)
-- **6 tabs:** Overview, Documents, Constraints, Site history, Consultees, Neighbours
+  - Fixed height (flex-shrink-0) - doesn't grow/shrink
+  - Full-width nav bar background with 1100px max-width content
+- **6 tabs:** Overview, Documents, Constraints, Consultees, Neighbours, Site history
 - **Tab counts:** Dynamic counts displayed in parentheses for relevant tabs
   - Documents: Total document count
   - Constraints: Count of applicable constraints (excludes "does-not-apply")
@@ -323,7 +331,13 @@ Quick reference for what's been built and key architectural decisions.
   - Overview and Site history: No count shown
 - **Active state:** Foreground text color with blue border, inactive tabs use blue text with hover underline
 - **Tab spacing:** 6-unit gap between tabs (gap-6, matches Application Details)
-- **Content area:** 1100px max-width, centered, px-4 py-8 padding
+- **Content area:** Conditional layout based on active tab
+  - **Constraints tab:** flex-1 overflow-hidden (fills remaining height, no scroll on container)
+    - Allows ApplicationInfoConstraints to manage its own scrolling internally
+    - Full width, no max-width constraint, no padding
+  - **Other tabs:** flex-1 overflow-y-auto (fills height with scroll)
+    - 1100px max-width, centered, px-4 py-8 padding
+    - Scrollable content area
 
 **CaseSummaryHeader** - Updated with variant and constrained support
 - **Variant support:** `default` (with quick links) | `info` (without quick links)
@@ -351,21 +365,49 @@ Quick reference for what's been built and key architectural decisions.
 - **Empty states:** "No documents match search criteria" when filtered, "No documents submitted" when none exist
 - Client-side state management with React hooks
 
-**ApplicationInfoConstraints** - Constraint management with vertical layout and individual constraint toggles (client component)
-- **Title:** "Constraints" (text-xl font-bold)
-- **Last updated:** "Last updated: 10 October 2024" (text-sm text-muted-foreground, mt-1)
-- **Vertical layout:** Map above, table below with 16px gap (space-y-4)
-  - Map: Full-width, 400px height, always visible
-  - Table: Full-width below map
-- **Map placeholder:** Interactive constraints map placeholder with muted background
-  - Will display only constraints that are checked in the table
-- **Table view:** Uses **ConstraintsTable** component with individual constraint toggles
-  - Each row has checkbox to control visibility of that constraint on the map
-  - Checkboxes control which constraints appear on the map
+**ApplicationInfoConstraints** - Constraint management with full-width sidebar + map layout (client component)
+- **Full-width layout:** Sidebar left (370px fixed) + Map right (flex-1), Google Maps style
+  - No 1100px max-width constraint - uses full screen width
+  - Full height (h-full) - fills remaining viewport height
+- **Sidebar (Left - 370px):**
+  - **Header section:** Fixed header with title and subtitle
+    - Title: "Constraints" (text-lg font-bold)
+    - Subtitle: "Toggle to show/hide on map" (text-xs muted)
+    - Bottom border separator
+  - **Scrollable content area:** Grouped constraints with clean visual hierarchy
+    - Height: calc(100% - 73px) to account for header
+    - Overflow-y auto for scrolling when needed
+    - Divide-y borders between groups
+  - **Group headers:** Minimal styling with xs font, muted-foreground color, uppercase tracking-wider
+    - Small icon (h-4 w-4) + label layout
+    - No background color - clean and unobtrusive
+  - **Checkbox items:** Full-width clickable label wrapping checkbox + text
+    - Negative margin (-mx-2) with px-2 allows hover background to extend edge-to-edge
+    - Hover state: Subtle muted/50 background with rounded corners
+    - Tight spacing (space-y-1) between items for density
+    - Leading-tight on text for compact multi-line labels
+  - **Visual hierarchy:** divide-y borders separate groups, space-y-1 separates items
+  - All groups always visible (no collapsing) for quick scanning
+  - Constraint details displayed as checkbox labels (falls back to constraint.label if no details)
+  - Card background (bg-card) with right border separator
+- **Map (Right - flex-1):**
+  - Takes all remaining horizontal space
+  - Full height matching sidebar
+  - Muted background placeholder
+  - Will display only constraints that are checked in the sidebar
+- **UX best practices applied:**
+  - Industry-standard pattern (Google Maps, Mapbox, planning portals)
+  - Sidebar and map visible simultaneously - no context switching
+  - Entire label clickable (not just checkbox) for larger hit area
+  - Cursor pointer on hover for clear affordance
+  - Minimal visual noise - no heavy borders or backgrounds
+  - Clear grouping through dividers
+  - Efficient use of widescreen space
+  - Immediate visual feedback when toggling constraints
 - **Constraint visibility state:** Set<string> tracks which constraints are visible on map (default: all visible)
   - Toggle handler adds/removes constraint IDs from the Set
-  - State managed at component level, passed down to table
-- **Empty state:** "No constraints identified" when none exist
+  - State managed at component level
+- **Empty state:** Centered message when no constraints exist
 - Client-side state management with React hooks (constraint visibility Set)
 - More granular analysis than Application Details page summary
 
@@ -462,5 +504,42 @@ Quick reference for what's been built and key architectural decisions.
 - Application Information page: Granular, detailed content for deep dives
 - Application Details page: High-level summaries for quick overview
 - Both pages should feel consistent in styling and patterns
+
+---
+
+## Interactive Map Integration (2025-10-20)
+
+**Component:** MapView - Leaflet-based interactive mapping component
+**Dependencies:** leaflet, react-leaflet, @types/leaflet
+
+### MapView Component
+- **File:** [map-view.tsx](components/shared/map-view.tsx)
+- **Framework:** Leaflet with React-Leaflet wrapper
+- **Features:**
+  - OpenStreetMap tile layer for base map
+  - Rectangle overlays for constraint boundaries
+  - Color-coded constraints by type (conservation: blue, listed: red, TPO: green, flood: dark blue, etc.)
+  - Dynamic visibility based on sidebar checkbox state
+  - Default center: Southwark, London (51.5074, -0.0901)
+  - Auto-fit bounds with 50px padding
+- **Props:** visibleConstraints (Set<string>), constraints (Constraint[])
+- **Styling:** Full height/width, rounded corners, responsive
+- **Icon fix:** Includes Leaflet default marker icon configuration for Next.js compatibility
+
+### ApplicationInfoConstraints Updates
+- **Layout:** Sidebar moved to right (370px fixed width, left border)
+- **Map position:** Left side, flex-1, 30px padding all sides
+- **Integration:** MapView component replaces placeholder, receives constraint visibility state
+- **Height:** Map fills available screen height with overflow-hidden
+
+### ApplicationInfoLayout Updates
+- **Constraints tab:** Full-width layout (overflow-hidden) for map integration
+- **Other tabs:** 1100px max-width with px-4 py-8 padding (Overview, Documents, Site history, Consultees, Neighbours)
+- **Content wrapping:** Each non-constraints tab wrapped in constrained div for consistent spacing
+
+### Mock Constraint Geometries
+- Example boundaries for conservation-area, listed-building, TPO, flood-risk
+- Latitude/longitude bounds format: [[lat1, lng1], [lat2, lng2]]
+- Displayed as semi-transparent rectangles with colored borders
 
 ---

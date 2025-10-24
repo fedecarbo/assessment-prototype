@@ -1,35 +1,43 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
-import { getApplicationById, mockApplications } from '@/lib/mock-data'
+import { getApplicationById } from '@/lib/mock-data'
 import { AssessmentLayout } from '@/components/shared/assessment-layout'
 import { AssessmentContent } from '@/components/shared/assessment-content'
+import { FutureAssessmentContent } from '@/components/shared/future-assessment-content'
+import { VersionToggle, getCurrentVersion } from '@/components/shared/version-toggle'
+import { useState, useEffect } from 'react'
 
-interface AssessmentPageProps {
-  params: Promise<{ id: string }>
-}
-
-// Generate static params for all mock applications
-export async function generateStaticParams() {
-  return mockApplications.map((application) => ({
-    id: application.id,
-  }))
-}
-
-export default async function AssessmentPage({ params }: AssessmentPageProps) {
-  const { id } = await params
+export default function AssessmentPage() {
+  const params = useParams()
+  const id = params.id as string
   const application = getApplicationById(id)
+
+  const [version, setVersion] = useState<'current' | 'future'>('current')
+
+  useEffect(() => {
+    setVersion(getCurrentVersion())
+  }, [])
 
   if (!application) {
     notFound()
   }
 
+  // Conditionally render content based on version
+  const ContentComponent = version === 'future' ? FutureAssessmentContent : AssessmentContent
+
   return (
-    <AssessmentLayout
-      applicationId={application.id}
-      address={application.address}
-      reference={application.reference}
-      description={application.description}
-    >
-      <AssessmentContent />
-    </AssessmentLayout>
+    <>
+      <AssessmentLayout
+        applicationId={application.id}
+        address={application.address}
+        reference={application.reference}
+        description={application.description}
+      >
+        <ContentComponent />
+      </AssessmentLayout>
+      <VersionToggle />
+    </>
   )
 }
