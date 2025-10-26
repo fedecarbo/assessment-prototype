@@ -58,6 +58,19 @@ export interface ReviewStage {
 
 export type RequestedService = 'written-advice' | 'site-visit' | 'meeting';
 
+export interface ServiceRecord {
+  id: string;
+  service: RequestedService;
+  status: 'included' | 'added' | 'removed';
+  cost: number;
+  addedDate?: string;
+  addedBy?: string;
+  notes?: string;
+  requiresApproval?: boolean;
+  approvedBy?: string;
+  approvedDate?: string;
+}
+
 export interface Constraint {
   id: string; // Unique identifier to allow multiple instances of same type
   type: 'conservation-area' | 'listed-building' | 'tpo' | 'flood-risk' | 'green-belt' | 'article-4' | 'archaeology';
@@ -150,6 +163,8 @@ export interface PlanningApplication {
   assignedTo?: string;
   assignedOfficer?: AssignedOfficer;
   requestedServices?: RequestedService[];
+  serviceRecords?: ServiceRecord[];
+  totalServiceCost?: number;
   documents?: Document[];
   constraints?: Constraint[];
   consulteeConsultation?: ConsulteeConsultation;

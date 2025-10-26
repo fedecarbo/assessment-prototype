@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useRef, useEffect, Suspense, type ReactNode, type RefObject } from 'react'
 import { useSearchParams } from 'next/navigation'
+import type { RequestedService, ServiceRecord } from '@/lib/mock-data/schemas'
 
 export type TaskStatus = 'not-started' | 'in-progress' | 'completed'
 
@@ -24,6 +25,11 @@ interface AssessmentContextType {
   taskMap: Map<number, Task>
   updateTaskStatus: (taskId: number, status: TaskStatus) => void
   contentScrollRef: RefObject<HTMLElement | null>
+  // Service management
+  originalServices: RequestedService[]
+  serviceRecords: ServiceRecord[]
+  updateServiceRecords: (records: ServiceRecord[]) => void
+  totalServiceCost: number
 }
 
 // Mock task data organized in groups
@@ -142,6 +148,37 @@ function AssessmentProviderContent({ children }: { children: ReactNode }) {
   const [taskGroups, setTaskGroups] = useState(mockTaskGroups)
   const contentScrollRef = useRef<HTMLElement>(null)
 
+  // Service management state
+  const [originalServices] = useState<RequestedService[]>(['written-advice', 'site-visit', 'meeting'])
+  const [serviceRecords, setServiceRecords] = useState<ServiceRecord[]>([
+    {
+      id: 'sr-1',
+      service: 'written-advice',
+      status: 'included',
+      cost: 500,
+    },
+    {
+      id: 'sr-2',
+      service: 'site-visit',
+      status: 'included',
+      cost: 200,
+    },
+    {
+      id: 'sr-3',
+      service: 'meeting',
+      status: 'included',
+      cost: 300,
+    },
+  ])
+
+  const updateServiceRecords = (records: ServiceRecord[]) => {
+    setServiceRecords(records)
+  }
+
+  const totalServiceCost = serviceRecords
+    .filter((record) => record.status !== 'removed')
+    .reduce((sum, record) => sum + record.cost, 0)
+
   // Sync selectedTaskId with URL changes
   useEffect(() => {
     const newTaskId = taskParam ? parseInt(taskParam, 10) : 0
@@ -163,7 +200,18 @@ function AssessmentProviderContent({ children }: { children: ReactNode }) {
   const taskMap = createTaskMap(taskGroups)
 
   return (
-    <AssessmentContext.Provider value={{ selectedTaskId, setSelectedTaskId, taskGroups, taskMap, updateTaskStatus, contentScrollRef }}>
+    <AssessmentContext.Provider value={{
+      selectedTaskId,
+      setSelectedTaskId,
+      taskGroups,
+      taskMap,
+      updateTaskStatus,
+      contentScrollRef,
+      originalServices,
+      serviceRecords,
+      updateServiceRecords,
+      totalServiceCost
+    }}>
       {children}
     </AssessmentContext.Provider>
   )

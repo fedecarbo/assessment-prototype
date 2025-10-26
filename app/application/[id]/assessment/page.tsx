@@ -24,9 +24,6 @@ export default function AssessmentPage() {
     notFound()
   }
 
-  // Conditionally render content based on version
-  const ContentComponent = version === 'future' ? FutureAssessmentContent : AssessmentContent
-
   return (
     <>
       <AssessmentLayout
@@ -35,7 +32,11 @@ export default function AssessmentPage() {
         reference={application.reference}
         description={application.description}
       >
-        <ContentComponent />
+        {version === 'future' ? (
+          <FutureAssessmentContent application={application} />
+        ) : (
+          <AssessmentContent />
+        )}
       </AssessmentLayout>
       <VersionToggle />
     </>

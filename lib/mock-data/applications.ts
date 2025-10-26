@@ -21,6 +21,27 @@ export const mockApplications: PlanningApplication[] = [
       name: 'Federico Carbo',
     },
     requestedServices: ['written-advice', 'site-visit', 'meeting'],
+    serviceRecords: [
+      {
+        id: 'sr-1',
+        service: 'written-advice',
+        status: 'included',
+        cost: 500,
+      },
+      {
+        id: 'sr-2',
+        service: 'site-visit',
+        status: 'included',
+        cost: 200,
+      },
+      {
+        id: 'sr-3',
+        service: 'meeting',
+        status: 'included',
+        cost: 300,
+      },
+    ],
+    totalServiceCost: 1000,
     constraints: [
       {
         id: 'c1',

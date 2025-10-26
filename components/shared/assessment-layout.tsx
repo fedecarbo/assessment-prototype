@@ -61,7 +61,7 @@ function AssessmentLayoutContent({
       {/* Scrollable Content Area - Two column layout */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Task Panel - Fixed 338px + 32px padding = 370px total */}
-        <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} />
+        <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} applicationId={applicationId} />
 
         {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
         <main ref={contentScrollRef} className="flex flex-1 justify-center overflow-y-auto">

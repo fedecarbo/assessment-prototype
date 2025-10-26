@@ -9,6 +9,9 @@ import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { type TaskStatus } from './assessment-context'
+import { ProposalDescriptionTask } from './proposal-description-task'
+import { SiteMapTask } from './site-map-task'
+import type { Application } from '@/lib/mock-data/schemas'
 
 function getStatusBadge(status: TaskStatus) {
   switch (status) {
@@ -21,7 +24,11 @@ function getStatusBadge(status: TaskStatus) {
   }
 }
 
-export function FutureAssessmentContent() {
+interface FutureAssessmentContentProps {
+  application: Application
+}
+
+export function FutureAssessmentContent({ application }: FutureAssessmentContentProps) {
   const { selectedTaskId, updateTaskStatus, contentScrollRef, setSelectedTaskId, getTask } = useFutureAssessment()
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const [showDraftMessage, setShowDraftMessage] = useState(false)
@@ -114,10 +121,24 @@ export function FutureAssessmentContent() {
       {/* Divider - Full width */}
       <Separator className="mt-6" />
 
-      {/* Content coming soon placeholder */}
-      <div className="mt-6 flex items-center justify-center bg-muted" style={{ minHeight: '400px' }}>
-        <p className="text-lg text-muted-foreground">Content coming soon</p>
-      </div>
+      {/* Task-specific content */}
+      {selectedTaskId === 3 ? (
+        // Site map task - Full width with internal constraints
+        <div className="mt-6">
+          <SiteMapTask />
+        </div>
+      ) : (
+        // Other tasks - Constrained to 723px for readability
+        <div className="mt-6" style={{ maxWidth: '723px' }}>
+          {selectedTaskId === 2 ? (
+            <ProposalDescriptionTask originalDescription={application.description} />
+          ) : (
+            <div className="flex items-center justify-center bg-muted" style={{ minHeight: '400px' }}>
+              <p className="text-lg text-muted-foreground">Content coming soon</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Action Buttons */}
       <div className="mt-6 flex gap-3">

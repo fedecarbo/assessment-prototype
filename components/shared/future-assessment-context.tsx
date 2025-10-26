@@ -18,13 +18,17 @@ interface FutureAssessmentContextType {
   updateTaskStatus: (taskId: number, status: TaskStatus) => void
   contentScrollRef: RefObject<HTMLElement | null>
   getTask: (id: number) => FutureTask | undefined
+  proposalDescriptionDraft: string
+  updateProposalDescription: (text: string) => void
+  siteMapComments: string
+  updateSiteMapComments: (text: string) => void
 }
 
 // Initial future tasks
 const initialFutureTasks: FutureTask[] = [
   { id: 1, title: 'Pre-application details', description: 'Enter pre-application details', status: 'not-started' },
-  { id: 2, title: 'Proposal description', description: 'Describe the proposal', status: 'not-started' },
-  { id: 3, title: 'Site map', description: 'Upload site map', status: 'not-started' },
+  { id: 2, title: 'Proposal description', description: 'Review and edit the proposal description submitted by the applicant. Make changes if needed for clarity or accuracy.', status: 'not-started' },
+  { id: 3, title: 'Site map', description: 'Review the site map red line boundary submitted by the applicant. Add any comments if corrections are needed.', status: 'not-started' },
   { id: 4, title: 'Relevant site constraints', description: 'Document site constraints', status: 'not-started' },
   { id: 5, title: 'Relevant site history', description: 'Record site history', status: 'not-started' },
   { id: 6, title: 'Site and surroundings', description: 'Describe site and surroundings', status: 'not-started' },
@@ -49,6 +53,8 @@ function FutureAssessmentProviderContent({ children }: { children: ReactNode }) 
   })
 
   const [futureTasks, setFutureTasks] = useState(initialFutureTasks)
+  const [proposalDescriptionDraft, setProposalDescriptionDraft] = useState('')
+  const [siteMapComments, setSiteMapComments] = useState('')
   const contentScrollRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -68,6 +74,14 @@ function FutureAssessmentProviderContent({ children }: { children: ReactNode }) 
     return futureTasks.find(task => task.id === id)
   }
 
+  const updateProposalDescription = (text: string) => {
+    setProposalDescriptionDraft(text)
+  }
+
+  const updateSiteMapComments = (text: string) => {
+    setSiteMapComments(text)
+  }
+
   return (
     <FutureAssessmentContext.Provider
       value={{
@@ -76,7 +90,11 @@ function FutureAssessmentProviderContent({ children }: { children: ReactNode }) 
         futureTasks,
         updateTaskStatus,
         contentScrollRef,
-        getTask
+        getTask,
+        proposalDescriptionDraft,
+        updateProposalDescription,
+        siteMapComments,
+        updateSiteMapComments
       }}
     >
       {children}
