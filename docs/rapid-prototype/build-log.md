@@ -140,6 +140,8 @@ Quick reference for what's been built and key architectural decisions.
 **Constraints:** id, type, label, status, details?, value?
 **Consultees:** ConsulteeResponse with position, responseDate, summary
 **Neighbours:** NeighbourResponse with position, topics[]
+**Service Records:** ServiceRecord with id, service, status (included/added/removed), cost, addedDate, addedBy, notes, requiresApproval, approvedBy, approvedDate
+**Planning Application:** includes requestedServices (original), serviceRecords (audit trail), totalServiceCost
 
 ---
 
@@ -199,32 +201,80 @@ Quick reference for what's been built and key architectural decisions.
 - Description constrained to max-w-4xl (896px) for readability
 - Replaces the collapsing hero pattern from detail page
 
-**TaskPanel** - To-do list style task sidebar with independent scroll
+**ManageApplicationContent** - Service management page component for adding/tracking services and costs (client component)
+- **Purpose:** Allows officers to add additional services (site visits, meetings) mid-assessment with cost tracking
+- **Layout:** Card-based page layout with service management sections:
+  - **Originally Requested:** Read-only checkboxes showing initial services from application submission
+  - **Additional Services:** Editable checkboxes for adding site visits or meetings
+- **Service pricing:** Written advice (£500), Site visit (£200), Meeting (£300)
+- **Features:**
+  - Service labels: "Written advice", "Site visit", "Meeting"
+  - Disabled state for services already included in original request
+  - Optional notes field for justification (textarea, 3 rows)
+  - Running total calculation showing total service cost
+  - Save/Cancel buttons - Save persists changes, Cancel navigates back
+- **Data management:**
+  - Creates ServiceRecord with id, service type, status ('added'), cost, date, officer name
+  - Updates serviceRecords in application data on save
+  - Status can be 'included' (original), 'added' (additional), or 'removed'
+  - Uses useRouter for navigation
+- **Visual design:**
+  - Card container: bg-card with border, rounded-lg, p-6 padding
+  - Section headers: text-sm, font-semibold, uppercase, tracking-wide, muted-foreground
+  - Service rows: checkbox + label + cost, space-y-3 between rows
+  - Total row: Bold text, border-top separator
+  - Max-width: 3xl (768px) for optimal readability
+- **Audit trail ready:** Captures who added service, when, and notes for future approval workflows
+- Used in /application/[id]/manage page
+
+**TaskPanel** - To-do list style task sidebar with independent scroll and version switcher
 - **Desktop:** Fixed width (338px + 16px padding each side = 370px total)
 - **Mobile:** Full-width (`w-full`)
 - Independent scrolling: `overflow-y-auto`
 - Border right separator
-- **To-do list design pattern:**
-  - Main heading: "Tasks" (text-xl font-bold, 24px bottom margin)
-  - Group titles: text-sm font-semibold, uppercase, muted foreground, wide tracking, 12px bottom margin
-  - Task items: Rounded cards with checkbox-left, text-right layout
-  - Hover state: Muted background (hover:bg-muted/50)
-  - Selected state: Full muted background (bg-muted)
-- **Checkbox states** (left-aligned):
-  - Completed: Filled black checkbox with white checkmark (border-2 border-foreground bg-foreground)
-  - In progress: Hollow checkbox with small blue square inside (border-2 border-primary, 8px blue square)
-  - Not started: Empty checkbox (border-2, dynamically colored: foreground when selected, muted-foreground otherwise)
-  - Size: 20px × 20px (h-5 w-5), rounded-sm
+- **Version support:** Dual version system via NEXT_PUBLIC_TASK_PANEL_VERSION env variable
+  - Current version: Stable production version with grouped tasks
+  - Future version: Experimental development version with flat task list
+- **Three-tier structure:**
+  - Main heading: "Assessment" (text-lg font-bold, 24px/1.5rem bottom margin)
+  - Section headings: "General" and "Tasks" (text-base tracking-wide muted, default font weight, no uppercase, 20px/1.25rem bottom margin)
+  - Content groups and items beneath each section
+- **General Section** (appears at top):
+  - Section heading: "General" (text-base tracking-wide text-muted-foreground, default font weight, no uppercase)
+  - Current items (placeholders - disabled buttons):
+    - "Manage application" - disabled placeholder
+    - "Services and fees" - disabled placeholder
+  - Visual styling: Blue text (text-primary) with hover underline, 10px/0.625rem vertical spacing
+  - Bottom border separator (24px/1.5rem padding and margin)
+  - Receives applicationId prop from AssessmentLayout
+  - Separates administrative/utility functions from assessment workflow tasks
+  - Scalable for future additions (case notes, status changes, quick links)
+- **Tasks Section** (below General):
+  - Section heading: "Tasks" (text-base tracking-wide text-muted-foreground, default font weight, no uppercase)
+  - **Preview report button:** Full-width button positioned between heading and task list
+    - Purpose: Allows users to preview pre-application report at any stage of task completion
+    - Visual: Blue text (text-primary) with hover underline, left-aligned
+    - Current state: Disabled placeholder
+    - Spacing: 24px/1.5rem bottom margin
+  - Group titles: text-base, foreground color, 10px/0.625rem bottom margin (Current version only)
+  - Task items: Full-width clickable items with status icon + text layout
+  - Hover state: Subtle muted background (hover:bg-muted/50)
+  - Selected state: Primary blue background with white text
+  - Border bottom separator between tasks
+- **Status icon states** (left-aligned, 16px size):
+  - Completed: Filled primary circle with white checkmark
+  - In progress: Light blue filled circle with primary border
+  - Not started: Dashed border circle (grey or white when selected)
+  - No status: Plus icon for action items (used in management actions)
 - **Task text:**
-  - Completed: Muted foreground with line-through
-  - Selected: Foreground color, font-medium
-  - Default: Foreground color
+  - Selected: White text (text-background dark:text-white), primary/blue background
+  - Default: Primary blue text (text-primary dark:text-foreground)
   - Size: text-sm with leading-tight
-- **Spacing:**
-  - Between task groups: 24px (space-y-6)
-  - Between tasks within group: 8px (space-y-2)
-  - Task padding: 8px (p-2)
-  - Checkbox to text gap: 12px (gap-3)
+- **Spacing (5px base system):**
+  - Sidebar padding: 20px/1.25rem (p-[1.25rem])
+  - Between task groups: 24px/1.5rem (space-y-[1.5rem]) - Current version only
+  - Task item padding: 10px/0.625rem all sides (py-[0.625rem] px-[0.625rem])
+  - Icon to text gap: 10px/0.625rem (gap-[0.625rem])
 - **Link behavior:** Uses Next.js Link with query params `?task={id}`, maintains onClick callback
 - Scrolls independently from main content area
 - Callbacks: `onTaskSelect(taskId)` updates parent state
@@ -242,7 +292,7 @@ Quick reference for what's been built and key architectural decisions.
 - Clean, readable layout with proper spacing
 - Placeholder content sections (30 items for scroll demo)
 
-**AssessmentContext** - React Context for task state management
+**AssessmentContext** - React Context for task state management and service management
 - `TaskStatus` type: `'not-started' | 'in-progress' | 'completed'`
 - `Task` interface: id, title, description, status
 - `TaskGroup` interface: title, tasks array
@@ -256,6 +306,10 @@ Quick reference for what's been built and key architectural decisions.
   - With param: `selectedTaskId = parseInt(task)` (shows content on mobile)
   - Updates when URL changes via `useEffect` hook
 - Provides `selectedTaskId`, `setSelectedTaskId`, `taskGroups` array, and `taskMap` for O(1) lookups
+- **Service management:** `originalServices`, `serviceRecords`, `updateServiceRecords`, `totalServiceCost`
+  - Tracks originally requested services and full service record audit trail
+  - Supports adding/removing services with cost tracking
+  - Calculates total service cost excluding removed records
 - `useAssessment()` hook for consuming context
 
 ### Layout Differences from Application Detail Page
@@ -281,10 +335,47 @@ Quick reference for what's been built and key architectural decisions.
 - [case-summary-header.tsx](components/shared/case-summary-header.tsx) - Application summary
 - [breadcrumbs.tsx](components/shared/breadcrumbs.tsx) - Navigation trail
 
+**Assessment Components:**
+- [task-panel.tsx](components/shared/task-panel.tsx) - Task list sidebar with version switcher
+- [assessment-context.tsx](components/shared/assessment-context.tsx) - Task and service state management
+- [manage-application-content.tsx](components/shared/manage-application-content.tsx) - Service management page content
+
 **Schemas:** [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts)
 **Mock Data:** [lib/mock-data/applications.ts](lib/mock-data/applications.ts)
 **Utilities:** [lib/utils.ts](lib/utils.ts) - formatDate, calculateResponseRate
 **Styles:** [app/globals.css](app/globals.css) - Tailwind v4 theme variables
+
+---
+
+## Manage Application Page
+
+**Route:** `/application/[id]/manage`
+**Pattern:** Full-width page with service management
+**Purpose:** Allows officers to add/manage additional services during assessment
+
+### Core Components
+
+**ManageApplicationContent** - Service management interface (client component)
+- Two-section layout for service management
+- Originally requested services (read-only)
+- Additional services (editable checkboxes)
+- Notes field for justification
+- Save/Cancel actions with router navigation
+
+### Page Layout
+
+**Page Structure:**
+- SiteHeader with full variant
+- Breadcrumbs: Home → Application details → Manage application
+- Page header: Title + application reference and address
+- Main content: Centered max-w-screen-xl with muted background
+- Card-based content area with max-w-3xl for service management
+
+**Visual Design:**
+- Light muted background (bg-muted/30)
+- White card container with border and rounded corners
+- Consistent spacing with py-8 padding on main content
+- Clean, focused layout for administrative tasks
 
 ---
 

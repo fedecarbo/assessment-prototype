@@ -23,10 +23,19 @@ import { getCurrentVersion } from './version-toggle'
 interface TaskPanelProps {
   selectedTaskId: number
   onTaskSelect: (taskId: number) => void
+  applicationId?: string
 }
 
+// Type for items that can appear in task panel (tasks with status or action items without)
+type TaskPanelItem = {
+  id: number
+  title: string
+  status?: TaskStatus // undefined = action item (e.g., "Manage application")
+}
+
+// Extract status icon generator to avoid recreation on every render
 function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean) {
-  // No status: + icon (for action items like "Add new service")
+  // Action item (no status): + icon for items like "Manage application"
   if (!status) {
     return (
       <Plus className={`h-4 w-4 flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={2} />
@@ -73,98 +82,122 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean) {
 }
 
 // ============================================================================
-// CURRENT VERSION (Stable/Production)
+// BASE TASK PANEL - Shared component to eliminate duplication
 // ============================================================================
 
-const CurrentTaskPanel = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) => {
-  const { taskGroups } = useAssessment()
+interface BaseTaskPanelProps extends TaskPanelProps {
+  tasks: TaskPanelItem[]
+  groups?: Array<{ title: string; tasks: TaskPanelItem[] }>
+}
+
+const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups }: BaseTaskPanelProps) => {
+  const renderTaskItem = (task: TaskPanelItem) => {
+    const isSelected = selectedTaskId === task.id
+
+    return (
+      <Link
+        key={task.id}
+        href={`?task=${task.id}`}
+        onClick={() => onTaskSelect(task.id)}
+        className={`flex items-center gap-[0.625rem] py-[0.625rem] pl-[0.625rem] pr-[0.625rem] transition-colors no-underline ${
+          isSelected
+            ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-b border-b-primary dark:border-b-[hsl(211,66%,53%)]'
+            : 'border-b border-border hover:bg-muted/50'
+        }`}
+      >
+        {getStatusIcon(task.status, isSelected)}
+        <span className={`text-sm leading-tight flex-1 ${isSelected ? 'text-background dark:text-white' : 'text-primary dark:text-foreground'}`}>
+          {task.title}
+        </span>
+      </Link>
+    )
+  }
 
   return (
-    <aside className="w-full md:w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-4">
-      <h2 className="text-lg font-bold text-foreground mb-6">Assessment tasks</h2>
-      <div className="space-y-6">
-        {taskGroups.map((group, groupIndex) => (
-          <div key={groupIndex}>
-            <h3 className="text-base text-foreground mb-2">
-              {group.title}
-            </h3>
-            <div className="space-y-0">
-              {group.tasks.map((task) => {
-                const isSelected = selectedTaskId === task.id
+    <aside className="w-full md:w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-[1.25rem]">
+      <h2 className="text-lg font-bold text-foreground mb-[1.5rem]">Assessment</h2>
 
-                return (
-                  <Link
-                    key={task.id}
-                    href={`?task=${task.id}`}
-                    onClick={() => onTaskSelect(task.id)}
-                    className={`flex items-center gap-2 py-2 pl-2 pr-2 transition-colors no-underline ${
-                      isSelected
-                        ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-b border-b-primary dark:border-b-[hsl(211,66%,53%)]'
-                        : 'border-b border-border hover:bg-muted/50'
-                    }`}
-                  >
-                    {getStatusIcon(task.status, isSelected)}
-                    <span className={`text-sm leading-tight flex-1 ${isSelected ? 'text-background dark:text-white' : 'text-primary dark:text-foreground'}`}>
-                      {task.title}
-                    </span>
-                  </Link>
-                )
-              })}
-            </div>
+      {/* General Section */}
+      {applicationId && (
+        <>
+          <div className="mb-[0.9375rem]">
+            <h3 className="text-base tracking-wide text-muted-foreground">
+              General
+            </h3>
           </div>
-        ))}
+          <div className="mb-[1.25rem] pb-[1.25rem] border-b border-border space-y-[0.625rem]">
+            <button
+              className="text-sm text-primary hover:underline block text-left"
+              disabled
+            >
+              Manage application
+            </button>
+            <button
+              className="text-sm text-primary hover:underline block text-left"
+              disabled
+            >
+              Services and fees
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Tasks Section */}
+      <div className="mb-[0.9375rem]">
+        <h3 className="text-base tracking-wide text-muted-foreground">
+          Pre-application report
+        </h3>
+      </div>
+
+      {/* Preview Report Button */}
+      <div className="mb-[1.25rem]">
+        <button
+          className="w-full text-sm text-primary hover:underline text-left"
+          disabled
+        >
+          Preview report
+        </button>
+      </div>
+
+      {/* Render grouped or flat task list */}
+      <div className="space-y-[1.5rem]">
+        {groups ? (
+          groups.map((group, groupIndex) => (
+            <div key={groupIndex}>
+              <h3 className="text-base text-foreground mb-[0.625rem]">
+                {group.title}
+              </h3>
+              <div className="space-y-0">
+                {group.tasks.map(renderTaskItem)}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="space-y-0">
+            {tasks.map(renderTaskItem)}
+          </div>
+        )}
       </div>
     </aside>
   )
 }
 
 // ============================================================================
-// FUTURE VERSION (Experimental/Development)
+// CURRENT VERSION (Stable/Production) - Grouped tasks
 // ============================================================================
 
-const FutureTaskPanel = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) => {
-  // Use future assessment context for stateful tasks
+const CurrentTaskPanel = (props: TaskPanelProps) => {
+  const { taskGroups } = useAssessment()
+  return <BaseTaskPanel {...props} groups={taskGroups} tasks={[]} />
+}
+
+// ============================================================================
+// FUTURE VERSION (Experimental/Development) - Flat task list
+// ============================================================================
+
+const FutureTaskPanel = (props: TaskPanelProps) => {
   const { futureTasks } = useFutureAssessment()
-
-  return (
-    <aside className="w-full md:w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-4">
-      <h2 className="text-lg font-bold text-foreground mb-2">Assessment tasks</h2>
-
-      {/* Preview Report CTA */}
-      <a href="#" className="text-sm text-primary underline hover:no-underline mb-6 block">
-        Preview report
-      </a>
-
-      {/* Task List */}
-      <div className="space-y-6">
-        <div>
-          <div>
-            {futureTasks.map((task) => {
-              const isSelected = selectedTaskId === task.id
-
-              return (
-                <Link
-                  key={task.id}
-                  href={`?task=${task.id}`}
-                  onClick={() => onTaskSelect(task.id)}
-                  className={`flex items-center gap-2 py-2 pl-2 pr-2 transition-colors no-underline ${
-                    isSelected
-                      ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-b border-b-primary dark:border-b-[hsl(211,66%,53%)]'
-                      : 'border-b border-border hover:bg-muted/50'
-                  }`}
-                >
-                  {getStatusIcon(task.status, isSelected)}
-                  <span className={`text-sm leading-tight flex-1 ${isSelected ? 'text-background dark:text-white' : 'text-primary dark:text-foreground'}`}>
-                    {task.title}
-                  </span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-    </aside>
-  )
+  return <BaseTaskPanel {...props} tasks={futureTasks} />
 }
 
 // ============================================================================
@@ -172,16 +205,28 @@ const FutureTaskPanel = ({ selectedTaskId, onTaskSelect }: TaskPanelProps) => {
 // ============================================================================
 
 const TaskPanelComponent = (props: TaskPanelProps) => {
-  const [version, setVersion] = useState<'current' | 'future'>('current')
+  const [version, setVersion] = useState<'current' | 'future'>(() => {
+    // Initialize from environment variable on server-side
+    return (process.env.NEXT_PUBLIC_TASK_PANEL_VERSION as 'current' | 'future') || 'current'
+  })
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setVersion(getCurrentVersion())
-  }, [])
+    // On client mount, check localStorage for user override
+    setMounted(true)
+    const clientVersion = getCurrentVersion()
+    if (clientVersion !== version) {
+      setVersion(clientVersion)
+    }
+  }, [version])
 
-  if (version === 'future') {
-    return <FutureTaskPanel {...props} />
+  // Prevent hydration mismatch by not rendering until mounted if versions differ
+  if (!mounted && typeof window !== 'undefined') {
+    // During SSR, always use env var version
+    return version === 'future' ? <FutureTaskPanel {...props} /> : <CurrentTaskPanel {...props} />
   }
-  return <CurrentTaskPanel {...props} />
+
+  return version === 'future' ? <FutureTaskPanel {...props} /> : <CurrentTaskPanel {...props} />
 }
 
 export const TaskPanel = memo(TaskPanelComponent)
