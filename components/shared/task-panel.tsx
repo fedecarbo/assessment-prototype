@@ -16,7 +16,7 @@
 import { memo, useState, useEffect } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { useFutureAssessment } from './future-assessment-context'
-import { Check, Plus, CircleDot, CircleDashed } from 'lucide-react'
+import { Check, Plus, Clock3, CircleDashed, CircleCheck } from 'lucide-react'
 import Link from 'next/link'
 import { getCurrentVersion } from './version-toggle'
 
@@ -42,32 +42,27 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean) {
     )
   }
 
-  // Completed: Filled circle with checkmark
+  // Completed: Filled circle with white checkmark
   if (status === 'completed') {
-    if (isSelected) {
-      return (
-        <div className="flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full border-[1.5px] border-background dark:border-white bg-background dark:bg-white">
-          <Check className="h-[15px] w-[15px] text-primary dark:text-[hsl(211,66%,43%)]" strokeWidth={2.5} />
-        </div>
-      )
-    }
+    const bgColor = isSelected ? 'bg-background dark:bg-white' : 'bg-primary'
+    const checkColor = isSelected ? 'text-primary dark:text-primary' : 'text-background'
     return (
-      <div className="flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full bg-primary">
-        <Check className="h-[15px] w-[15px] text-background" strokeWidth={2.5} />
+      <div className={`flex h-[26px] w-[26px] flex-none items-center justify-center rounded-full ${bgColor}`}>
+        <Check className={`h-[17px] w-[17px] ${checkColor}`} strokeWidth={2.5} />
       </div>
     )
   }
 
-  // In progress: Circle with dot icon
+  // In progress: Clock icon
   if (status === 'in-progress') {
     return (
-      <CircleDot className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={1.5} />
+      <Clock3 className={`h-[28px] w-[28px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={1.5} />
     )
   }
 
   // Not started: Dashed circle icon
   return (
-    <CircleDashed className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-muted-foreground'}`} strokeWidth={1.5} />
+    <CircleDashed className={`h-[28px] w-[28px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-muted-foreground'}`} strokeWidth={1.5} />
   )
 }
 
