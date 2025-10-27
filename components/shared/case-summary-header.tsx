@@ -22,7 +22,7 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
         <div className="flex flex-col gap-3 md:flex-row md:items-baseline md:justify-between">
           {/* Reference, address, and description toggle */}
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
-            <div className="flex items-center gap-2 md:gap-4">
+            <div className="flex items-center gap-2 md:gap-2">
               <h1 className="text-base font-bold text-foreground whitespace-nowrap">{reference}</h1>
               <div className="h-4 w-px bg-border hidden md:block"></div>
               <h2 className="text-base text-foreground break-words">{address}</h2>
@@ -44,11 +44,11 @@ export function CaseSummaryHeader({ reference, address, description, variant = '
               href={`/application/${applicationId}/information`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-base text-primary underline decoration-1 hover:decoration-2 transition-all whitespace-nowrap"
+              className="text-sm text-primary underline decoration-1 hover:decoration-2 transition-all whitespace-nowrap"
               style={{ textUnderlineOffset: '0.1578em' }}
               aria-label={`View application information for ${reference}`}
             >
-              Application information
+              Application information (opens in new tab)
             </Link>
           )}
         </div>

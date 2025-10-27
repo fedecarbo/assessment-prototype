@@ -127,16 +127,15 @@ export function FutureAssessmentContent({ application }: FutureAssessmentContent
         <div className="mt-6">
           <SiteMapTask />
         </div>
-      ) : (
-        // Other tasks - Constrained to 723px for readability
+      ) : selectedTaskId === 2 ? (
+        // Proposal description - Constrained to 723px for readability
         <div className="mt-6" style={{ maxWidth: '723px' }}>
-          {selectedTaskId === 2 ? (
-            <ProposalDescriptionTask originalDescription={application.description} />
-          ) : (
-            <div className="flex items-center justify-center bg-muted" style={{ minHeight: '400px' }}>
-              <p className="text-lg text-muted-foreground">Content coming soon</p>
-            </div>
-          )}
+          <ProposalDescriptionTask originalDescription={application.description} />
+        </div>
+      ) : (
+        // Content coming soon - Full width
+        <div className="mt-6 flex items-center justify-center bg-muted" style={{ minHeight: '400px' }}>
+          <p className="text-lg text-muted-foreground">Content coming soon</p>
         </div>
       )}
 
