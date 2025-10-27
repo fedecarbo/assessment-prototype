@@ -114,7 +114,7 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
           className="text-sm text-primary hover:underline"
           disabled
         >
-          Preview report
+          Preview report (opens in new tab)
         </button>
       </div>
 
