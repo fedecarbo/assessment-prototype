@@ -37,7 +37,7 @@ function AssessmentLayoutContent({
 
   const activeContext = version === 'future' ? futureContext : currentContext
   const { selectedTaskId, setSelectedTaskId } = activeContext!
-  const contentScrollRef = version === 'future' ? futureContext!.contentScrollRef : undefined
+  const contentScrollRef = version === 'future' ? futureContext!.contentScrollRef : currentContext!.contentScrollRef
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Application Details', href: `/application/${applicationId}` },
