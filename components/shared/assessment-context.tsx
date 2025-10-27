@@ -41,19 +41,19 @@ const mockTaskGroups: TaskGroup[] = [
         id: 1,
         title: 'Check application details',
         description: 'Verify all application details are complete and accurate including site address, applicant information, and proposed development description.',
-        status: 'completed'
+        status: 'not-started'
       },
       {
         id: 2,
         title: 'Check consultees consulted',
         description: 'Review the list of statutory consultees contacted and confirm all required consultees have been notified according to planning regulations.',
-        status: 'completed'
+        status: 'not-started'
       },
       {
         id: 3,
         title: 'Check site history',
         description: 'Examine planning history for the site including previous applications, appeals, enforcement actions, and any relevant planning conditions.',
-        status: 'in-progress'
+        status: 'not-started'
       },
     ]
   },

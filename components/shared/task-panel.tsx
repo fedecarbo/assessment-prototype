@@ -16,7 +16,7 @@
 import { memo, useState, useEffect } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { useFutureAssessment } from './future-assessment-context'
-import { Check, Plus } from 'lucide-react'
+import { Check, Plus, CircleDot, CircleDashed } from 'lucide-react'
 import Link from 'next/link'
 import { getCurrentVersion } from './version-toggle'
 
@@ -46,38 +46,28 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean) {
   if (status === 'completed') {
     if (isSelected) {
       return (
-        <div className="flex h-4 w-4 flex-none items-center justify-center rounded-full border-[1.5px] border-background dark:border-white bg-background dark:bg-white">
-          <Check className="h-3 w-3 text-primary dark:text-[hsl(211,66%,43%)]" strokeWidth={2.5} />
+        <div className="flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full border-[1.5px] border-background dark:border-white bg-background dark:bg-white">
+          <Check className="h-[15px] w-[15px] text-primary dark:text-[hsl(211,66%,43%)]" strokeWidth={2.5} />
         </div>
       )
     }
     return (
-      <div className="flex h-4 w-4 flex-none items-center justify-center rounded-full bg-primary">
-        <Check className="h-3 w-3 text-background" strokeWidth={2.5} />
+      <div className="flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full bg-primary">
+        <Check className="h-[15px] w-[15px] text-background" strokeWidth={2.5} />
       </div>
     )
   }
 
-  // In progress: Light blue filled circle with brand blue border
+  // In progress: Circle with dot icon
   if (status === 'in-progress') {
-    if (isSelected) {
-      return (
-        <div className="h-4 w-4 flex-none rounded-full border-[1.5px] border-background dark:border-white" style={{ backgroundColor: 'var(--tag-light-blue-bg)' }} />
-      )
-    }
     return (
-      <div className="h-4 w-4 flex-none rounded-full border-[1.5px] border-primary" style={{ backgroundColor: 'var(--tag-light-blue-bg)' }} />
+      <CircleDot className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={1.5} />
     )
   }
 
-  // Not started: Dashed border, grey (white when selected)
-  if (isSelected) {
-    return (
-      <div className="h-4 w-4 flex-none rounded-full border-[1.5px] border-dashed border-background dark:border-white" />
-    )
-  }
+  // Not started: Dashed circle icon
   return (
-    <div className="h-4 w-4 flex-none rounded-full border-[1.5px] border-dashed border-muted-foreground" />
+    <CircleDashed className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-muted-foreground'}`} strokeWidth={1.5} />
   )
 }
 
@@ -116,31 +106,6 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
   return (
     <aside className="w-full md:w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-[1.25rem]">
       <h2 className="text-lg font-bold text-foreground mb-[1.5rem]">Assessment</h2>
-
-      {/* General Section */}
-      {applicationId && (
-        <>
-          <div className="mb-[0.9375rem]">
-            <h3 className="text-base tracking-wide text-muted-foreground">
-              General
-            </h3>
-          </div>
-          <div className="mb-[1.25rem] pb-[1.25rem] border-b border-border space-y-[0.625rem]">
-            <button
-              className="text-sm text-primary hover:underline block text-left"
-              disabled
-            >
-              Manage application
-            </button>
-            <button
-              className="text-sm text-primary hover:underline block text-left"
-              disabled
-            >
-              Services and fees
-            </button>
-          </div>
-        </>
-      )}
 
       {/* Tasks Section */}
       <div className="mb-[0.9375rem]">
