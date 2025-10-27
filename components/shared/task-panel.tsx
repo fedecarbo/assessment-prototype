@@ -105,19 +105,13 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
 
   return (
     <aside className="w-full md:w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-[1.25rem]">
-      <h2 className="text-lg font-bold text-foreground mb-[1.5rem]">Assessment</h2>
+      {/* Header */}
+      <h2 className="text-lg font-bold text-foreground mb-[0.625rem]">Assessment</h2>
 
-      {/* Tasks Section */}
-      <div className="mb-[0.9375rem]">
-        <h3 className="text-base tracking-wide text-muted-foreground">
-          Pre-application report
-        </h3>
-      </div>
-
-      {/* Preview Report Button */}
-      <div className="mb-[1.25rem]">
+      {/* Preview report button */}
+      <div className="mb-[1.5rem]">
         <button
-          className="w-full text-sm text-primary hover:underline text-left"
+          className="text-sm text-primary hover:underline"
           disabled
         >
           Preview report
@@ -129,7 +123,7 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
         {groups ? (
           groups.map((group, groupIndex) => (
             <div key={groupIndex}>
-              <h3 className="text-base text-foreground mb-[0.625rem]">
+              <h3 className="text-base text-muted-foreground font-normal mb-[0.625rem]">
                 {group.title}
               </h3>
               <div className="space-y-0">
