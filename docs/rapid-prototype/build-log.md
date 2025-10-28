@@ -244,31 +244,30 @@ Quick reference for what's been built and key architectural decisions.
 - Independent scrolling: `overflow-y-auto`
 - Border right separator
 - **Version support:** Dual version system via NEXT_PUBLIC_TASK_PANEL_VERSION env variable
-  - Current version: Stable production version with grouped tasks
-  - Future version: Experimental development version with flat task list
-- **Three-tier structure:**
-  - Main heading: "Assessment" (text-lg font-bold, 24px/1.5rem bottom margin)
-  - Section headings: "General" and "Tasks" (text-base tracking-wide muted, default font weight, no uppercase, 20px/1.25rem bottom margin)
-  - Content groups and items beneath each section
-- **General Section** (appears at top):
-  - Section heading: "General" (text-base tracking-wide text-muted-foreground, default font weight, no uppercase)
-  - Current items (placeholders - disabled buttons):
-    - "Manage application" - disabled placeholder
-    - "Services and fees" - disabled placeholder
-  - Visual styling: Blue text (text-primary) with hover underline, 10px/0.625rem vertical spacing
-  - Bottom border separator (24px/1.5rem padding and margin)
-  - Receives applicationId prop from AssessmentLayout
-  - Separates administrative/utility functions from assessment workflow tasks
-  - Scalable for future additions (case notes, status changes, quick links)
-- **Tasks Section** (below General):
-  - Section heading: "Tasks" (text-base tracking-wide text-muted-foreground, default font weight, no uppercase)
-  - **Preview report button:** Full-width button positioned between heading and task list
-    - Purpose: Allows users to preview pre-application report at any stage of task completion
-    - Visual: Blue text (text-primary) with hover underline, left-aligned
-    - Current state: Disabled placeholder
-    - Spacing: 24px/1.5rem bottom margin
-  - Group titles: text-base, foreground color, 10px/0.625rem bottom margin (Current version only)
-  - Task items: Full-width clickable items with status icon + text layout
+  - **Current version (showNonLinearActions=false):**
+    - Stable production version with grouped tasks (4 groups)
+    - Main heading: "Assessment"
+    - Only shows task groups with their titles
+    - No non-linear actions section
+  - **Future version (showNonLinearActions=true):**
+    - Experimental development version with single group "Pre-application report" (14 tasks)
+    - Main heading: "Assessment"
+    - **Non-linear actions section:**
+      - Record meetings
+      - Fees and services
+      - Case notes
+      - Visual styling: Blue text (text-primary) with hover underline, 10px/0.625rem spacing between items
+      - Rationale: Actions officers *take* during assessment (vs reference materials in "Application information" link)
+      - **Visual divider:** Border separator (24px/1.5rem vertical margin) after non-linear actions
+    - **Linear task group:** "Pre-application report"
+      - Group title: text-sm, font-bold, foreground color, 10px/0.625rem bottom margin
+      - **Preview report button:** Positioned below group title
+        - Purpose: Preview pre-application report at any stage of task completion
+        - Visual: Blue text (text-primary) with hover underline, left-aligned, text-sm
+        - Spacing: 10px/0.625rem bottom margin (reduced for tighter spacing)
+      - 14 sequential tasks to complete pre-application report
+- **Shared task item styling:**
+  - Full-width clickable items with status icon + text layout
   - Hover state: Subtle muted background (hover:bg-muted/50)
   - Selected state: Primary blue background with white text
   - Border bottom separator between tasks

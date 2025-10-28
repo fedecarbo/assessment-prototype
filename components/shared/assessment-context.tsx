@@ -189,9 +189,19 @@ function AssessmentProviderContent({ children }: { children: ReactNode }) {
     setTaskGroups(groups =>
       groups.map(group => ({
         ...group,
-        tasks: group.tasks.map(task =>
-          task.id === taskId ? { ...task, status } : task
-        )
+        tasks: group.tasks.map(task => {
+          // Update the target task
+          if (task.id === taskId) {
+            return { ...task, status }
+          }
+
+          // Unlock "Summary of advice" (id: 8) when "Planning advice" (id: 7) is completed
+          if (task.id === 8 && taskId === 7 && status === 'completed') {
+            return { ...task, status: 'not-started' }
+          }
+
+          return task
+        })
       }))
     )
   }

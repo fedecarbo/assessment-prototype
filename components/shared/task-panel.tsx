@@ -132,9 +132,11 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
 interface BaseTaskPanelProps extends TaskPanelProps {
   tasks: TaskPanelItem[]
   groups?: Array<{ title: string; tasks: TaskPanelItem[] }>
+  showNonLinearActions?: boolean
+  previewButtonPlacement?: 'top' | 'below-group-title'
 }
 
-const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups }: BaseTaskPanelProps) => {
+const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups, showNonLinearActions = false, previewButtonPlacement = 'top' }: BaseTaskPanelProps) => {
   const renderTaskItem = (task: TaskPanelItem) => {
     const isSelected = selectedTaskId === task.id
     const isLocked = task.status === 'locked'
@@ -175,17 +177,45 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
   return (
     <aside className="w-full md:w-task-panel flex-none overflow-y-auto border-r border-border bg-background p-[1.25rem]">
       {/* Header */}
-      <h2 className="text-lg font-bold text-foreground mb-[0.625rem]">Assessment</h2>
+      <h2 className="text-lg font-bold text-foreground mb-[1.5rem]">Assessment</h2>
 
-      {/* Preview report button */}
-      <div className="mb-[1.5rem]">
-        <button
-          className="text-sm text-primary hover:underline"
-          disabled
-        >
-          Preview report (opens in new tab)
-        </button>
-      </div>
+      {/* Non-linear actions - only shown in future version */}
+      {showNonLinearActions && (
+        <>
+          <div className="space-y-[0.625rem]">
+            <button className="block text-sm text-primary hover:underline" disabled>
+              Activity
+            </button>
+            <button className="block text-sm text-primary hover:underline" disabled>
+              Fees and services
+            </button>
+            <button className="block text-sm text-primary hover:underline" disabled>
+              Meetings
+            </button>
+            <button className="block text-sm text-primary hover:underline" disabled>
+              Site visits
+            </button>
+            <button className="block text-sm text-primary hover:underline" disabled>
+              Notes
+            </button>
+          </div>
+
+          {/* Divider separating non-linear actions from linear tasks */}
+          <div className="border-b border-border my-[1.5rem]" />
+        </>
+      )}
+
+      {/* Preview report button - shown at top level for current version */}
+      {previewButtonPlacement === 'top' && (
+        <div className="mb-[0.625rem]">
+          <button
+            className="text-sm text-primary hover:underline"
+            disabled
+          >
+            Preview report (opens in new tab)
+          </button>
+        </div>
+      )}
 
       {/* Render grouped or flat task list */}
       <div className="space-y-[1.5rem]">
@@ -195,6 +225,19 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
               <h3 className="text-sm text-foreground font-bold mb-[0.625rem]">
                 {group.title}
               </h3>
+
+              {/* Preview report button - appears below group title for future version */}
+              {previewButtonPlacement === 'below-group-title' && (
+                <div className="mb-[0.625rem]">
+                  <button
+                    className="text-sm text-primary hover:underline"
+                    disabled
+                  >
+                    Preview report (opens in new tab)
+                  </button>
+                </div>
+              )}
+
               <div className="space-y-0">
                 {group.tasks.map(renderTaskItem)}
               </div>
@@ -211,21 +254,46 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
 }
 
 // ============================================================================
-// CURRENT VERSION (Stable/Production) - Grouped tasks
+// CURRENT VERSION (Stable/Production) - Preview button at top, grouped tasks
 // ============================================================================
 
 const CurrentTaskPanel = (props: TaskPanelProps) => {
   const { taskGroups } = useAssessment()
-  return <BaseTaskPanel {...props} groups={taskGroups} tasks={[]} />
+  return (
+    <BaseTaskPanel
+      {...props}
+      groups={taskGroups}
+      tasks={[]}
+      showNonLinearActions={false}
+      previewButtonPlacement="top"
+    />
+  )
 }
 
 // ============================================================================
-// FUTURE VERSION (Experimental/Development) - Flat task list
+// FUTURE VERSION (Experimental/Development) - Non-linear actions + preview below group title
 // ============================================================================
 
 const FutureTaskPanel = (props: TaskPanelProps) => {
   const { futureTasks } = useFutureAssessment()
-  return <BaseTaskPanel {...props} tasks={futureTasks} />
+
+  // Wrap all tasks in a single group titled "Pre-application report"
+  const futureGroups = [
+    {
+      title: 'Pre-application report',
+      tasks: futureTasks
+    }
+  ]
+
+  return (
+    <BaseTaskPanel
+      {...props}
+      groups={futureGroups}
+      tasks={[]}
+      showNonLinearActions={true}
+      previewButtonPlacement="below-group-title"
+    />
+  )
 }
 
 // ============================================================================
