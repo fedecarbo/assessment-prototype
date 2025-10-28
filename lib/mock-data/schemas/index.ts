@@ -174,6 +174,16 @@ export interface PlanningApplication {
   consultation: ConsultationStage;
   assessment: AssessmentStage;
   review: ReviewStage;
+  // Additional site and payment details
+  parish?: string;
+  ward?: string;
+  wardType?: string;
+  uprn?: string;
+  workStarted?: boolean;
+  paymentReference?: string;
+  paymentAmount?: number;
+  sessionId?: string;
+  locationUrl?: string;
 }
 
 // Type alias for backward compatibility

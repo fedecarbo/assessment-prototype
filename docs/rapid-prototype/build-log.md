@@ -152,7 +152,7 @@ Quick reference for what's been built and key architectural decisions.
 **Consultees:** ConsulteeResponse with position, responseDate, summary
 **Neighbours:** NeighbourResponse with position, topics[]
 **Service Records:** ServiceRecord with id, service, status (included/added/removed), cost, addedDate, addedBy, notes, requiresApproval, approvedBy, approvedDate
-**Planning Application:** includes requestedServices (original), serviceRecords (audit trail), totalServiceCost
+**Planning Application:** includes requestedServices (original), serviceRecords (audit trail), totalServiceCost, parish?, ward?, wardType?, uprn?, workStarted?, paymentReference?, paymentAmount?, sessionId?, locationUrl?
 
 ---
 
@@ -448,10 +448,16 @@ Quick reference for what's been built and key architectural decisions.
 
 ### Tab Section Components
 
-**ApplicationInfoOverview** - Placeholder for granular overview
-- **Title:** "Overview" (text-xl font-bold)
+**ApplicationInfoOverview** - Granular overview with structured content layout
+- **Title:** "Overview" (text-2xl font-bold)
 - **Last updated:** "Last updated: 12 October 2024" (text-sm text-muted-foreground, mt-1)
-- Will include detailed proposal description, application type, requested services, metadata
+- **Application Details table:** Proposal description (full text in table), Application type, Case officer (assigned officer name or "Not assigned"), Work already started (Yes/No)
+- **Separator divider** between sections (Shadcn Separator component with my-8 spacing)
+- **Site Details table:** Site address, Location (Google Maps link opens in new tab), Parish, Ward, Ward type, UPRN
+- **Separator divider** between sections
+- **Payment Details table:** Payment reference (monospace font), Payment amount (£ formatted), Session ID (monospace, text-sm)
+- **Table styling:** Full-width tables with border-b separators, py-2.5 row padding, font-medium for labels
+- **Fallback display:** Em dash (—) for missing optional fields
 - More granular than Application Details page overview
 
 **ApplicationInfoDocuments** - Document management with search, filters, and table view (client component)

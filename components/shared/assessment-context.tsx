@@ -110,13 +110,13 @@ const mockTaskGroups: TaskGroup[] = [
         id: 10,
         title: 'Check and add requirements',
         description: 'Review and confirm all requirements for the selected application type, adding any additional documentation or information needed.',
-        status: 'not-started'
+        status: 'locked'
       },
       {
         id: 11,
         title: 'Review and submit',
         description: 'Conduct final review of the pre-application assessment and submit advice to the applicant.',
-        status: 'not-started'
+        status: 'locked'
       },
     ]
   },
@@ -186,24 +186,45 @@ function AssessmentProviderContent({ children }: { children: ReactNode }) {
   }, [taskParam])
 
   const updateTaskStatus = (taskId: number, status: TaskStatus) => {
-    setTaskGroups(groups =>
-      groups.map(group => ({
+    setTaskGroups(groups => {
+      // First, update the target task
+      const updatedGroups = groups.map(group => ({
+        ...group,
+        tasks: group.tasks.map(task =>
+          task.id === taskId ? { ...task, status } : task
+        )
+      }))
+
+      // Create a flattened task map to check completion status
+      const allTasks = updatedGroups.flatMap(g => g.tasks)
+
+      // Apply unlock logic
+      return updatedGroups.map(group => ({
         ...group,
         tasks: group.tasks.map(task => {
-          // Update the target task
-          if (task.id === taskId) {
-            return { ...task, status }
-          }
-
           // Unlock "Summary of advice" (id: 8) when "Planning advice" (id: 7) is completed
           if (task.id === 8 && taskId === 7 && status === 'completed') {
             return { ...task, status: 'not-started' }
           }
 
+          // Unlock "Check and add requirements" (id: 10) when "Choose application type" (id: 9) is completed
+          if (task.id === 10 && taskId === 9 && status === 'completed') {
+            return { ...task, status: 'not-started' }
+          }
+
+          // Unlock "Review and submit" (id: 11) when ALL tasks 1-10 are completed
+          if (task.id === 11) {
+            const tasksToCheck = allTasks.filter(t => t.id >= 1 && t.id <= 10)
+            const allCompleted = tasksToCheck.every(t => t.status === 'completed')
+            if (allCompleted && task.status === 'locked') {
+              return { ...task, status: 'not-started' }
+            }
+          }
+
           return task
         })
       }))
-    )
+    })
   }
 
   // Recreate task map when taskGroups changes

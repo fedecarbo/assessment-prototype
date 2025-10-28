@@ -28,13 +28,13 @@ export default async function ApplicationInformationPage({ params }: Application
 
   return (
     <div className="h-screen bg-background flex flex-col">
-      <SiteHeader variant="full" />
+      <SiteHeader variant="constrained" />
       <CaseSummaryHeader
         reference={application.reference}
         address={application.address}
         description={application.description}
         variant="info"
-        constrained={false}
+        constrained={true}
       />
       <ApplicationInfoLayout application={application} />
     </div>
