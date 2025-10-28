@@ -16,7 +16,7 @@
 import { memo, useState, useEffect } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { useFutureAssessment } from './future-assessment-context'
-import { Check, Plus, Clock3, CircleDashed, CircleCheck } from 'lucide-react'
+import { Check, Plus, CircleEllipsis, CircleDashed, CircleCheck } from 'lucide-react'
 import Link from 'next/link'
 import { getCurrentVersion } from './version-toggle'
 
@@ -34,35 +34,94 @@ type TaskPanelItem = {
 }
 
 // Extract status icon generator to avoid recreation on every render
-function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean) {
+function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, taskId?: number) {
   // Action item (no status): + icon for items like "Manage application"
   if (!status) {
     return (
-      <Plus className={`h-4 w-4 flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={2} />
+      <Plus className={`h-[25px] w-[25px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={2} />
     )
   }
 
-  // Completed: Filled circle with white checkmark
-  if (status === 'completed') {
-    const bgColor = isSelected ? 'bg-background dark:bg-white' : 'bg-primary'
-    const checkColor = isSelected ? 'text-primary dark:text-primary' : 'text-background'
+  // Locked: CSS padlock icon (light grey)
+  if (status === 'locked') {
     return (
-      <div className={`flex h-[26px] w-[26px] flex-none items-center justify-center rounded-full ${bgColor}`}>
-        <Check className={`h-[17px] w-[17px] ${checkColor}`} strokeWidth={2.5} />
+      <div className="relative h-[25px] w-[25px] flex-none flex items-center justify-center">
+        {/* Lock body (filled rectangle) */}
+        <div
+          className="absolute bottom-[3px] left-[5px] w-[15px] h-[12px] rounded-[2px]"
+          style={{ backgroundColor: '#D1D5DB' }}
+        />
+        {/* Shackle (border-only arc on top) */}
+        <div
+          className="absolute top-[2px] left-[6.5px] w-[12px] h-[16px] rounded-t-[20px]"
+          style={{
+            borderTop: '2px solid #D1D5DB',
+            borderLeft: '2px solid #D1D5DB',
+            borderRight: '2px solid #D1D5DB',
+            borderBottom: 'none'
+          }}
+        />
       </div>
     )
   }
 
-  // In progress: Clock icon
-  if (status === 'in-progress') {
+  // Completed: Light green fill with green checkmark (using GOV.UK tag colors)
+  if (status === 'completed') {
     return (
-      <Clock3 className={`h-[28px] w-[28px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={1.5} />
+      <div
+        className="relative flex h-[25px] w-[25px] flex-none items-center justify-center rounded-full"
+        style={{
+          backgroundColor: '#cfe7de',
+          border: '1.5px solid #cfe7de'
+        }}
+      >
+        <svg
+          className="h-[14px] w-[14px]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#09442d"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </div>
     )
   }
 
-  // Not started: Dashed circle icon
+  // In progress: Light blue fill with blue line inside (using GOV.UK light blue tag colors)
+  if (status === 'in-progress') {
+    return (
+      <div className="relative h-[25px] w-[25px] flex-none flex items-center justify-center">
+        {/* Light blue filled circle with border */}
+        <div
+          className="h-[25px] w-[25px] rounded-full"
+          style={{
+            backgroundColor: '#e8f1f8',
+            border: '1.5px solid #e8f1f8'
+          }}
+        />
+        {/* Blue horizontal line inside */}
+        <div
+          className="absolute w-[10px] rounded-full"
+          style={{
+            height: '2px',
+            backgroundColor: '#0c2d4a'
+          }}
+        />
+      </div>
+    )
+  }
+
+  // Not started: CSS dashed circle
   return (
-    <CircleDashed className={`h-[28px] w-[28px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-muted-foreground'}`} strokeWidth={1.5} />
+    <div
+      className={`h-[25px] w-[25px] flex-none rounded-full border-dashed ${
+        isSelected ? 'border-background dark:border-white' : 'border-muted-foreground'
+      }`}
+      style={{ borderWidth: '1.5px' }}
+    />
   )
 }
 
@@ -78,20 +137,35 @@ interface BaseTaskPanelProps extends TaskPanelProps {
 const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups }: BaseTaskPanelProps) => {
   const renderTaskItem = (task: TaskPanelItem) => {
     const isSelected = selectedTaskId === task.id
+    const isLocked = task.status === 'locked'
 
     return (
       <Link
         key={task.id}
         href={`?task=${task.id}`}
-        onClick={() => onTaskSelect(task.id)}
+        onClick={(e) => {
+          if (isLocked) {
+            e.preventDefault()
+          } else {
+            onTaskSelect(task.id)
+          }
+        }}
         className={`flex items-center gap-[0.625rem] py-[0.625rem] pl-[0.625rem] pr-[0.625rem] transition-colors no-underline ${
-          isSelected
+          isLocked
+            ? 'cursor-not-allowed border-b border-border'
+            : isSelected
             ? 'bg-primary dark:bg-[hsl(211,66%,43%)] border-b border-b-primary dark:border-b-[hsl(211,66%,53%)]'
             : 'border-b border-border hover:bg-muted/50'
         }`}
       >
-        {getStatusIcon(task.status, isSelected)}
-        <span className={`text-sm leading-tight flex-1 ${isSelected ? 'text-background dark:text-white' : 'text-primary dark:text-foreground'}`}>
+        {getStatusIcon(task.status, isSelected, task.id)}
+        <span className={`text-sm leading-tight flex-1 ${
+          isLocked
+            ? 'text-muted-foreground/60'
+            : isSelected
+            ? 'text-background dark:text-white'
+            : 'text-primary dark:text-foreground'
+        }`}>
           {task.title}
         </span>
       </Link>
@@ -118,7 +192,7 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
         {groups ? (
           groups.map((group, groupIndex) => (
             <div key={groupIndex}>
-              <h3 className="text-base text-muted-foreground font-normal mb-[0.625rem]">
+              <h3 className="text-sm text-foreground font-bold mb-[0.625rem]">
                 {group.title}
               </h3>
               <div className="space-y-0">

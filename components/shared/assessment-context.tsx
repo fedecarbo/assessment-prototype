@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useRef, useEffect, Suspense, type 
 import { useSearchParams } from 'next/navigation'
 import type { RequestedService, ServiceRecord } from '@/lib/mock-data/schemas'
 
-export type TaskStatus = 'not-started' | 'in-progress' | 'completed'
+export type TaskStatus = 'locked' | 'not-started' | 'in-progress' | 'completed'
 
 export interface Task {
   id: number
@@ -93,7 +93,7 @@ const mockTaskGroups: TaskGroup[] = [
         id: 8,
         title: 'Summary of advice',
         description: 'Summarize advice received from consultees, technical specialists, and other relevant parties. Highlight key recommendations and concerns.',
-        status: 'not-started'
+        status: 'locked'
       },
     ]
   },
