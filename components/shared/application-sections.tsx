@@ -54,7 +54,11 @@ export function ApplicationSections({ application }: ApplicationSectionsProps) {
         className="scroll-mt-[160px] pb-8 pt-8"
         aria-labelledby="progress-heading"
       >
-        <ApplicationStageTimeline application={application} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <ApplicationStageTimeline application={application} />
+          </div>
+        </div>
       </section>
 
       <hr className="border-border" />

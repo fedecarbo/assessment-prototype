@@ -20,7 +20,7 @@ const badgeVariants = cva(
         orange: "text-[var(--tag-orange-text)] bg-[var(--tag-orange-bg)]",
         yellow: "text-[var(--tag-yellow-text)] bg-[var(--tag-yellow-bg)]",
         // Monotone variants
-        white: "bg-background text-foreground border border-border",
+        white: "bg-background text-foreground",
         gray: "text-[var(--tag-grey-text)] bg-[var(--tag-grey-bg)]", // Alias for grey
         // Legacy variants
         black: "bg-background text-foreground",

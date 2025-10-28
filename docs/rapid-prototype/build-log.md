@@ -32,10 +32,21 @@ Quick reference for what's been built and key architectural decisions.
 **Overview** (66/33 two-column layout)
 - **ProposalDescription** - Expandable descriptions (>200 chars), show more/less toggle
 - **ApplicationMetadata** - 3-column grid: officer assignment, public portal, app type
-- **ApplicationStageTimeline** - Stage workflow with tasks, dependencies, contextual dates, status badges
-  - Stages: Validation → Consultation + Assessment (parallel) → Review
-  - Contextual actions: Blue buttons (active), text links (completed), locked (grey)
-  - Status badges: Black (completed), blue (in progress), grey (locked)
+
+**Timeline Section**
+- **ApplicationStageTimeline** - Simplified stage workflow with clean list layout
+  - 4 stages: Validation, Consultation, Assessment, Review (2 actions)
+  - Layout: Constrained to 66% width (lg:col-span-2), matches Overview left column width
+  - Each stage shows: Stage title (above), Action link + Status badge (aligned horizontally)
+  - Each link has top and bottom border (10px padding using 5px spacing base)
+  - Borders don't accumulate between adjacent tasks in Review stage
+  - Link text:
+    - Validation: "Check and validate"
+    - Consultation: "Consultees, neighbours and publicity"
+    - Assessment: "Check and assess"
+    - Review: "View recommendation" and "Publish determination"
+  - Conditional links: Review actions disabled until Assessment is completed
+  - Status badges: White/no border (completed), Light blue (in progress), Blue (not started), Muted/no border (cannot start yet)
 
 **Documents**
 - **DocumentList** - Collapsible categories (Drawings, Supporting, Evidence)
