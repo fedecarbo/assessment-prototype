@@ -86,7 +86,7 @@ export function ApplicationInfoConstraints({ application }: ApplicationInfoConst
                   <div
                     className="h-4 w-4 rounded-sm"
                     style={{
-                      backgroundColor: constraint.color || '#4A90E2',
+                      backgroundColor: (constraint.color ?? '#4A90E2') as string,
                     }}
                   />
                 </TableCell>

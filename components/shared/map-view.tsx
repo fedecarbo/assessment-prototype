@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { MapContainer, TileLayer, Rectangle, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Polygon, Marker, Popup, useMap } from 'react-leaflet'
 import type { Constraint } from '@/lib/mock-data/schemas'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
@@ -19,39 +19,9 @@ interface MapViewProps {
   constraints: Constraint[]
 }
 
-// Component to handle map bounds fitting
-function FitBounds({ bounds }: { bounds: L.LatLngBoundsExpression }) {
-  const map = useMap()
-
-  useEffect(() => {
-    map.fitBounds(bounds, { padding: [50, 50] })
-  }, [map, bounds])
-
-  return null
-}
-
 export function MapView({ visibleConstraints, constraints }: MapViewProps) {
-  // Default center for London (Southwark area)
-  const center: [number, number] = [51.5074, -0.0901]
-
-  // Example constraint boundaries (mock data - would come from actual constraint geometries)
-  const constraintBounds: Record<string, [[number, number], [number, number]]> = {
-    'conservation-1': [[51.508, -0.095], [51.510, -0.090]],
-    'listed-1': [[51.506, -0.092], [51.507, -0.088]],
-    'tpo-1': [[51.509, -0.093], [51.511, -0.089]],
-    'flood-1': [[51.505, -0.096], [51.508, -0.091]],
-  }
-
-  // Color mapping for constraint types
-  const constraintColors: Record<Constraint['type'], string> = {
-    'conservation-area': '#4A90E2',
-    'listed-building': '#E24A4A',
-    'tpo': '#4AE290',
-    'flood-risk': '#2A5BD7',
-    'green-belt': '#90E24A',
-    'article-4': '#E2904A',
-    'archaeology': '#904AE2',
-  }
+  // Center on Bermondsey Street, London (real coordinates)
+  const center: [number, number] = [51.501, -0.084]
 
   // Filter visible constraints
   const visibleConstraintsList = constraints.filter(c => visibleConstraints.has(c.id))
@@ -59,7 +29,7 @@ export function MapView({ visibleConstraints, constraints }: MapViewProps) {
   return (
     <MapContainer
       center={center}
-      zoom={18}
+      zoom={16}
       style={{ height: '100%', width: '100%' }}
       className="rounded"
     >
@@ -69,23 +39,89 @@ export function MapView({ visibleConstraints, constraints }: MapViewProps) {
       />
 
       {visibleConstraintsList.map((constraint) => {
-        const bounds = constraintBounds[constraint.id]
-        if (!bounds) return null
+        if (!constraint.geometry) return null
 
-        const color = constraintColors[constraint.type]
+        const color = constraint.color || '#4A90E2'
 
-        return (
-          <Rectangle
-            key={constraint.id}
-            bounds={bounds}
-            pathOptions={{
-              color: color,
-              fillColor: color,
-              fillOpacity: 0.3,
-              weight: 2,
-            }}
-          />
-        )
+        // Handle Point geometry (e.g., listed buildings)
+        if (constraint.geometry.type === 'Point') {
+          const [lng, lat] = constraint.geometry.coordinates
+          return (
+            <Marker key={constraint.id} position={[lat, lng]}>
+              <Popup>
+                <div>
+                  <strong>{constraint.entity}</strong>
+                  <br />
+                  {constraint.label}
+                  {constraint.value && (
+                    <>
+                      <br />
+                      <em>{constraint.value}</em>
+                    </>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          )
+        }
+
+        // Handle Polygon geometry
+        if (constraint.geometry.type === 'Polygon') {
+          const positions = constraint.geometry.coordinates[0]?.map(
+            ([lng, lat]) => [lat, lng] as [number, number]
+          ) ?? []
+          return (
+            <Polygon
+              key={constraint.id}
+              positions={positions}
+              pathOptions={{
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.2,
+                weight: 2,
+              }}
+            >
+              <Popup>
+                <div>
+                  <strong>{constraint.entity}</strong>
+                  <br />
+                  {constraint.label}
+                </div>
+              </Popup>
+            </Polygon>
+          )
+        }
+
+        // Handle MultiPolygon geometry
+        if (constraint.geometry.type === 'MultiPolygon') {
+          return constraint.geometry.coordinates.map((polygon, idx) => {
+            const positions = polygon[0]?.map(
+              ([lng, lat]) => [lat, lng] as [number, number]
+            ) ?? []
+            return (
+              <Polygon
+                key={`${constraint.id}-${idx}`}
+                positions={positions}
+                pathOptions={{
+                  color: color,
+                  fillColor: color,
+                  fillOpacity: 0.2,
+                  weight: 2,
+                }}
+              >
+                <Popup>
+                  <div>
+                    <strong>{constraint.entity}</strong>
+                    <br />
+                    {constraint.label}
+                  </div>
+                </Popup>
+              </Polygon>
+            )
+          })
+        }
+
+        return null
       })}
     </MapContainer>
   )

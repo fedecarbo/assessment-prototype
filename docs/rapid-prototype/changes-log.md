@@ -257,3 +257,50 @@ const contentScrollRef = TASK_PANEL_VERSION === 'future' ? futureContext!.conten
 **Status:** ✅ Resolved - Build passes successfully, all TypeScript errors fixed.
 
 ---
+
+## 2025-10-30 | TypeScript Build Errors with Constraint Color and Geometry
+
+**Issue:** Vercel build failing with two TypeScript errors:
+1. `Property 'color' does not exist on type 'Constraint'` in application-info-constraints.tsx:89
+2. `Object is possibly 'undefined'` in map-view.tsx:70 when accessing polygon coordinates
+
+**Root Cause:**
+1. TypeScript strict mode not recognizing the optional `color` property on `Constraint` type during build
+2. TypeScript's type narrowing not working properly with discriminated union types for GeoJSON geometry coordinates
+
+**Resolution:**
+1. Added type assertion with nullish coalescing operator in application-info-constraints.tsx:
+   - Changed `constraint.color || '#4A90E2'` to `(constraint.color ?? '#4A90E2') as string`
+2. Added optional chaining with fallback in map-view.tsx for both Polygon and MultiPolygon geometry:
+   - Changed `constraint.geometry.coordinates[0].map(...)` to `constraint.geometry.coordinates[0]?.map(...) ?? []`
+   - Applied to both Polygon (line 70) and MultiPolygon (line 98) cases
+
+**Files Changed:**
+- [application-info-constraints.tsx](components/shared/application-info-constraints.tsx) - Added type assertion for constraint color
+- [map-view.tsx](components/shared/map-view.tsx) - Added optional chaining with fallback for geometry coordinates
+
+**Technical Details:**
+```typescript
+// Fix 1: Color property type assertion
+style={{
+  backgroundColor: (constraint.color ?? '#4A90E2') as string,
+}}
+
+// Fix 2: Optional chaining for geometry coordinates
+const positions = constraint.geometry.coordinates[0]?.map(
+  ([lng, lat]) => [lat, lng] as [number, number]
+) ?? []
+```
+
+**Build Output:**
+```
+✓ Compiled successfully
+✓ Generating static pages (10/10)
+Route (app)                                 Size  First Load JS
+├ ● /application/[id]                    4.81 kB         122 kB
+├ ● /application/[id]/information        33.4 kB         150 kB
+```
+
+**Status:** ✅ Resolved - Build passes successfully, all TypeScript errors fixed. Ready for Vercel deployment.
+
+---
