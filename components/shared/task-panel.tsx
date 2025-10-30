@@ -65,21 +65,21 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
     )
   }
 
-  // Completed: Light green fill with green checkmark (using GOV.UK tag colors)
+  // Completed: Brand blue fill with white checkmark (white fill with blue checkmark when selected)
   if (status === 'completed') {
     return (
       <div
         className="relative flex h-[25px] w-[25px] flex-none items-center justify-center rounded-full"
         style={{
-          backgroundColor: '#cfe7de',
-          border: '1.5px solid #cfe7de'
+          backgroundColor: isSelected ? '#ffffff' : '#1d70b8',
+          border: isSelected ? '1.5px solid #ffffff' : '1.5px solid #1d70b8'
         }}
       >
         <svg
           className="h-[14px] w-[14px]"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#09442d"
+          stroke={isSelected ? '#1d70b8' : '#ffffff'}
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -90,31 +90,31 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
     )
   }
 
-  // In progress: Light blue fill with blue line inside (using GOV.UK light blue tag colors)
+  // In progress: Yellow fill with white horizontal line
   if (status === 'in-progress') {
     return (
       <div className="relative h-[25px] w-[25px] flex-none flex items-center justify-center">
-        {/* Light blue filled circle with border */}
+        {/* Yellow filled circle */}
         <div
           className="h-[25px] w-[25px] rounded-full"
           style={{
-            backgroundColor: '#e8f1f8',
-            border: '1.5px solid #e8f1f8'
+            backgroundColor: '#ffbf47',
+            border: '1.5px solid #ffbf47'
           }}
         />
-        {/* Blue horizontal line inside */}
+        {/* White horizontal line inside */}
         <div
           className="absolute w-[10px] rounded-full"
           style={{
             height: '2px',
-            backgroundColor: '#0c2d4a'
+            backgroundColor: '#ffffff'
           }}
         />
       </div>
     )
   }
 
-  // Not started: CSS dashed circle
+  // Not started: Grey dashed circle (original style)
   return (
     <div
       className={`h-[25px] w-[25px] flex-none rounded-full border-dashed ${
