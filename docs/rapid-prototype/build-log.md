@@ -165,6 +165,9 @@ Quick reference for what's been built and key architectural decisions.
 **Neighbours:** NeighbourResponse with position, topics[]
 **Service Records:** ServiceRecord with id, service, status (included/added/removed), cost, addedDate, addedBy, notes, requiresApproval, approvedBy, approvedDate
 **Planning Application:** includes requestedServices (original), serviceRecords (audit trail), totalServiceCost, parish?, ward?, wardType?, uprn?, workStarted?, paymentReference?, paymentAmount?, sessionId?, locationUrl?
+- **Status field (updated 2025-10-30):** 'not-started' | 'in-validation' | 'in-assessment' | 'in-review' | 'closed' | 'withdrawn' (granular workflow-aligned statuses)
+- **Outcome field (added 2025-10-30):** 'likely-supported' | 'likely-supported-with-changes' | 'unlikely-supported' (only for closed applications)
+- **Outcome date (added 2025-10-30):** Date when outcome was determined (string, optional)
 
 ---
 
@@ -415,41 +418,82 @@ Quick reference for what's been built and key architectural decisions.
 - **User info:** Logged in user name displayed below heading (text-base muted-foreground)
 - **PreApplicationsList** component with tabbed filtering and table layout
 
-**PreApplicationsList** - Tabbed filter component with search and table-based list (client component)
-- **Tab Navigation:**
-  - 5 tabs with counts: Cases assigned to you, Unassigned cases, All cases, Updates, Closed
+**PreApplicationsList** - Tabbed filter component with search and dual table layouts (client component)
+- **Tab Navigation (GDS-style pattern):**
+  - 4 tabs with counts: Cases assigned to you, Unassigned cases, All cases, Closed
+  - Removed "Updates" tab (unclear purpose, not aligned with user workflow)
   - Default active tab: "Cases assigned to you" for optimal first-use experience
-  - Tab styling: border-b-[3px], gap-6, py-3 (matches Consultees/Neighbours pattern)
-  - Active state: primary border + foreground text + font-medium
-  - Inactive state: transparent border + primary text + hover underline
+  - **GDS tabs pattern:** Active tab visually connects to content area by merging borders
+  - **Active tab:** Border on top, left, and right (border-b-0), -mb-px extends down to cover parent border, background color, font-medium, no underline
+  - **Inactive tabs:** Light grey background (bg-muted), no border, hover underline, 5px bottom margin (mb-[0.3125rem]) to space from container
+  - **Tab spacing:** 5px gap between tabs (gap-[0.3125rem]), 20px horizontal padding per tab
+  - **Border structure:** Parent div has border-b, active tab extends down (-mb-px) to hide parent border, creating seamless connection
+  - **Content container:** Border on left/right/bottom (border-t-0), 20px padding (p-[1.25rem], 4 × 5px spacing base)
   - ARIA attributes: role="tablist", role="tab", aria-selected, aria-controls
 - **Search Functionality:**
   - **Label:** "Find a pre-application" (text-lg font-bold)
-  - **Helper text:** "You can search by application number or description" (text-body muted-foreground)
+  - **Helper text:** Dynamically updates based on active tab
+    - Standard tabs: "You can search by application number or description"
+    - Closed tab: "You can search by application number, site address, or description"
   - **Search input:** Full-width input with no placeholder text
   - **Search button:** Primary button (filters happen automatically via onChange)
   - **Clear search button:** Secondary variant (grey) button to reset search query
-  - **Search logic:** Case-insensitive search across application reference and description fields
+  - **Search logic:** Case-insensitive search
+    - Standard tabs: Searches reference and description
+    - Closed tab: Also searches site address
   - **Layered filtering:** Search applies on top of active tab filter
   - **Real-time filtering:** Results update as user types (onChange)
-- **Filter Logic:**
-  - Cases assigned to you: Filters by assignedTo === current user
-  - Unassigned cases: Filters where assignedTo is undefined/null
-  - All cases: Shows all pre-applications (no filter)
-  - Updates: Shows applications submitted in last 7 days
-  - Closed: Shows approved OR rejected applications
-- **Table Display:**
-  - **Columns:** Application number, Site address, Date received, Days, Status
-  - **Application number:** Primary link to application detail page (text-primary with hover underline)
-  - **Date received:** Formatted as "28 June 2025" using formatDate utility
-  - **Days:** Small gray badge displaying "7 days received" with calculated days since submission
-  - **Status:** Small color-coded badges (blue: Pending, yellow: Under review, green: Approved, red: Rejected)
-  - **Table styling:** Full-width table with text-sm font size for all content, bold headers, small badge variants
-  - **Empty states:**
-    - With search: "No applications found matching your search."
-    - Without search: "No applications found in this category."
+- **Filters Accordion:**
+  - **Toggle button:** Full-width button with "Filters" label and chevron icon (up/down)
+  - **Button styling:** Light grey background (bg-muted), 10px padding, hover state
+  - **Border:** Full border around accordion (border-foreground)
+  - **Expanded content:** 20px padding (p-[1.25rem]), border-top separator
+  - **Layout:** Two-column grid on desktop (md+), single column on mobile
+  - **Status filter:** 6 checkbox options (Not started, In validation, In assessment, In review, Closed, Withdrawn)
+  - **Outcome filter:** 3 checkbox options (Likely to be supported, Likely to be supported with changes, Unlikely to be supported)
+  - **Filter logic:** Multi-select checkboxes, filters stack on top of tab and search filters
+  - **State management:** Independent state for status and outcome filters
+- **Enhanced Filter Logic:**
+  - **Cases assigned to you:** Filters by assignedTo === current user AND excludes closed/withdrawn statuses (shows only active work)
+  - **Unassigned cases:** Filters where assignedTo is empty AND excludes closed/withdrawn statuses (shows only active work)
+  - **All cases:** Shows all pre-applications including closed and withdrawn
+  - **Closed:** Shows only applications with status = 'closed'
+- **Status System:** Two-field architecture
+  - **Status field:** 'not-started' | 'in-validation' | 'in-assessment' | 'in-review' | 'closed' | 'withdrawn'
+  - **Outcome field:** Only for closed cases: 'likely-supported' | 'likely-supported-with-changes' | 'unlikely-supported'
+  - **Outcome date:** Date when outcome was determined (for closed cases)
+- **Status Badge Mapping (GDS-inspired colors):**
+  - Not started: Gray badge (neutral, inactive)
+  - In validation: Light blue badge (early stage)
+  - In assessment: Yellow badge (active work)
+  - In review: Purple badge (late stage)
+  - Closed: Green badge (complete)
+  - Withdrawn: Black badge (terminated)
+- **Outcome Badge Mapping:**
+  - Likely to be supported: Green badge
+  - Likely to be supported with changes: Turquoise badge
+  - Unlikely to be supported: Red badge
+- **Conditional Table Rendering:**
+  - **StandardApplicationsTable** (for assigned, unassigned, all tabs):
+    - **Columns:** Application number, Site address, Date received, Days, Status
+    - **Application number:** Primary link to application detail page (text-primary with hover underline)
+    - **Date received:** Formatted as "28 June 2025" using formatDate utility
+    - **Days:** Small gray badge displaying "7 days received" with calculated days since submission
+    - **Status:** Color-coded status badges using new status system
+    - **Table styling:** Full-width table with text-sm font size, bold headers, small badge variants
+  - **ClosedApplicationsTable** (for closed tab):
+    - **Columns:** Application number, Outcome, Outcome date, Site address, Description
+    - **Application number:** Primary link to application detail page (text-primary with hover underline)
+    - **Outcome:** Color-coded outcome badge (green/turquoise/red)
+    - **Outcome date:** Formatted date or em dash if missing
+    - **Site address:** Full address text
+    - **Description:** Full description text (no truncation per GDS guidelines)
+    - **Table styling:** Full-width table with text-sm font size, bold headers
+- **Empty States:**
+  - With search: "No applications found matching your search."
+  - Without search: "No applications found in this category."
 - **State Management:** Uses useState for activeTab and searchQuery, useMemo for filtered data and counts
-- Clickable rows link to individual application detail pages
+- **Component Architecture:** Extracted StandardApplicationsTable and ClosedApplicationsTable as separate components for cleaner conditional rendering
 
 ---
 

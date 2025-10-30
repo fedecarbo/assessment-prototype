@@ -173,7 +173,7 @@ export interface PlanningApplication {
   applicantName: string;
   address: string;
   description: string;
-  status: 'pending' | 'under-review' | 'approved' | 'rejected';
+  status: 'not-started' | 'in-validation' | 'in-assessment' | 'in-review' | 'closed' | 'withdrawn';
   submittedDate: string;
   validFrom: string;
   consultationEnd: string;
@@ -203,6 +203,9 @@ export interface PlanningApplication {
   paymentAmount?: number;
   sessionId?: string;
   locationUrl?: string;
+  // Outcome tracking (only for closed applications)
+  outcome?: 'likely-supported' | 'likely-supported-with-changes' | 'unlikely-supported';
+  outcomeDate?: string;
 }
 
 // Type alias for backward compatibility
