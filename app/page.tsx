@@ -1,18 +1,19 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { SiteHeader } from '@/components/shared/site-header'
+import { PreApplicationsList } from '@/components/shared/pre-applications-list'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-background text-foreground">
-      <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm">
-        <h1 className="text-4xl font-bold mb-4">Assessment Prototype</h1>
-        <p className="text-lg text-muted-foreground mb-8">
-          Back office planning system for assessing planning applications
-        </p>
-        <Link href="/application/1">
-          <Button size="lg">Start</Button>
-        </Link>
-      </div>
-    </main>
-  );
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <SiteHeader variant="constrained" />
+
+      <main className="flex-1">
+        <div className="mx-auto max-w-[1100px] px-4 py-8">
+          <h1 className="text-2xl font-bold mb-2">Pre-applications</h1>
+          <p className="text-base text-muted-foreground mb-8">Federico Carbo</p>
+
+          <PreApplicationsList />
+        </div>
+      </main>
+    </div>
+  )
 }

@@ -81,7 +81,19 @@ Quick reference for what's been built and key architectural decisions.
 - No border radius (sharp corners for GDS compliance)
 - Two sizes: default (px-3 py-1 text-base), small (px-2 py-0.5 text-sm)
 - Used consistently across all position badges and topic tags
+
+**Input** - Form input component with GDS-inspired styling
+- **Border:** 2px black border (border-foreground), no border radius
+- **Focus state:** No focus ring, maintains 2px border thickness with outline removed
+- **Default height:** h-10 (40px)
+- **Padding:** 5px all sides (p-[0.3125rem], using 5px spacing base)
+- **Text:** text-base (consistent across all breakpoints)
+- **No placeholder text:** Input field has no hint text inside
+- **Disabled state:** Reduced opacity (0.5) with not-allowed cursor
+- Used in search functionality on home page (no placeholder text)
+
 **ThemeToggle** - Dark mode (next-themes) with sun/moon icons
+
 **Table** - Shadcn table component for data display
 
 ### Shared Data Display Components
@@ -392,15 +404,52 @@ Quick reference for what's been built and key architectural decisions.
 ## Home Page
 
 **Route:** `/`
-**Pattern:** Centered landing page with call-to-action
+**Pattern:** Pre-applications listing page with tabbed filtering and table view
+**Layout:** SiteHeader + main content area (1100px max-width)
 
 ### Components
 
-**Home Page** - Simple landing page
-- Title: "Assessment Prototype"
-- Description: "Back office planning system for assessing planning applications"
-- Primary "Start" button linking to `/application/1` (first mock application)
-- Uses Shadcn UI Button component with `size="lg"`
+**Home Page** - Pre-applications list landing page
+- **SiteHeader** with constrained variant (1100px max-width)
+- **Page heading:** "Pre-applications" (text-2xl font-bold)
+- **User info:** Logged in user name displayed below heading (text-base muted-foreground)
+- **PreApplicationsList** component with tabbed filtering and table layout
+
+**PreApplicationsList** - Tabbed filter component with search and table-based list (client component)
+- **Tab Navigation:**
+  - 5 tabs with counts: Cases assigned to you, Unassigned cases, All cases, Updates, Closed
+  - Default active tab: "Cases assigned to you" for optimal first-use experience
+  - Tab styling: border-b-[3px], gap-6, py-3 (matches Consultees/Neighbours pattern)
+  - Active state: primary border + foreground text + font-medium
+  - Inactive state: transparent border + primary text + hover underline
+  - ARIA attributes: role="tablist", role="tab", aria-selected, aria-controls
+- **Search Functionality:**
+  - **Label:** "Find a pre-application" (text-lg font-bold)
+  - **Helper text:** "You can search by application number or description" (text-body muted-foreground)
+  - **Search input:** Full-width input with no placeholder text
+  - **Search button:** Primary button (filters happen automatically via onChange)
+  - **Clear search button:** Secondary variant (grey) button to reset search query
+  - **Search logic:** Case-insensitive search across application reference and description fields
+  - **Layered filtering:** Search applies on top of active tab filter
+  - **Real-time filtering:** Results update as user types (onChange)
+- **Filter Logic:**
+  - Cases assigned to you: Filters by assignedTo === current user
+  - Unassigned cases: Filters where assignedTo is undefined/null
+  - All cases: Shows all pre-applications (no filter)
+  - Updates: Shows applications submitted in last 7 days
+  - Closed: Shows approved OR rejected applications
+- **Table Display:**
+  - **Columns:** Application number, Site address, Date received, Days, Status
+  - **Application number:** Primary link to application detail page (text-primary with hover underline)
+  - **Date received:** Formatted as "28 June 2025" using formatDate utility
+  - **Days:** Small gray badge displaying "7 days received" with calculated days since submission
+  - **Status:** Small color-coded badges (blue: Pending, yellow: Under review, green: Approved, red: Rejected)
+  - **Table styling:** Full-width table with text-sm font size for all content, bold headers, small badge variants
+  - **Empty states:**
+    - With search: "No applications found matching your search."
+    - Without search: "No applications found in this category."
+- **State Management:** Uses useState for activeTab and searchQuery, useMemo for filtered data and counts
+- Clickable rows link to individual application detail pages
 
 ---
 
