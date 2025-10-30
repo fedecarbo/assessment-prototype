@@ -76,7 +76,13 @@ export function ApplicationInfoLayout({ application }: ApplicationInfoLayoutProp
             </div>
           </div>
         )}
-        {activeTab === 'constraints' && <ApplicationInfoConstraints application={application} />}
+        {activeTab === 'constraints' && (
+          <div className="h-full overflow-y-auto">
+            <div className="mx-auto max-w-[1100px] px-4 py-8">
+              <ApplicationInfoConstraints application={application} />
+            </div>
+          </div>
+        )}
         {activeTab === 'site-history' && (
           <div className="h-full overflow-y-auto">
             <div className="mx-auto max-w-[1100px] px-4 py-8">
