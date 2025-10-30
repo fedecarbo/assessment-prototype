@@ -71,13 +71,32 @@ export interface ServiceRecord {
   approvedDate?: string;
 }
 
+// GeoJSON geometry types for constraints
+export type ConstraintGeometry = {
+  type: 'Point'
+  coordinates: [number, number] // [longitude, latitude]
+} | {
+  type: 'Polygon'
+  coordinates: [number, number][][] // Array of rings, each ring is array of [lon, lat]
+} | {
+  type: 'MultiPolygon'
+  coordinates: [number, number][][][] // Array of polygons
+}
+
 export interface Constraint {
   id: string; // Unique identifier to allow multiple instances of same type
   type: 'conservation-area' | 'listed-building' | 'tpo' | 'flood-risk' | 'green-belt' | 'article-4' | 'archaeology';
-  label: string;
+  label: string; // Constraint type label (e.g., "Special area of conservation", "Conservation area")
+  entity: string; // Specific entity name (e.g., "Wimbledon Common", "Southwark Cathedral")
   status: 'applies' | 'does-not-apply' | 'nearby' | 'partial';
   details?: string;
   value?: string; // For specific values like "Zone 1" or "Grade II"
+  category?: string; // e.g., "Heritage and conservation", "Ecology", "Flooding"
+  source?: string; // e.g., "PlanX", "Planning Data", "Historic England"
+  color?: string; // Hex color for map display
+  geometry?: ConstraintGeometry; // GeoJSON geometry for map display
+  planningDataEntity?: number; // planning.data.gov.uk entity ID
+  reference?: string; // Original reference number (e.g., Historic England list entry)
 }
 
 export interface Document {

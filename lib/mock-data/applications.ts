@@ -1,4 +1,9 @@
 import { PlanningApplication } from './schemas';
+import {
+  bermondseyStreetConservationArea,
+  stMaryMagdalenChurch,
+  bermondseyArticle4Direction,
+} from './constraint-geometries';
 
 export const mockApplications: PlanningApplication[] = [
   {
@@ -55,56 +60,52 @@ export const mockApplications: PlanningApplication[] = [
       {
         id: 'c1',
         type: 'conservation-area',
-        label: 'Conservation Area',
+        label: 'Conservation area',
+        entity: 'Bermondsey Street',
         status: 'applies',
-        details: 'Bermondsey Street Conservation Area',
+        category: 'Heritage and conservation',
+        source: 'Planning Data',
+        color: '#7C2D55',
+        geometry: {
+          type: 'MultiPolygon',
+          coordinates: [bermondseyStreetConservationArea]
+        },
+        planningDataEntity: 44010255,
+        reference: '2',
       },
       {
         id: 'c2',
         type: 'listed-building',
-        label: 'Listed Building',
+        label: 'Listed building',
+        entity: 'Church of St Mary Magdalene',
         status: 'nearby',
-        details: 'Grade II listed building within 50m',
+        category: 'Heritage and conservation',
+        source: 'Historic England',
+        color: '#9C4E97',
+        value: 'Grade II*',
+        geometry: {
+          type: 'Point',
+          coordinates: stMaryMagdalenChurch
+        },
+        planningDataEntity: 31814493,
+        reference: '1376567',
       },
       {
         id: 'c3',
-        type: 'tpo',
-        label: 'Tree Preservation Orders',
-        status: 'does-not-apply',
-      },
-      {
-        id: 'c4',
-        type: 'flood-risk',
-        label: 'Flood Risk',
-        status: 'does-not-apply',
-        value: 'Zone 1',
-      },
-      {
-        id: 'c5',
-        type: 'green-belt',
-        label: 'Green Belt / MOL',
-        status: 'does-not-apply',
-      },
-      {
-        id: 'c6',
         type: 'article-4',
-        label: 'Article 4 Direction',
+        label: 'Article 4 direction',
+        entity: 'Galleywall and Bermondsey Trading Estates',
         status: 'applies',
-        details: 'Modified Direction 1 - CAZ',
-      },
-      {
-        id: 'c7',
-        type: 'article-4',
-        label: 'Article 4 Direction',
-        status: 'applies',
-        details: 'Modified Direction 2 - KIBAs and WNCBC',
-      },
-      {
-        id: 'c8',
-        type: 'archaeology',
-        label: 'Archaeological Priority Area',
-        status: 'applies',
-        details: 'Tier 2 - Bermondsey Abbey',
+        category: 'General policy',
+        source: 'Planning Data',
+        color: '#D4A02F',
+        details: 'Restricts demolition of commercial buildings',
+        geometry: {
+          type: 'MultiPolygon',
+          coordinates: [bermondseyArticle4Direction]
+        },
+        planningDataEntity: 7010003619,
+        reference: '203',
       },
     ],
     documents: [
