@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useRef, useEffect, Suspense, type 
 import { useSearchParams } from 'next/navigation'
 import type { RequestedService, ServiceRecord } from '@/lib/mock-data/schemas'
 
-export type TaskStatus = 'locked' | 'not-started' | 'in-progress' | 'completed'
+export type TaskStatus = 'locked' | 'not-started' | 'in-progress' | 'completed' | 'needs-review'
 
 export interface Task {
   id: number
@@ -47,7 +47,7 @@ const mockTaskGroups: TaskGroup[] = [
         id: 2,
         title: 'Check consultees consulted',
         description: 'Review the list of statutory consultees contacted and confirm all required consultees have been notified according to planning regulations.',
-        status: 'not-started'
+        status: 'needs-review'
       },
       {
         id: 3,
@@ -81,7 +81,7 @@ const mockTaskGroups: TaskGroup[] = [
         id: 6,
         title: 'Site description',
         description: 'Prepare detailed description of the site including its location, existing use, surrounding context, and any relevant site characteristics.',
-        status: 'not-started'
+        status: 'needs-review'
       },
       {
         id: 7,
