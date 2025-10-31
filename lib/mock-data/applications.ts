@@ -455,7 +455,7 @@ export const mockApplications: PlanningApplication[] = [
     applicantName: 'Citywide Construction',
     address: '456 High Road, Manchester, M1 1AB',
     description: 'Commercial building renovation and expansion',
-    status: 'pending',
+    status: 'in-validation',
     submittedDate: '2025-02-01',
     validFrom: '2025-02-01',
     consultationEnd: '2025-02-22',
