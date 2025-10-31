@@ -38,22 +38,22 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   // Action item (no status): + icon for items like "Manage application"
   if (!status) {
     return (
-      <Plus className={`h-[25px] w-[25px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={2} />
+      <Plus className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={2} />
     )
   }
 
   // Locked: CSS padlock icon (light grey)
   if (status === 'locked') {
     return (
-      <div className="relative h-[25px] w-[25px] flex-none flex items-center justify-center">
+      <div className="relative h-[22px] w-[22px] flex-none flex items-center justify-center">
         {/* Lock body (filled rectangle) */}
         <div
-          className="absolute bottom-[3px] left-[5px] w-[15px] h-[12px] rounded-[2px]"
+          className="absolute bottom-[2.5px] left-[4.5px] w-[13px] h-[11px] rounded-[2px]"
           style={{ backgroundColor: '#D1D5DB' }}
         />
         {/* Shackle (border-only arc on top) */}
         <div
-          className="absolute top-[2px] left-[6.5px] w-[12px] h-[16px] rounded-t-[20px]"
+          className="absolute top-[1.5px] left-[5.5px] w-[11px] h-[14px] rounded-t-[18px]"
           style={{
             borderTop: '2px solid #D1D5DB',
             borderLeft: '2px solid #D1D5DB',
@@ -65,18 +65,18 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
     )
   }
 
-  // Completed: Brand blue fill with white checkmark (white fill with blue checkmark when selected)
+  // Completed: Blue fill with white checkmark (white fill with blue checkmark when selected)
   if (status === 'completed') {
     return (
       <div
-        className="relative flex h-[25px] w-[25px] flex-none items-center justify-center rounded-full"
+        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full"
         style={{
           backgroundColor: isSelected ? '#ffffff' : '#1d70b8',
           border: isSelected ? '1.5px solid #ffffff' : '1.5px solid #1d70b8'
         }}
       >
         <svg
-          className="h-[14px] w-[14px]"
+          className="h-[12px] w-[12px]"
           viewBox="0 0 24 24"
           fill="none"
           stroke={isSelected ? '#1d70b8' : '#ffffff'}
@@ -90,26 +90,59 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
     )
   }
 
-  // In progress: Yellow fill with white horizontal line
+  // In progress: Purple bordered circle with half-filled circle inside (white when selected)
   if (status === 'in-progress') {
+    const color = isSelected ? '#ffffff' : '#4c2c92'
     return (
-      <div className="relative h-[25px] w-[25px] flex-none flex items-center justify-center">
-        {/* Yellow filled circle */}
+      <div
+        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full overflow-hidden"
+        style={{
+          border: `1.5px solid ${color}`
+        }}
+      >
         <div
-          className="h-[25px] w-[25px] rounded-full"
+          className="h-[14px] w-[14px] rounded-full overflow-hidden"
           style={{
-            backgroundColor: '#ffbf47',
-            border: '1.5px solid #ffbf47'
+            background: `linear-gradient(to right, ${color} 50%, transparent 50%)`
           }}
         />
-        {/* White horizontal line inside */}
-        <div
-          className="absolute w-[10px] rounded-full"
-          style={{
-            height: '2px',
-            backgroundColor: '#ffffff'
-          }}
-        />
+      </div>
+    )
+  }
+
+  // Needs review: Brown filled circle with white exclamation mark (white border when selected)
+  if (status === 'needs-review') {
+    return (
+      <div
+        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full"
+        style={{
+          backgroundColor: isSelected ? '#ffffff' : '#b58840',
+          border: isSelected ? '1.5px solid #ffffff' : 'none'
+        }}
+      >
+        <svg
+          className="h-[13px] w-[13px]"
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          {/* Exclamation line */}
+          <line
+            x1="12"
+            y1="6"
+            x2="12"
+            y2="13"
+            stroke={isSelected ? '#b58840' : '#ffffff'}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+          {/* Exclamation dot - perfectly circular */}
+          <circle
+            cx="12"
+            cy="18.5"
+            r="1.5"
+            fill={isSelected ? '#b58840' : '#ffffff'}
+          />
+        </svg>
       </div>
     )
   }
@@ -117,7 +150,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   // Not started: Grey dashed circle (original style)
   return (
     <div
-      className={`h-[25px] w-[25px] flex-none rounded-full border-dashed ${
+      className={`h-[22px] w-[22px] flex-none rounded-full border-dashed ${
         isSelected ? 'border-background dark:border-white' : 'border-muted-foreground'
       }`}
       style={{ borderWidth: '1.5px' }}
