@@ -16,7 +16,7 @@
 import { memo, useState, useEffect } from 'react'
 import { useAssessment, type TaskStatus } from './assessment-context'
 import { useFutureAssessment } from './future-assessment-context'
-import { Check, Plus, CircleEllipsis, CircleDashed, CircleCheck } from 'lucide-react'
+import { Check, Plus, CircleEllipsis, CircleDashed, CircleCheck, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { getCurrentVersion } from './version-toggle'
 
@@ -38,29 +38,60 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   // Action item (no status): + icon for items like "Manage application"
   if (!status) {
     return (
-      <Plus className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`} strokeWidth={2} />
+      <Plus
+        className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`}
+        strokeWidth={2}
+        role="img"
+        aria-label="Action item"
+      />
     )
   }
 
-  // Locked: CSS padlock icon (light grey)
+  // Locked: Light grey filled square with dark grey filled padlock icon (minimal, disabled appearance)
   if (status === 'locked') {
+    // Use light grey fill with no border, dark grey lock for contrast
+    const backgroundColor = '#E5E7EB' // Light grey fill
+    const lockColor = '#6B7280' // Dark grey lock for visibility
+
     return (
-      <div className="relative h-[22px] w-[22px] flex-none flex items-center justify-center">
-        {/* Lock body (filled rectangle) */}
-        <div
-          className="absolute bottom-[2.5px] left-[4.5px] w-[13px] h-[11px] rounded-[2px]"
-          style={{ backgroundColor: '#D1D5DB' }}
-        />
-        {/* Shackle (border-only arc on top) */}
-        <div
-          className="absolute top-[1.5px] left-[5.5px] w-[11px] h-[14px] rounded-t-[18px]"
-          style={{
-            borderTop: '2px solid #D1D5DB',
-            borderLeft: '2px solid #D1D5DB',
-            borderRight: '2px solid #D1D5DB',
-            borderBottom: 'none'
-          }}
-        />
+      <div
+        className="relative h-[22px] w-[22px] flex-none flex items-center justify-center"
+        style={{
+          borderWidth: '1.5px',
+          borderStyle: 'solid',
+          borderColor: backgroundColor, // Border matches background for unified fill
+          borderRadius: '6px',
+          backgroundColor: backgroundColor
+        }}
+        role="img"
+        aria-label="Locked - cannot start yet"
+      >
+        {/* Custom CSS-based filled padlock icon */}
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Lock shackle (top arc) - outline only */}
+          <path
+            d="M7 10V7a5 5 0 0 1 10 0v3"
+            stroke={lockColor}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            fill="none"
+          />
+          {/* Lock body (filled rectangle) */}
+          <rect
+            x="4"
+            y="10"
+            width="16"
+            height="11"
+            rx="2"
+            fill={lockColor}
+          />
+        </svg>
       </div>
     )
   }
@@ -69,20 +100,24 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   if (status === 'completed') {
     return (
       <div
-        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full"
+        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center"
         style={{
           backgroundColor: isSelected ? '#ffffff' : '#1d70b8',
-          border: isSelected ? '1.5px solid #ffffff' : '1.5px solid #1d70b8'
+          border: isSelected ? '1.5px solid #ffffff' : '1.5px solid #1d70b8',
+          borderRadius: '6px'
         }}
+        role="img"
+        aria-label="Completed"
       >
         <svg
-          className="h-[12px] w-[12px]"
+          className="h-[14px] w-[14px]"
           viewBox="0 0 24 24"
           fill="none"
           stroke={isSelected ? '#1d70b8' : '#ffffff'}
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
+          aria-hidden="true"
         >
           <polyline points="20 6 9 17 4 12" />
         </svg>
@@ -90,70 +125,101 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
     )
   }
 
-  // In progress: Purple bordered circle with half-filled circle inside (white when selected)
+  // In progress: Light blue square with dark navy arrow (active work, engaged state)
   if (status === 'in-progress') {
-    const color = isSelected ? '#ffffff' : '#4c2c92'
-    return (
-      <div
-        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full overflow-hidden"
-        style={{
-          border: `1.5px solid ${color}`
-        }}
-      >
-        <div
-          className="h-[14px] w-[14px] rounded-full overflow-hidden"
-          style={{
-            background: `linear-gradient(to right, ${color} 50%, transparent 50%)`
-          }}
-        />
-      </div>
-    )
-  }
+    const borderColor = isSelected ? '#ffffff' : '#b3d7f2' // Light blue border
+    const arrowColor = isSelected ? '#ffffff' : '#0c2d4a' // Dark navy arrow (white when selected)
+    const backgroundColor = isSelected ? '#1d70b8' : '#b3d7f2' // Light blue background (or dark blue when selected)
 
-  // Needs review: Brown filled circle with white exclamation mark (white border when selected)
-  if (status === 'needs-review') {
     return (
       <div
-        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full"
+        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center"
         style={{
-          backgroundColor: isSelected ? '#ffffff' : '#b58840',
-          border: isSelected ? '1.5px solid #ffffff' : 'none'
+          borderWidth: '1.5px',
+          borderStyle: 'solid',
+          borderColor: borderColor,
+          borderRadius: '6px',
+          backgroundColor: backgroundColor
         }}
+        role="img"
+        aria-label="In progress"
       >
+        {/* Arrow pointing right */}
         <svg
-          className="h-[13px] w-[13px]"
+          width="14"
+          height="14"
           viewBox="0 0 24 24"
           fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Exclamation line */}
-          <line
-            x1="12"
-            y1="6"
-            x2="12"
-            y2="13"
-            stroke={isSelected ? '#b58840' : '#ffffff'}
+          <path
+            d="M5 12h14M12 5l7 7-7 7"
+            stroke={isSelected ? '#ffffff' : arrowColor}
             strokeWidth="2.5"
             strokeLinecap="round"
-          />
-          {/* Exclamation dot - perfectly circular */}
-          <circle
-            cx="12"
-            cy="18.5"
-            r="1.5"
-            fill={isSelected ? '#b58840' : '#ffffff'}
+            strokeLinejoin="round"
           />
         </svg>
       </div>
     )
   }
 
-  // Not started: Grey dashed circle (original style)
+  // Needs review: Light yellow square with dark yellow exclamation mark (indicates updates/comments to review)
+  if (status === 'needs-review') {
+    // Using light yellow background with dark yellow icon
+    const backgroundColor = isSelected ? '#f47738' : '#fff7bf' // Light yellow background
+    const borderColor = isSelected ? '#ffffff' : '#fff7bf' // Light yellow border
+    const iconColor = isSelected ? '#ffffff' : '#594d00' // Dark yellow exclamation
+
+    return (
+      <div
+        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center"
+        style={{
+          backgroundColor: backgroundColor,
+          border: `1.5px solid ${borderColor}`,
+          borderRadius: '6px'
+        }}
+        role="img"
+        aria-label="Needs review - has updates"
+      >
+        {/* Exclamation mark */}
+        <svg
+          className="h-[18px] w-[18px]"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          {/* Exclamation line */}
+          <line
+            x1="12"
+            y1="5"
+            x2="12"
+            y2="12.5"
+            stroke={iconColor}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+          {/* Exclamation dot */}
+          <circle
+            cx="12"
+            cy="18"
+            r="1.5"
+            fill={iconColor}
+          />
+        </svg>
+      </div>
+    )
+  }
+
+  // Not started: Grey dashed square (minimal, waiting)
   return (
     <div
-      className={`h-[22px] w-[22px] flex-none rounded-full border-dashed ${
+      className={`h-[22px] w-[22px] flex-none border-dashed ${
         isSelected ? 'border-background dark:border-white' : 'border-muted-foreground'
       }`}
-      style={{ borderWidth: '1.5px' }}
+      style={{ borderWidth: '1.5px', borderRadius: '6px' }}
+      role="img"
+      aria-label="Not started"
     />
   )
 }
@@ -227,6 +293,9 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
             </button>
             <button className="block text-sm text-primary hover:underline" disabled>
               Site visits
+            </button>
+            <button className="block text-sm text-primary hover:underline" disabled>
+              Messages and requests
             </button>
             <button className="block text-sm text-primary hover:underline" disabled>
               Notes
