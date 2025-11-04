@@ -51,6 +51,8 @@ export default async function ApplicationDetailsPage({ params }: ApplicationDeta
         daysToDecision={12}
         documentsCount={documentsCount}
         constraintsCount={constraintsCount}
+        constraints={application.constraints}
+        propertyBoundary={application.propertyBoundary}
       >
         <ApplicationSections application={application} />
       </ApplicationDetailLayout>

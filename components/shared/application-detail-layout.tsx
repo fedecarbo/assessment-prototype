@@ -2,7 +2,22 @@
 
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { ApplicationStatusBadges } from './application-status-badges'
+import type { Constraint } from '@/lib/mock-data/schemas'
+
+// Dynamic import of MapView to prevent SSR issues with Leaflet
+const MapView = dynamic(
+  () => import('./map-view').then(mod => ({ default: mod.MapView })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full bg-muted rounded flex items-center justify-center border border-border">
+        <p className="text-sm text-muted-foreground">Loading map...</p>
+      </div>
+    )
+  }
+)
 
 interface ApplicationDetailLayoutProps {
   applicationId: string
@@ -12,6 +27,11 @@ interface ApplicationDetailLayoutProps {
   daysToDecision: number
   documentsCount?: number
   constraintsCount?: number
+  constraints?: Constraint[]
+  propertyBoundary?: {
+    type: 'Polygon'
+    coordinates: [number, number][][]
+  }
   children: ReactNode
 }
 
@@ -45,6 +65,8 @@ export function ApplicationDetailLayout({
   daysToDecision,
   documentsCount,
   constraintsCount,
+  constraints = [],
+  propertyBoundary,
   children,
 }: ApplicationDetailLayoutProps) {
   const [isHeroCollapsed, setIsHeroCollapsed] = useState(false)
@@ -168,27 +190,14 @@ export function ApplicationDetailLayout({
               </div>
             </div>
 
-            {/* Right: Map Placeholder */}
-            <div className="w-[550px]">
-              <div className="aspect-square w-full border-2 border-dashed border-border bg-muted flex items-center justify-center">
-                <div className="text-center">
-                  <svg
-                    className="mx-auto h-12 w-12 text-muted-foreground"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                    />
-                  </svg>
-                  <p className="mt-2 text-sm text-muted-foreground">Map placeholder</p>
-                </div>
-              </div>
+            {/* Right: Interactive Map */}
+            <div className="w-[550px] h-[550px] border border-border rounded overflow-hidden">
+              <MapView
+                visibleConstraints={new Set()}
+                constraints={[]}
+                propertyBoundary={propertyBoundary}
+                center={[51.5058, -0.0981]}
+              />
             </div>
           </div>
         </div>

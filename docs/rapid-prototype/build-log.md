@@ -286,11 +286,45 @@ Quick reference for what's been built and key architectural decisions.
   - Hover state: Subtle muted background (hover:bg-muted/50)
   - Selected state: Primary blue background with white text
   - Border bottom separator between tasks
-- **Status icon states** (left-aligned, 16px size):
-  - Completed: Filled primary circle with white checkmark
-  - In progress: Light blue filled circle with primary border
-  - Not started: Dashed border circle (grey or white when selected)
-  - No status: Plus icon for action items (used in management actions)
+- **Status icon states** (left-aligned, 22px container size):
+  - **Completed**: Blue filled square with white checkmark (white fill with blue checkmark when selected)
+    - Color: GDS blue #1d70b8
+    - Icon size: 14px checkmark
+    - Shape: Filled square (6px border radius) conveys completion and authority
+    - ARIA: "Completed"
+  - **In progress**: Light blue square with dark navy arrow (active work, engaged state)
+    - Background: Light blue #b3d7f2 (dark blue #1d70b8 when selected)
+    - Border: Light blue #b3d7f2 (white when selected)
+    - Icon size: 14px arrow pointing right (#0c2d4a dark navy, white when selected)
+    - Visual meaning: Active work, engaged state (blue = active)
+    - ARIA: "In progress"
+  - **Needs review**: Light yellow square with dark yellow exclamation mark
+    - Background: Light yellow #fff7bf (dark orange #f47738 when selected)
+    - Border: Light yellow #fff7bf (white when selected)
+    - Icon: 18px exclamation mark (#594d00 dark yellow, white when selected)
+      - Stroke width: 3px for good visibility
+      - Dot radius: 1.5px (matches line width for consistent stroke weight)
+      - Gap between line and dot: ~2.5px spacing (line ends at y=12.5, dot at y=18)
+      - Vertically centered in viewBox (y: 5-19.5)
+    - Visual meaning: Updates/comments to review, requires attention
+    - ARIA: "Needs review - has updates"
+  - **Locked**: Light grey filled square with dark grey filled padlock icon (non-clickable)
+    - Background: Light grey solid fill #E5E7EB
+    - Border: Solid border #E5E7EB (matches background for unified appearance)
+    - Icon: Custom SVG filled padlock (16px, #6B7280 dark grey)
+      - Shackle: Outlined arc (stroke, no fill)
+      - Body: Filled rounded rectangle
+    - Visual meaning: Minimal, disabled/unavailable appearance (dependencies not met)
+    - Solid light grey fill with darker lock creates clear disabled state
+    - ARIA: "Locked - cannot start yet"
+  - **Not started**: Grey dashed border circle (white when selected)
+    - Color: Grey #505a5f border
+    - Dashed style: Minimal visual weight, waiting state
+    - Visual meaning: Lowest priority, available to start
+    - ARIA: "Not started"
+  - **No status**: Plus icon for action items (used in management actions)
+    - Color: Primary blue (default) or white (selected)
+    - ARIA: "Action item"
 - **Task text:**
   - Selected: White text (text-background dark:text-white), primary/blue background
   - Default: Primary blue text (text-primary dark:text-foreground)
@@ -741,5 +775,100 @@ Quick reference for what's been built and key architectural decisions.
 - Example boundaries for conservation-area, listed-building, TPO, flood-risk
 - Latitude/longitude bounds format: [[lat1, lng1], [lat2, lng2]]
 - Displayed as semi-transparent rectangles with colored borders
+
+---
+
+## Property Boundary Integration (2025-11-04)
+
+**Component:** ApplicationDetailLayout - Interactive map with property boundary display
+**Feature:** Property boundary visualization with red dashed outline on application detail hero
+
+### Property Boundary Schema
+
+**PlanningApplication Extension:**
+- Added `propertyBoundary` field to PlanningApplication interface
+- Type: `{ type: 'Polygon', coordinates: [number, number][][] }` (GeoJSON format)
+- Optional field supporting polygon geometry for property boundaries
+- Coordinates format: [longitude, latitude] per GeoJSON standard
+
+### Property Geometries Data
+
+**File:** [property-geometries.ts](lib/mock-data/property-geometries.ts)
+- Real property boundary with verified GeoJSON coordinates
+- **bermondseyStreetProperty:** Property near Waterloo, London
+  - **Location:** South Bank area, near Waterloo Station
+  - **Format:** 6-point polygon in GeoJSON FeatureCollection format
+  - **Coordinates:** Real verified property boundary
+  - **Center:** Approximately 51.506, -0.098
+  - Accurate property extent polygon with proper closure
+
+### MapView Component Enhancements
+
+**New Props:**
+- `propertyBoundary?: { type: 'Polygon', coordinates: [number, number][][] }` - Property boundary geometry
+- `showPropertyBoundary?: boolean` - Toggle boundary visibility (default: true)
+- `center?: [number, number]` - Custom map center coordinates
+
+**Property Boundary Rendering:**
+- Red dashed outline: #E53E3E color, 5px dash pattern (5px dash, 5px gap)
+- 3px stroke weight for clear visibility
+- 10% fill opacity for subtle interior highlighting
+- Interactive popup on click showing "Property Boundary" label
+- Renders above constraint layers for prominence
+
+**Visual Styling:**
+- Distinct from planning constraints (solid fills with colors)
+- Red color signals property ownership/boundary
+- Dashed pattern differentiates from constraint boundaries
+- Light transparent fill maintains readability of underlying map
+
+### ApplicationDetailLayout Integration
+
+**Map Display:**
+- Replaced placeholder (dashed border with icon) with interactive MapView
+- 550px × 550px container with border and rounded corners
+- Dynamic import with SSR disabled (prevents Leaflet build errors)
+- Loading state with "Loading map..." message during initialization
+
+**Data Flow:**
+- Page component passes `propertyBoundary` to layout
+- **Constraints hidden** on application detail map (empty Set, empty array)
+- Property boundary displayed exclusively (clean, focused view)
+- Center coordinates: [51.5058, -0.0981] (centered on property near Waterloo)
+
+**User Experience:**
+- Interactive map in hero section (pan, zoom, click popups)
+- **Property boundary only** - Red dashed outline with no constraint overlays
+- Clean map view focusing solely on property extent
+- Provides clear spatial context for property location without visual clutter
+
+### Mock Data Updates
+
+**First Application (PA-2025-001):**
+- Added `propertyBoundary` field with verified GeoJSON coordinates
+- **Property location:** South Bank area near Waterloo, London
+- 6-point polygon defining accurate property extent
+- Real property boundary coordinates in standard GeoJSON format
+
+### Files Modified
+
+1. **lib/mock-data/property-geometries.ts** (NEW) - Property boundary coordinates
+2. **lib/mock-data/schemas/index.ts** - Added propertyBoundary to PlanningApplication
+3. **lib/mock-data/applications.ts** - Added boundary to first mock application
+4. **components/shared/map-view.tsx** - Property boundary rendering support
+5. **components/shared/application-detail-layout.tsx** - MapView integration
+6. **app/application/[id]/page.tsx** - Pass constraints and boundary to layout
+
+### Technical Details
+
+**Coordinate System:**
+- GeoJSON format: [longitude, latitude]
+- Leaflet format: [latitude, longitude]
+- MapView handles coordinate conversion automatically
+
+**Performance:**
+- Dynamic import prevents Leaflet from blocking SSR
+- Map initializes client-side only
+- Loading state provides feedback during initialization
 
 ---

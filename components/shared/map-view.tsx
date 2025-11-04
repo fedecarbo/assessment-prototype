@@ -17,19 +17,38 @@ L.Icon.Default.mergeOptions({
 interface MapViewProps {
   visibleConstraints: Set<string>
   constraints: Constraint[]
+  propertyBoundary?: {
+    type: 'Polygon'
+    coordinates: [number, number][][]
+  }
+  showPropertyBoundary?: boolean
+  center?: [number, number]
 }
 
-export function MapView({ visibleConstraints, constraints }: MapViewProps) {
-  // Center on Bermondsey Street, London (real coordinates)
-  const center: [number, number] = [51.501, -0.084]
+export function MapView({
+  visibleConstraints,
+  constraints,
+  propertyBoundary,
+  showPropertyBoundary = true,
+  center: customCenter
+}: MapViewProps) {
+  // Center on custom center, or default to Bermondsey Street, London
+  const center: [number, number] = customCenter || [51.501, -0.084]
 
   // Filter visible constraints
   const visibleConstraintsList = constraints.filter(c => visibleConstraints.has(c.id))
 
+  // Convert property boundary coordinates to Leaflet format if available
+  const propertyBoundaryPositions = propertyBoundary && showPropertyBoundary
+    ? propertyBoundary.coordinates[0]?.map(
+        ([lng, lat]) => [lat, lng] as [number, number]
+      ) ?? []
+    : []
+
   return (
     <MapContainer
       center={center}
-      zoom={16}
+      zoom={18}
       style={{ height: '100%', width: '100%' }}
       className="rounded"
     >
@@ -123,6 +142,26 @@ export function MapView({ visibleConstraints, constraints }: MapViewProps) {
 
         return null
       })}
+
+      {/* Property Boundary - Red dashed outline */}
+      {propertyBoundaryPositions.length > 0 && (
+        <Polygon
+          positions={propertyBoundaryPositions}
+          pathOptions={{
+            color: '#E53E3E',        // Red outline
+            fillColor: '#E53E3E',
+            fillOpacity: 0.1,        // Light transparent fill
+            weight: 3,               // 3px stroke
+            dashArray: '5, 5'        // Dashed line pattern
+          }}
+        >
+          <Popup>
+            <div>
+              <strong>Property Boundary</strong>
+            </div>
+          </Popup>
+        </Polygon>
+      )}
     </MapContainer>
   )
 }

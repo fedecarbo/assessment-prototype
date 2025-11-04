@@ -4,6 +4,7 @@ import {
   stMaryMagdalenChurch,
   bermondseyArticle4Direction,
 } from './constraint-geometries';
+import { bermondseyStreetProperty } from './property-geometries';
 
 export const mockApplications: PlanningApplication[] = [
   {
@@ -108,6 +109,10 @@ export const mockApplications: PlanningApplication[] = [
         reference: '203',
       },
     ],
+    propertyBoundary: {
+      type: 'Polygon',
+      coordinates: bermondseyStreetProperty
+    },
     documents: [
       // Drawings
       {

@@ -203,6 +203,11 @@ export interface PlanningApplication {
   paymentAmount?: number;
   sessionId?: string;
   locationUrl?: string;
+  // Property boundary geometry for map display
+  propertyBoundary?: {
+    type: 'Polygon';
+    coordinates: [number, number][][]; // GeoJSON polygon format
+  };
   // Outcome tracking (only for closed applications)
   outcome?: 'likely-supported' | 'likely-supported-with-changes' | 'unlikely-supported';
   outcomeDate?: string;
