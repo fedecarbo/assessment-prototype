@@ -165,6 +165,25 @@ export interface ConsulteeConsultation {
   responses: ConsulteeResponse[];
 }
 
+export type ApplicantRequestStatus = 'pending' | 'responded' | 'overdue';
+
+export interface ApplicantRequest {
+  id: string;
+  subject: string;
+  description: string;
+  requestType: 'information' | 'document' | 'general'; // Flexible type, not enforced in UI
+  status: ApplicantRequestStatus;
+  sentDate: string;
+  dueDate?: string;
+  sentBy: string; // Officer name who sent the request
+  viewedByOfficer?: boolean; // Track if response has been viewed
+  response?: {
+    receivedDate: string;
+    message: string;
+    attachments?: string[]; // File names for mock data
+  };
+}
+
 export interface PlanningApplication {
   id: string;
   reference: string;
@@ -188,6 +207,7 @@ export interface PlanningApplication {
   constraints?: Constraint[];
   consulteeConsultation?: ConsulteeConsultation;
   neighbourConsultation?: NeighbourConsultation;
+  applicantRequests?: ApplicantRequest[];
   // Stage workflow with tasks
   validation: ValidationStage;
   consultation: ConsultationStage;

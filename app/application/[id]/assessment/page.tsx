@@ -31,11 +31,12 @@ export default function AssessmentPage() {
         address={application.address}
         reference={application.reference}
         description={application.description}
+        applicantRequests={application.applicantRequests}
       >
         {version === 'future' ? (
           <FutureAssessmentContent application={application} />
         ) : (
-          <AssessmentContent />
+          <AssessmentContent application={application} />
         )}
       </AssessmentLayout>
       <VersionToggle />

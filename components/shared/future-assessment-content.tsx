@@ -1,28 +1,17 @@
 'use client'
 
 import { useFutureAssessment } from './future-assessment-context'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { type TaskStatus } from './assessment-context'
 import { ProposalDescriptionTask } from './proposal-description-task'
 import { SiteMapTask } from './site-map-task'
+import { ApplicantRequestsContent } from './applicant-requests-content'
 import type { Application } from '@/lib/mock-data/schemas'
-
-function getStatusBadge(status: TaskStatus) {
-  switch (status) {
-    case 'completed':
-      return <Badge variant="green">Completed</Badge>
-    case 'in-progress':
-      return <Badge variant="blue">In progress</Badge>
-    case 'not-started':
-      return <Badge variant="gray">Not started</Badge>
-  }
-}
+import { getStatusBadge } from '@/lib/task-utils'
 
 interface FutureAssessmentContentProps {
   application: Application
@@ -41,6 +30,15 @@ export function FutureAssessmentContent({ application }: FutureAssessmentContent
     setShowSuccessMessage(false)
     setShowDraftMessage(false)
   }, [selectedTaskId])
+
+  // Special handling for Applicant Requests (task ID 999)
+  if (selectedTaskId === 999) {
+    return (
+      <div className="py-8">
+        <ApplicantRequestsContent application={application} />
+      </div>
+    )
+  }
 
   if (!currentTask) return null
 
@@ -101,7 +99,7 @@ export function FutureAssessmentContent({ application }: FutureAssessmentContent
       )}
 
       {/* Content constrained to 723px for readability */}
-      <div style={{ maxWidth: '723px' }}>
+      <div className="max-w-readable">
         {/* Status Badge */}
         <div className="flex items-center gap-3">
           {getStatusBadge(currentTask.status)}
@@ -129,7 +127,7 @@ export function FutureAssessmentContent({ application }: FutureAssessmentContent
         </div>
       ) : selectedTaskId === 2 ? (
         // Proposal description - Constrained to 723px for readability
-        <div className="mt-6" style={{ maxWidth: '723px' }}>
+        <div className="mt-6 max-w-readable">
           <ProposalDescriptionTask originalDescription={application.description} />
         </div>
       ) : (

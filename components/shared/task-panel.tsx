@@ -25,6 +25,8 @@ interface TaskPanelProps {
   selectedTaskId: number
   onTaskSelect: (taskId: number) => void
   applicationId?: string
+  applicantRequestsCount?: number
+  hasNewResponses?: boolean
 }
 
 // Type for items that can appear in task panel (tasks with status or action items without)
@@ -234,9 +236,11 @@ interface BaseTaskPanelProps extends TaskPanelProps {
   groups?: Array<{ title: string; tasks: TaskPanelItem[] }>
   showNonLinearActions?: boolean
   previewButtonPlacement?: 'top' | 'below-group-title'
+  applicantRequestsCount?: number
+  hasNewResponses?: boolean
 }
 
-const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups, showNonLinearActions = false, previewButtonPlacement = 'top' }: BaseTaskPanelProps) => {
+const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups, showNonLinearActions = false, previewButtonPlacement = 'top', applicantRequestsCount = 0, hasNewResponses = false }: BaseTaskPanelProps) => {
   const renderTaskItem = (task: TaskPanelItem) => {
     const isSelected = selectedTaskId === task.id
     const isLocked = task.status === 'locked'
@@ -297,8 +301,18 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Site visits (2)</Link>
             </div>
-            <div className="text-sm">
-              <Link href="#" className="text-primary hover:underline">Messages and requests</Link>
+            <div className="flex items-center justify-between text-sm">
+              <Link
+                href="?task=999"
+                onClick={(e) => {
+                  e.preventDefault()
+                  onTaskSelect(999)
+                }}
+                className="text-primary hover:underline"
+              >
+                Applicant requests {applicantRequestsCount > 0 && `(${applicantRequestsCount})`}
+              </Link>
+              {hasNewResponses && <Badge variant="light-blue" size="small">New</Badge>}
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Notes (5)</Link>

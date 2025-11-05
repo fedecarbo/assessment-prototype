@@ -5,6 +5,7 @@ import {
   bermondseyArticle4Direction,
 } from './constraint-geometries';
 import { bermondseyStreetProperty } from './property-geometries';
+import { mockApplicantRequests } from './applicant-requests';
 
 export const mockApplications: PlanningApplication[] = [
   {
@@ -409,6 +410,7 @@ export const mockApplications: PlanningApplication[] = [
         },
       ],
     },
+    applicantRequests: mockApplicantRequests,
     // Stage workflow with tasks - validated, both consultation and assessment active
     validation: {
       status: 'validated',

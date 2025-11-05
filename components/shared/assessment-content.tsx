@@ -1,26 +1,21 @@
 'use client'
 
-import { useAssessment, type TaskStatus } from './assessment-context'
-import { Badge } from '@/components/ui/badge'
+import { useAssessment } from './assessment-context'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
-import { Check, ChevronLeft } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { getStatusBadge } from '@/lib/task-utils'
+import { ApplicantRequestsContent } from './applicant-requests-content'
+import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
-function getStatusBadge(status: TaskStatus) {
-  switch (status) {
-    case 'completed':
-      return <Badge variant="green">Completed</Badge>
-    case 'in-progress':
-      return <Badge variant="light-blue">In progress</Badge>
-    case 'not-started':
-      return <Badge variant="gray">Not started</Badge>
-  }
+interface AssessmentContentProps {
+  application: PlanningApplication
 }
 
-export function AssessmentContent() {
+export function AssessmentContent({ application }: AssessmentContentProps) {
   const { selectedTaskId, taskMap, updateTaskStatus, contentScrollRef, setSelectedTaskId } = useAssessment()
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const [showDraftMessage, setShowDraftMessage] = useState(false)
@@ -34,6 +29,15 @@ export function AssessmentContent() {
     setShowSuccessMessage(false)
     setShowDraftMessage(false)
   }, [selectedTaskId])
+
+  // Special handling for Applicant Requests (task ID 999)
+  if (selectedTaskId === 999) {
+    return (
+      <div className="py-8">
+        <ApplicantRequestsContent application={application} />
+      </div>
+    )
+  }
 
   if (!currentTask) return null
 
@@ -94,7 +98,7 @@ export function AssessmentContent() {
       )}
 
       {/* Content constrained to 723px for readability */}
-      <div style={{ maxWidth: '723px' }}>
+      <div className="max-w-readable">
         {/* Status Badge */}
         <div className="flex items-center gap-3">
           {getStatusBadge(currentTask.status || 'not-started')}

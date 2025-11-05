@@ -9,12 +9,14 @@ import { TaskPanel } from './task-panel'
 import { AssessmentProvider, useAssessment } from './assessment-context'
 import { FutureAssessmentProvider, useFutureAssessment } from './future-assessment-context'
 import { getCurrentVersion } from './version-toggle'
+import type { ApplicantRequest } from '@/lib/mock-data/schemas'
 
 interface AssessmentLayoutProps {
   applicationId: string
   address: string
   reference: string
   description?: string
+  applicantRequests?: ApplicantRequest[]
   children: ReactNode
 }
 
@@ -23,6 +25,7 @@ function AssessmentLayoutContent({
   address,
   reference,
   description,
+  applicantRequests = [],
   children,
 }: AssessmentLayoutProps) {
   const [version, setVersion] = useState<'current' | 'future'>('current')
@@ -44,6 +47,10 @@ function AssessmentLayoutContent({
     { label: 'Check and assess' },
   ]
 
+  // Calculate applicant request counts
+  const pendingRequestsCount = applicantRequests.filter(req => req.status === 'pending').length
+  const hasNewResponses = applicantRequests.some(req => req.response && !req.viewedByOfficer)
+
   return (
     <div className="flex h-screen flex-col">
       {/* Fixed Headers at Top */}
@@ -61,7 +68,13 @@ function AssessmentLayoutContent({
       {/* Scrollable Content Area - Two column layout */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Task Panel - Fixed 338px + 32px padding = 370px total */}
-        <TaskPanel selectedTaskId={selectedTaskId} onTaskSelect={setSelectedTaskId} applicationId={applicationId} />
+        <TaskPanel
+          selectedTaskId={selectedTaskId}
+          onTaskSelect={setSelectedTaskId}
+          applicationId={applicationId}
+          applicantRequestsCount={pendingRequestsCount}
+          hasNewResponses={hasNewResponses}
+        />
 
         {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}
         <main ref={contentScrollRef} className="flex flex-1 justify-center overflow-y-auto">
