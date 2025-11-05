@@ -19,6 +19,7 @@ import { useFutureAssessment } from './future-assessment-context'
 import { Check, Plus, CircleEllipsis, CircleDashed, CircleCheck, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { getCurrentVersion } from './version-toggle'
+import { Badge } from '@/components/ui/badge'
 
 interface TaskPanelProps {
   selectedTaskId: number
@@ -39,7 +40,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   if (!status) {
     return (
       <Plus
-        className={`h-[22px] w-[22px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`}
+        className={`h-[25px] w-[25px] flex-none ${isSelected ? 'text-background dark:text-white' : 'text-primary'}`}
         strokeWidth={2}
         role="img"
         aria-label="Action item"
@@ -55,7 +56,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
 
     return (
       <div
-        className="relative h-[22px] w-[22px] flex-none flex items-center justify-center"
+        className="relative h-[25px] w-[25px] flex-none flex items-center justify-center"
         style={{
           borderWidth: '1.5px',
           borderStyle: 'solid',
@@ -68,8 +69,8 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
       >
         {/* Custom CSS-based filled padlock icon */}
         <svg
-          width="16"
-          height="16"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +101,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   if (status === 'completed') {
     return (
       <div
-        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center"
+        className="relative flex h-[25px] w-[25px] flex-none items-center justify-center"
         style={{
           backgroundColor: isSelected ? '#ffffff' : '#1d70b8',
           border: isSelected ? '1.5px solid #ffffff' : '1.5px solid #1d70b8',
@@ -110,7 +111,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
         aria-label="Completed"
       >
         <svg
-          className="h-[14px] w-[14px]"
+          className="h-[16px] w-[16px]"
           viewBox="0 0 24 24"
           fill="none"
           stroke={isSelected ? '#1d70b8' : '#ffffff'}
@@ -133,7 +134,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
 
     return (
       <div
-        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center"
+        className="relative flex h-[25px] w-[25px] flex-none items-center justify-center"
         style={{
           borderWidth: '1.5px',
           borderStyle: 'solid',
@@ -146,8 +147,8 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
       >
         {/* Arrow pointing right */}
         <svg
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +174,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
 
     return (
       <div
-        className="relative flex h-[22px] w-[22px] flex-none items-center justify-center"
+        className="relative flex h-[25px] w-[25px] flex-none items-center justify-center"
         style={{
           backgroundColor: backgroundColor,
           border: `1.5px solid ${borderColor}`,
@@ -184,7 +185,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
       >
         {/* Exclamation mark */}
         <svg
-          className="h-[18px] w-[18px]"
+          className="h-[20px] w-[20px]"
           viewBox="0 0 24 24"
           fill="none"
           aria-hidden="true"
@@ -214,7 +215,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
   // Not started: Grey dashed square (minimal, waiting)
   return (
     <div
-      className={`h-[22px] w-[22px] flex-none border-dashed ${
+      className={`h-[25px] w-[25px] flex-none border-dashed ${
         isSelected ? 'border-background dark:border-white' : 'border-muted-foreground'
       }`}
       style={{ borderWidth: '1.5px', borderRadius: '6px' }}
@@ -282,24 +283,26 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
       {showNonLinearActions && (
         <>
           <div className="space-y-[0.625rem]">
-            <button className="block text-sm text-primary hover:underline" disabled>
-              Activity
-            </button>
-            <button className="block text-sm text-primary hover:underline" disabled>
-              Fees and services
-            </button>
-            <button className="block text-sm text-primary hover:underline" disabled>
-              Meetings
-            </button>
-            <button className="block text-sm text-primary hover:underline" disabled>
-              Site visits
-            </button>
-            <button className="block text-sm text-primary hover:underline" disabled>
-              Messages and requests
-            </button>
-            <button className="block text-sm text-primary hover:underline" disabled>
-              Notes
-            </button>
+            <div className="flex items-center justify-between text-sm">
+              <Link href="#" className="text-primary hover:underline">Activity (3)</Link>
+              <Badge variant="light-blue" size="small">New</Badge>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <Link href="#" className="text-primary hover:underline">Fees and services (1)</Link>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <Link href="#" className="text-primary hover:underline">Meetings (1)</Link>
+              <Badge variant="light-blue" size="small">New</Badge>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <Link href="#" className="text-primary hover:underline">Site visits (2)</Link>
+            </div>
+            <div className="text-sm">
+              <Link href="#" className="text-primary hover:underline">Messages and requests</Link>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <Link href="#" className="text-primary hover:underline">Notes (5)</Link>
+            </div>
           </div>
 
           {/* Divider separating non-linear actions from linear tasks */}
@@ -356,7 +359,7 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
 }
 
 // ============================================================================
-// CURRENT VERSION (Stable/Production) - Preview button at top, grouped tasks
+// CURRENT VERSION (Stable/Production) - Preview button at top, grouped tasks, non-linear actions
 // ============================================================================
 
 const CurrentTaskPanel = (props: TaskPanelProps) => {
@@ -366,7 +369,7 @@ const CurrentTaskPanel = (props: TaskPanelProps) => {
       {...props}
       groups={taskGroups}
       tasks={[]}
-      showNonLinearActions={false}
+      showNonLinearActions={true}
       previewButtonPlacement="top"
     />
   )

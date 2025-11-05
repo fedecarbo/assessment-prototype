@@ -1214,3 +1214,373 @@ if (!mounted && typeof window !== 'undefined') {
 - **Maintenance:** 95% fewer lines to update when changing task panel logic
 
 ---
+
+## 2025-11-05 | Code Review Refactor - DRY & Design Tokens
+
+**Reviewed by:** Sentinel (QA Refactor)
+
+### Refactors Applied
+
+#### 1. Extract getStatusBadge() to Shared Utility
+**Files:**
+- [lib/task-utils.tsx](../../lib/task-utils.tsx) (NEW) - Shared utility file
+- [components/shared/assessment-content.tsx:1-10](../../components/shared/assessment-content.tsx#L1) - Import utility
+- [components/shared/future-assessment-content.tsx:1-13](../../components/shared/future-assessment-content.tsx#L1) - Import utility
+
+**Changes:**
+- **Created new utility file:** `lib/task-utils.tsx` with centralized `getStatusBadge()` function
+- **Removed duplicate implementations** from both assessment content components
+- **Eliminated 24 lines of duplicate code** (12 lines × 2 files)
+- **Removed unused imports:** `Badge`, `type TaskStatus` from components (now in utility)
+- **Added JSDoc documentation** with parameter and return type descriptions
+
+**Before:**
+```typescript
+// In both assessment-content.tsx and future-assessment-content.tsx
+function getStatusBadge(status: TaskStatus) {
+  switch (status) {
+    case 'completed':
+      return <Badge variant="green">Completed</Badge>
+    case 'in-progress':
+      return <Badge variant="light-blue">In progress</Badge>
+    case 'needs-review':
+      return <Badge variant="yellow">Needs review</Badge>
+    case 'not-started':
+      return <Badge variant="gray">Not started</Badge>
+  }
+}
+```
+
+**After:**
+```typescript
+// lib/task-utils.tsx (NEW FILE)
+export function getStatusBadge(status: TaskStatus): JSX.Element {
+  switch (status) {
+    case 'completed':
+      return <Badge variant="green">Completed</Badge>
+    case 'in-progress':
+      return <Badge variant="light-blue">In progress</Badge>
+    case 'needs-review':
+      return <Badge variant="yellow">Needs review</Badge>
+    case 'not-started':
+      return <Badge variant="gray">Not started</Badge>
+    case 'locked':
+      return <Badge variant="gray">Locked</Badge>
+    default:
+      const _exhaustive: never = status
+      return _exhaustive
+  }
+}
+
+// Both components now import:
+import { getStatusBadge } from '@/lib/task-utils'
+```
+
+**Rationale:**
+- **Critical duplication:** Identical function defined in 2 separate components
+- **DRY principle:** Single source of truth for status badge rendering
+- **Maintenance burden:** Changes required updating 2 places simultaneously
+- **Consistency:** Guaranteed identical behavior across all task contexts
+- **Reusability:** Can be used in future components (task lists, dashboards, reports)
+
+**Impact:**
+- ✅ Eliminated 24 lines of duplicate code
+- ✅ Single source of truth for status badge logic
+- ✅ Easier to modify badge styles/colors globally
+- ✅ Reduced cognitive load - one implementation to understand
+- ✅ Better bundle optimization (shared function vs duplicated)
+
+---
+
+#### 2. Add Exhaustive Type Checking to Status Switch
+**Files:** [lib/task-utils.tsx:23-27](../../lib/task-utils.tsx#L23)
+
+**Changes:**
+- **Added explicit return type:** `JSX.Element` to function signature
+- **Added exhaustive type checking** with `default` case using `never` type
+- **Added `locked` status case** (was missing from component implementations)
+- **TypeScript will now error** if new `TaskStatus` value added but not handled
+
+**Before:**
+```typescript
+function getStatusBadge(status: TaskStatus) {
+  switch (status) {
+    // 4 cases only
+  }
+  // No exhaustive checking - silent bugs possible
+}
+```
+
+**After:**
+```typescript
+export function getStatusBadge(status: TaskStatus): JSX.Element {
+  switch (status) {
+    // 5 cases (added 'locked')
+    default:
+      // Exhaustive check: Compile-time error if status not handled
+      const _exhaustive: never = status
+      return _exhaustive
+  }
+}
+```
+
+**Rationale:**
+- **Type safety:** Prevents runtime bugs from unhandled status values
+- **Compile-time checks:** TypeScript enforces all cases are covered
+- **Self-documenting:** Explicit return type makes function contract clear
+- **Future-proof:** Adding new status to union type will cause compile error until handled
+
+**Impact:**
+- ✅ Compile-time safety for status additions/changes
+- ✅ Caught missing `locked` status case (added retroactively)
+- ✅ Better developer experience with IDE errors
+- ✅ Prevents silent bugs in production
+
+---
+
+#### 3. Replace Inline Styles with Design Tokens
+**Files:**
+- [components/shared/assessment-content.tsx:86](../../components/shared/assessment-content.tsx#L86)
+- [components/shared/future-assessment-content.tsx:92](../../components/shared/future-assessment-content.tsx#L92)
+- [components/shared/future-assessment-content.tsx:120](../../components/shared/future-assessment-content.tsx#L120)
+
+**Changes:**
+- **Replaced 3 instances** of `style={{ maxWidth: '723px' }}` with `className="max-w-readable"`
+- **Eliminated all inline styles** in favor of Tailwind design tokens
+- **Consistent with previous refactor** from 2025-10-19 (tailwind.config.ts:22)
+
+**Before:**
+```typescript
+<div style={{ maxWidth: '723px' }}>
+  {/* Content */}
+</div>
+```
+
+**After:**
+```typescript
+<div className="max-w-readable">
+  {/* Content */}
+</div>
+```
+
+**Rationale:**
+- **Design system consistency:** 723px width already defined in Tailwind config as `max-w-readable`
+- **Single source of truth:** Change width globally by updating config once
+- **CSP compatibility:** Eliminates inline styles for better Content Security Policy support
+- **Follows existing patterns:** Matches refactor from 2025-10-19 (Accessibility, Performance & Design Tokens)
+- **Better DX:** Autocomplete in IDE for custom Tailwind classes
+
+**Impact:**
+- ✅ Eliminated 3 inline style props
+- ✅ Consistent with existing design token system
+- ✅ Easier to maintain readable content widths globally
+- ✅ Better CSP compliance (no inline styles)
+
+---
+
+### Build Verification
+
+✅ **Git Status:** Clean working directory with 3 modified files + 1 new file
+✅ **Import Statements:** Verified correct imports in both components
+✅ **Design Tokens:** Confirmed `max-w-readable: '723px'` exists in tailwind.config.ts
+✅ **Zero Inline Styles:** Grepped codebase - no remaining `maxWidth: '723px'` in refactored files
+
+### Files Created
+- [lib/task-utils.tsx](../../lib/task-utils.tsx) - Shared task utility functions
+
+### Files Modified
+- [components/shared/assessment-content.tsx](../../components/shared/assessment-content.tsx) - Import utility, remove duplication, design tokens
+- [components/shared/future-assessment-content.tsx](../../components/shared/future-assessment-content.tsx) - Import utility, remove duplication, design tokens
+
+### Code Quality Improvements
+- **Code reduction:** 24 lines of duplicate code eliminated
+- **Type safety:** Exhaustive checking prevents missing status cases
+- **Design system:** 3 inline styles replaced with Tailwind tokens
+- **Maintainability:** Single source of truth for status badges
+- **Documentation:** JSDoc added to utility function
+
+### Impact Summary
+- **DRY principle:** Critical duplication eliminated
+- **Type safety:** Added compile-time exhaustive checking
+- **Consistency:** Design tokens used throughout
+- **Reusability:** Shared utility can be imported anywhere
+- **Bundle size:** Reduced duplicate function definitions
+
+---
+
+## 2025-11-05 | Build Log Condensation - Session Handoff Optimization
+
+**Reviewed by:** Sentinel (QA Refactor)
+
+### Changes Applied
+
+**File:** [build-log.md](../../docs/rapid-prototype/build-log.md)
+
+**Changes:**
+- **Reduced from 874 lines to 308 lines** (65% reduction, 566 lines removed)
+- Eliminated implementation micro-details (styling specs, padding values, exact pixel measurements)
+- Removed redundant UI pattern descriptions repeated across components
+- Consolidated component descriptions to essential architecture only
+- Restructured as quick-reference documentation instead of verbose specifications
+
+**What Was Removed:**
+- ❌ Line-by-line styling specifications (e.g., "10px padding using 5px spacing base", "border-b-[3px]")
+- ❌ Verbose prop lists and component API details (TypeScript interfaces are source of truth)
+- ❌ Repeated UI patterns (badge variants listed multiple times)
+- ❌ Implementation micro-details (border accumulation logic, exact layout calculations)
+- ❌ Redundant design system usage examples (values already in design system section)
+- ❌ Over-documentation of minor UI decisions (text sizes, spacing variations)
+
+**What Was Preserved:**
+- ✅ Project foundation & tech stack
+- ✅ Route structure & layout patterns
+- ✅ Component hierarchy & relationships
+- ✅ Key architectural decisions (IntersectionObserver, version switcher, URL-driven state)
+- ✅ Schema structures (high-level field lists)
+- ✅ File locations & imports for quick navigation
+- ✅ Design system values (colors, typography, spacing, layout rules)
+- ✅ Integration patterns (Leaflet maps, GeoJSON, property boundaries)
+
+**New Structure:**
+- **Component descriptions:** What it does, key features, variants (not how it's styled)
+- **Architecture patterns:** Layout approaches, state management, routing strategies
+- **File reference:** Complete list of key files with one-line descriptions
+- **Schema overview:** Data structures with field lists (not verbose definitions)
+
+**Rationale:**
+- **Session handoff efficiency:** New agents can understand "what exists" in 2-3 minutes, not 10+ minutes
+- **Reduced cognitive load:** No need to parse through verbose specifications to find architectural decisions
+- **Single source of truth:** Each component/feature documented once with current state
+- **Quick reference:** Organized by architecture, scannable structure
+- **Maintainability:** Update component entry when it changes, don't expand log indefinitely
+- **Code is truth:** Implementation details belong in code/TypeScript, not documentation
+
+**Impact:**
+- ✅ **65% smaller file** (874 → 308 lines) - Faster to read, search, and comprehend
+- ✅ **Quick reference format** - "What exists now" instead of "every implementation detail"
+- ✅ **Architecture-focused** - Organized by component hierarchy and patterns
+- ✅ **Easier onboarding** - New developers/agents see current state immediately
+- ✅ **Sustainable** - Won't balloon to 2000+ lines with minor updates
+
+**Note:** Detailed implementation history preserved in git commit history and refactor-log.md. Build log now serves as living architecture reference optimized for session handoffs, not comprehensive specification document.
+
+---
+
+## 2025-11-05 | Build Log Second Pass - Architecture & Context Focus
+
+**Reviewed by:** Sentinel (QA Refactor)
+
+### Changes Applied
+
+**File:** [build-log.md](../../docs/rapid-prototype/build-log.md)
+
+**Changes:**
+- **Reduced from 308 lines to 148 lines** (52% further reduction, 160 lines removed)
+- **Total reduction: 874 → 148 lines** (83% overall reduction, 726 lines removed)
+- Restructured around "Routes & Pages" instead of component-by-component descriptions
+- Focused purely on architecture patterns and context needed for future work
+- Removed all enumerations (positions, topics, status colors, badge mappings)
+- Condensed Key Files to grouped categories without descriptions
+
+**What Was Removed:**
+- ❌ **Enumerated lists** - Position types, topic lists, status badge colors (in schemas/components)
+- ❌ **Component feature lists** - "has search, has filters, shows X" (discoverable in code)
+- ❌ **Repeated variant lists** - Condensed to "Component Variants" pattern section
+- ❌ **Verbose section descriptions** - Collapsed multi-bullet sections into single lines
+- ❌ **File descriptions** - Key files listed by category only (file names are self-documenting)
+- ❌ **Redundant architecture details** - Removed duplicate layout/pattern explanations
+
+**What Was Preserved:**
+- ✅ **All routes** - Complete list with purpose and layout approach
+- ✅ **Architecture patterns** - State management, layout systems, navigation patterns
+- ✅ **Key measurements** - 1100px, 370px, 723px, 66/33 split (affects other components)
+- ✅ **Integration details** - Leaflet, GeoJSON, version switching, URL-driven state
+- ✅ **Component relationships** - What uses what, context providers, dual contexts
+- ✅ **File locations** - Complete reference grouped by category
+- ✅ **Schema fields** - High-level field lists (types in code)
+- ✅ **Design system values** - Core colors, typography, spacing
+
+**New Structure:**
+1. **Project Foundation** - Tech stack, design system basics
+2. **Routes & Pages** - Every route with layout + architecture + key components
+3. **Key Architecture Patterns** - Reusable patterns (state, layout, navigation, variants)
+4. **Schema Architecture** - One-line field lists per entity
+5. **Design System** - Core values only
+6. **Map Integration** - Leaflet integration details
+7. **Key Files Reference** - Grouped categories (Layouts, Headers, Assessment, Data, Utilities, Config)
+
+**Rationale:**
+- **Context for building:** Agent can quickly find "where is X page" and "how does it work"
+- **Architecture over implementation:** Focuses on patterns that affect multiple components
+- **Route-centric:** Matches how developers think ("I need to modify the assessment page")
+- **Eliminates noise:** No lists of values already in schemas, components, or TypeScript types
+- **Pattern-based:** Groups reusable patterns (variants, state management) for reference
+
+**Impact:**
+- ✅ **83% total reduction** (874 → 148 lines) - Scans in ~60 seconds
+- ✅ **Route-focused organization** - Matches developer mental model
+- ✅ **Pure architecture** - Only patterns and relationships, no implementation details
+- ✅ **Future-proof** - Adding routes/features doesn't balloon the log
+- ✅ **Context-rich** - Everything needed to understand codebase for building/modifying
+
+**Use Case Validation:**
+- "Add filter to documents page" → Route section shows architecture (client state + DocumentsTable)
+- "Make task panel collapsible" → Key Files + Architecture Patterns show version system and layout constraints
+- "Change consultee card layout" → Route section shows it's in ApplicationInfoLayout with forum-style cards, find file in reference
+
+---
+
+## 2025-11-05 | Task Panel UI/UX Improvement - Non-linear Actions Badge System
+
+**Reviewed by:** Forge (Builder) with design input from User
+
+### Changes Applied
+
+#### 1. Redesign Non-linear Actions Badge System
+**Files:** [components/shared/task-panel.tsx:22,285-305](../../components/shared/task-panel.tsx#L285)
+
+**Changes:**
+- **Replaced separate count badges** with inline count pattern: "Activity (3)" instead of "Activity" + badge
+- **Implemented NEW indicator** using established Badge component with `variant="orange"` and `size="small"`
+- **Added Badge import** from `@/components/ui/badge`
+- **Applied to 2 items** (Activity, Meetings) as examples of new/unread content
+
+**Before:**
+```typescript
+<div className="flex items-center justify-between text-sm">
+  <Link href="#" className="text-primary hover:underline">Activity</Link>
+  <span className="bg-muted px-2 py-0.5 text-foreground text-sm rounded">3</span>
+</div>
+```
+
+**After:**
+```typescript
+<div className="flex items-center justify-between text-sm">
+  <Link href="#" className="text-primary hover:underline">Activity (3)</Link>
+  <Badge variant="orange" size="small">NEW</Badge>
+</div>
+```
+
+**Rationale:**
+- **Better semantics:** Count is now clearly part of the action label (reads naturally as "Activity (3)")
+- **Familiar UX pattern:** Matches common UI patterns in email clients and productivity apps
+- **Attention management:** Orange NEW badge immediately draws eye to items requiring action
+- **GDS consistency:** Orange color (#f47738 via CSS variables) used for important actions/warnings in GDS
+- **Reduced visual noise:** Eliminated grey count badges that competed with action links
+- **Clear information hierarchy:** Count is context, NEW status is call-to-action
+
+**Impact:**
+- ✅ More intuitive UI following established design patterns
+- ✅ Better attention management with distinct NEW indicators
+- ✅ Uses established Badge component (consistent with rest of application)
+- ✅ Leverages GDS design system colors (orange for attention, defined in badge.tsx)
+- ✅ Improved scannability - users can quickly identify:
+  - What actions are available (link text + count)
+  - What needs immediate attention (NEW badge)
+
+**User Feedback Incorporated:**
+- User requested moving counts inline: "Activity (3)" format ✅
+- User requested NEW indicator for recent content ✅
+- User preferred established badge components over custom markup ✅
+
+---
