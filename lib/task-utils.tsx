@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { Badge } from '@/components/ui/badge'
 import type { TaskStatus } from '@/components/shared/assessment-context'
 import type { ApplicantRequestStatus } from './mock-data/schemas'
@@ -7,9 +8,9 @@ import type { ApplicantRequestStatus } from './mock-data/schemas'
  * Uses exhaustive type checking to ensure all TaskStatus values are handled.
  *
  * @param status - The current task status
- * @returns JSX.Element - The corresponding Badge component
+ * @returns ReactElement - The corresponding Badge component
  */
-export function getStatusBadge(status: TaskStatus): JSX.Element {
+export function getStatusBadge(status: TaskStatus): ReactElement {
   switch (status) {
     case 'completed':
       return <Badge variant="green">Completed</Badge>
@@ -34,9 +35,9 @@ export function getStatusBadge(status: TaskStatus): JSX.Element {
  *
  * @param status - The current request status
  * @param dueDate - Optional due date in YYYY-MM-DD format
- * @returns JSX.Element - The corresponding Badge component
+ * @returns ReactElement - The corresponding Badge component
  */
-export function getRequestStatusBadge(status: ApplicantRequestStatus, dueDate?: string): JSX.Element {
+export function getRequestStatusBadge(status: ApplicantRequestStatus, dueDate?: string): ReactElement {
   // Check if pending request is overdue
   if (status === 'pending' && dueDate) {
     const today = new Date()
