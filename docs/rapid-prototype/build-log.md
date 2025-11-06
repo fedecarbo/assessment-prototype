@@ -266,3 +266,36 @@ Fixed secondary button styling to use proper neutral grey colors (not greenish t
 - Better visual hierarchy between primary and secondary actions
 
 ---
+
+## Task Panel Enhancement - Circular Count Badges
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Non-Linear Actions Badge Update
+
+Replaced "New" text badges with circular count badges showing the number of new items for each action.
+
+**Changes Made:**
+- **Activity:** Shows count "3" in blue circle
+- **Meetings:** Shows count "1" in blue circle
+- **Applicant requests:** Shows dynamic count based on `applicantRequestsCount` prop
+- Badge styling: 24px circle (h-6 w-6), blue background with white text, bold font
+- Dark mode support: Uses darker blue background (#1e4460) for better contrast
+
+**Visual Design:**
+- Light mode: GDS blue (#1d70b8) background
+- Dark mode: Darker blue (#1e4460) background
+- White text with bold weight for clarity
+- 24px diameter provides clear visibility without overwhelming the UI
+- Consistent with notification badge patterns
+
+**Files Modified:**
+- [components/shared/task-panel.tsx](components/shared/task-panel.tsx:289-328) - Updated non-linear actions badges
+
+**User Experience:**
+- Clear at-a-glance indication of new items requiring attention
+- Count badges more informative than generic "New" label
+- Maintains visual hierarchy while improving information density
+
+---
