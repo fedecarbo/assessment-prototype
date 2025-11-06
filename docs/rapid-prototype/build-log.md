@@ -145,6 +145,72 @@ Quick reference for architecture and context - what exists and where to find it.
 
 ---
 
+## Action Item Breadcrumb Integration
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Dynamic Breadcrumbs for Non-Linear Actions
+
+Added breadcrumb support for action items in the Task Panel, so when users navigate to non-linear actions (like "Applicant requests", "Activity", etc.), the breadcrumb trail reflects their location.
+
+**Implementation:**
+
+1. **Action Items Metadata** - Created [lib/action-items.ts](lib/action-items.ts)
+   - Centralized definition of all action items with IDs, labels, and hrefs
+   - Helper functions: `getActionItemById()`, `isActionItem()`
+   - Action items: Activity (998), Fees and services (997), Meetings (996), Site visits (995), Applicant requests (999), Notes (994)
+
+2. **Dynamic Breadcrumbs** - Updated [components/shared/assessment-layout.tsx](components/shared/assessment-layout.tsx)
+   - Breadcrumbs now check if selected task is an action item
+   - Automatically appends action label to breadcrumb trail
+   - Example: "Home > Application Details > Check and assess > Applicant requests"
+
+3. **Refactored Task Panel Actions** - Updated [components/shared/task-panel.tsx](components/shared/task-panel.tsx)
+   - Replaced hardcoded action links with `ACTION_ITEMS.map()`
+   - Maintains existing functionality (counts, badges, click handlers)
+   - Single source of truth for action item configuration
+
+**User Experience:**
+- Clicking "Applicant requests" now shows: `Home > Application Details > Check and assess > Applicant requests`
+- Same pattern applies to all action items (Activity, Meetings, Site visits, etc.)
+- Breadcrumbs remain consistent across both current and future task panel versions
+- Clear navigation context for non-linear workflow sections
+
+**Files Modified:**
+- [lib/action-items.ts](lib/action-items.ts) - NEW: Action items configuration
+- [components/shared/assessment-layout.tsx](components/shared/assessment-layout.tsx:13,54-59) - Import and breadcrumb logic
+- [components/shared/task-panel.tsx](components/shared/task-panel.tsx:23,291-318) - Use ACTION_ITEMS array
+
+**Badge Style Update:**
+- Changed "New" badge from `light-blue` variant to `green` variant (GDS blue #1d70b8 with white text)
+- Matches the completed task badge style for visual consistency
+- Updated in [components/shared/task-panel.tsx](components/shared/task-panel.tsx:315)
+
+**Task Status Icon Refinement:**
+- Reduced border radius on all task status icons from 6px to 4px for sharper, more refined appearance
+- Applied to all status variants: locked, completed, in-progress, needs-review, not-started
+- Updated in [components/shared/task-panel.tsx](components/shared/task-panel.tsx:67,111,145,184,224)
+
+**Badge Spacing Optimization:**
+- Refined badge padding for better text alignment and visual balance
+- **Default size**: 8px left/right, 2px top, 3px bottom
+- **Small size**: 8px left/right, 1px top/bottom
+- Provides more compact appearance while maintaining readability
+- Updated in [components/ui/badge.tsx](components/ui/badge.tsx:47-49)
+
+**Applicant Requests Layout Refinement:**
+- Aligned spacing with task pages for visual consistency across assessment workflow
+- Title to description: `mt-3` (12px) - matches task pattern
+- Description to separator: `mt-6` (24px) - matches task pattern
+- Separator to content: `mt-6` (24px) - matches task pattern
+- Button to table: 10px (`space-y-[10px]`) - compact spacing
+- **Table cell vertical padding: 20px total (`py-[10px]`)** - 10px top + 10px bottom per cell
+- **Button alignment: Left-aligned** instead of right-aligned for consistency with task actions
+- Updated in [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:28,40,43,65,67,91,106,109,112)
+
+---
+
 ## Key Files Reference
 
 **Layouts:**

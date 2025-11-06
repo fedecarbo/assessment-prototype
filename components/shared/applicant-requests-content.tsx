@@ -40,7 +40,7 @@ export function ApplicantRequestsContent({ application }: ApplicantRequestsConte
       <Separator className="mt-6" />
 
       {/* Content Area */}
-      <div className="mt-8">
+      <div className="mt-6">
         {requests.length === 0 ? (
           // Empty state
           <div className="max-w-readable">
@@ -62,9 +62,9 @@ export function ApplicantRequestsContent({ application }: ApplicantRequestsConte
           </div>
         ) : (
           // Requests list
-          <div className="space-y-4">
+          <div className="space-y-[10px]">
             {/* Action button */}
-            <div className="flex justify-end">
+            <div className="flex justify-start">
               <Button asChild>
                 <Link href={`/application/${application.id}/assessment/requests/new`}>
                   Create request
@@ -88,7 +88,7 @@ export function ApplicantRequestsContent({ application }: ApplicantRequestsConte
 
                   return (
                     <TableRow key={request.id} className="hover:bg-muted/50">
-                      <TableCell className="py-4 pl-0 pr-3">
+                      <TableCell className="py-[10px] pl-0 pr-3">
                         <div className="flex items-start gap-2">
                           <Link
                             href={`/application/${application.id}/assessment/requests/${request.id}`}
@@ -103,13 +103,13 @@ export function ApplicantRequestsContent({ application }: ApplicantRequestsConte
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="py-4 px-3 text-base">
+                      <TableCell className="py-[10px] px-3 text-base">
                         {formatDate(request.sentDate)}
                       </TableCell>
-                      <TableCell className="py-4 px-3 text-base">
+                      <TableCell className="py-[10px] px-3 text-base">
                         {request.dueDate ? formatDate(request.dueDate) : '—'}
                       </TableCell>
-                      <TableCell className="py-4 pl-3 pr-0">
+                      <TableCell className="py-[10px] pl-3 pr-0">
                         {getRequestStatusBadge(request.status, request.dueDate)}
                       </TableCell>
                     </TableRow>

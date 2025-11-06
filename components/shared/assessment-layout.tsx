@@ -10,6 +10,7 @@ import { AssessmentProvider, useAssessment } from './assessment-context'
 import { FutureAssessmentProvider, useFutureAssessment } from './future-assessment-context'
 import { getCurrentVersion } from './version-toggle'
 import type { ApplicantRequest } from '@/lib/mock-data/schemas'
+import { getActionItemById, isActionItem } from '@/lib/action-items'
 
 interface AssessmentLayoutProps {
   applicationId: string
@@ -41,11 +42,21 @@ function AssessmentLayoutContent({
   const activeContext = version === 'future' ? futureContext : currentContext
   const { selectedTaskId, setSelectedTaskId } = activeContext!
   const contentScrollRef = version === 'future' ? futureContext!.contentScrollRef : currentContext!.contentScrollRef
+
+  // Build breadcrumb items dynamically based on selected task
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Application Details', href: `/application/${applicationId}` },
     { label: 'Check and assess' },
   ]
+
+  // If an action item is selected, add it to breadcrumbs
+  if (isActionItem(selectedTaskId)) {
+    const actionItem = getActionItemById(selectedTaskId)
+    if (actionItem) {
+      breadcrumbItems.push({ label: actionItem.label })
+    }
+  }
 
   // Calculate applicant request counts
   const pendingRequestsCount = applicantRequests.filter(req => req.status === 'pending').length

@@ -27,8 +27,8 @@ const badgeVariants = cva(
         muted: "bg-muted text-foreground",
       },
       size: {
-        default: "px-3 py-1 text-base",
-        small: "px-2 py-0.5 text-sm",
+        default: "text-base",
+        small: "text-sm",
       },
     },
     defaultVariants: {
@@ -43,8 +43,17 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, size, ...props }: BadgeProps) {
+  // Custom padding based on size
+  const paddingStyle = size === 'small'
+    ? { paddingLeft: '8px', paddingRight: '8px', paddingTop: '1px', paddingBottom: '1px' }
+    : { paddingLeft: '8px', paddingRight: '8px', paddingTop: '2px', paddingBottom: '3px' }
+
   return (
-    <div className={cn(badgeVariants({ variant, size }), className)} {...props} />
+    <div
+      className={cn(badgeVariants({ variant, size }), className)}
+      style={{ ...paddingStyle, ...(props.style || {}) }}
+      {...props}
+    />
   )
 }
 

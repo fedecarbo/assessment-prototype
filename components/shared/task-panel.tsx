@@ -20,6 +20,7 @@ import { Check, Plus, CircleEllipsis, CircleDashed, CircleCheck, Lock } from 'lu
 import Link from 'next/link'
 import { getCurrentVersion } from './version-toggle'
 import { Badge } from '@/components/ui/badge'
+import { ACTION_ITEMS } from '@/lib/action-items'
 
 interface TaskPanelProps {
   selectedTaskId: number
@@ -63,7 +64,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
           borderWidth: '1.5px',
           borderStyle: 'solid',
           borderColor: backgroundColor, // Border matches background for unified fill
-          borderRadius: '6px',
+          borderRadius: '4px',
           backgroundColor: backgroundColor
         }}
         role="img"
@@ -107,7 +108,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
         style={{
           backgroundColor: isSelected ? '#ffffff' : '#1d70b8',
           border: isSelected ? '1.5px solid #ffffff' : '1.5px solid #1d70b8',
-          borderRadius: '6px'
+          borderRadius: '4px'
         }}
         role="img"
         aria-label="Completed"
@@ -141,7 +142,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
           borderWidth: '1.5px',
           borderStyle: 'solid',
           borderColor: borderColor,
-          borderRadius: '6px',
+          borderRadius: '4px',
           backgroundColor: backgroundColor
         }}
         role="img"
@@ -180,7 +181,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
         style={{
           backgroundColor: backgroundColor,
           border: `1.5px solid ${borderColor}`,
-          borderRadius: '6px'
+          borderRadius: '4px'
         }}
         role="img"
         aria-label="Needs review - has updates"
@@ -220,7 +221,7 @@ function getStatusIcon(status: TaskStatus | undefined, isSelected: boolean, task
       className={`h-[25px] w-[25px] flex-none border-dashed ${
         isSelected ? 'border-background dark:border-white' : 'border-muted-foreground'
       }`}
-      style={{ borderWidth: '1.5px', borderRadius: '6px' }}
+      style={{ borderWidth: '1.5px', borderRadius: '4px' }}
       role="img"
       aria-label="Not started"
     />
@@ -287,34 +288,34 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
       {showNonLinearActions && (
         <>
           <div className="space-y-[0.625rem]">
-            <div className="flex items-center justify-between text-sm">
-              <Link href="#" className="text-primary hover:underline">Activity (3)</Link>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <Link href="#" className="text-primary hover:underline">Fees and services (1)</Link>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <Link href="#" className="text-primary hover:underline">Meetings (1)</Link>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <Link href="#" className="text-primary hover:underline">Site visits (2)</Link>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <Link
-                href="?task=999"
-                onClick={(e) => {
-                  e.preventDefault()
-                  onTaskSelect(999)
-                }}
-                className="text-primary hover:underline"
-              >
-                Applicant requests {applicantRequestsCount > 0 && `(${applicantRequestsCount})`}
-              </Link>
-              {hasNewResponses && <Badge variant="light-blue" size="small">New</Badge>}
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <Link href="#" className="text-primary hover:underline">Notes (5)</Link>
-            </div>
+            {ACTION_ITEMS.map((actionItem) => {
+              const isApplicantRequests = actionItem.id === 999
+              const showBadge = isApplicantRequests && hasNewResponses
+
+              return (
+                <div key={actionItem.id} className="flex items-center justify-between text-sm">
+                  <Link
+                    href={actionItem.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onTaskSelect(actionItem.id)
+                    }}
+                    className="text-primary hover:underline"
+                  >
+                    {actionItem.label}
+                    {/* Show count for applicant requests */}
+                    {isApplicantRequests && applicantRequestsCount > 0 && ` (${applicantRequestsCount})`}
+                    {/* Placeholder counts for other items - to be implemented */}
+                    {actionItem.id === 998 && ' (3)'} {/* Activity */}
+                    {actionItem.id === 997 && ' (1)'} {/* Fees and services */}
+                    {actionItem.id === 996 && ' (1)'} {/* Meetings */}
+                    {actionItem.id === 995 && ' (2)'} {/* Site visits */}
+                    {actionItem.id === 994 && ' (5)'} {/* Notes */}
+                  </Link>
+                  {showBadge && <Badge variant="green" size="small">New</Badge>}
+                </div>
+              )
+            })}
           </div>
 
           {/* Divider separating non-linear actions from linear tasks */}
