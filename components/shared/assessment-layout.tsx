@@ -59,7 +59,7 @@ function AssessmentLayoutContent({
   }
 
   // Calculate applicant request counts
-  const pendingRequestsCount = applicantRequests.filter(req => req.status === 'pending').length
+  const pendingRequestsCount = applicantRequests.filter(req => req.status === 'sent').length
   const hasNewResponses = applicantRequests.some(req => req.response && !req.viewedByOfficer)
 
   return (
