@@ -210,6 +210,87 @@ Added breadcrumb support for action items in the Task Panel, so when users navig
 - **Link font weight: Regular** (removed `font-medium`) for cleaner, less heavy appearance
 - Updated in [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:28,40,43,65,67,91,95,106,109,112)
 
+**Applicant Requests Timeline Layout:**
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+Transformed applicant requests from table layout to timeline view with date grouping.
+
+**Changes Made:**
+
+1. **Timeline Structure:**
+   - Requests grouped by sent date with date headers
+   - Sorted newest first (descending order)
+   - Each date section displays formatted date (e.g., "25 Mar 2024")
+   - Card-based layout replaces table structure
+
+2. **Request Cards:**
+   - Bordered cards with hover effect (border-muted-foreground/30)
+   - 20px padding (p-5) for comfortable spacing
+   - Subject as large clickable link (text-lg font-bold)
+   - Status badge positioned top-right
+   - "New" badge for unread responses (blue badge with white text)
+
+3. **Card Content:**
+   - Header: Subject link + New badge (left) | Status badge (right)
+   - Metadata row: "Sent by {name}" • "Due {date}" • "{type}"
+   - Response indicator: Border-top section showing received date and attachment count
+   - All metadata uses small text (text-sm) with muted foreground
+
+4. **Spacing:**
+   - Between date groups: 32px (space-y-8)
+   - Date header to cards: 16px (mb-4)
+   - Between cards in same date: 16px (space-y-4)
+   - Button to timeline: 24px (space-y-6)
+
+5. **Data Processing:**
+   - New `groupRequestsByDate()` helper function
+   - Groups requests by sentDate using Map
+   - Returns array of [date, requests[]] tuples
+   - Removed table components (Table, TableHeader, TableBody, TableCell)
+
+**Visual Result:**
+- Chronological narrative of communication with applicant
+- Date headers provide temporal context
+- Card format allows richer metadata display
+- Response information integrated inline (not separate column)
+- Better visual hierarchy with cards vs. table rows
+- Hover states provide interactive feedback
+
+**Files Modified:**
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:1-171) - Complete restructure to timeline layout
+
+**Applicant Requests Journey Redesign:**
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+Simplified applicant requests page to title and description only, removing all content implementation for journey redesign.
+
+**Changes Made:**
+
+1. **Simplified ApplicantRequestsContent:**
+   - Removed all timeline/table content display
+   - Removed all buttons and action links
+   - Removed empty state handling
+   - Now shows only: Title + Description + Separator
+   - Ready for new journey implementation
+
+2. **Removed Pages:**
+   - Deleted `/app/application/[id]/assessment/requests/new/` - Create request page
+   - Deleted `/app/application/[id]/assessment/requests/[requestId]/` - Request detail page
+
+3. **Removed Components:**
+   - Deleted `components/shared/create-request-content.tsx`
+   - Deleted `components/shared/request-detail-content.tsx`
+
+**Remaining Structure:**
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx) - Simplified to title/description shell
+- Mock data and schemas remain in place for future implementation
+- Task panel integration (count, badge, link) unchanged
+
+**Purpose:**
+Clean slate for redesigning the applicant requests user journey and interaction patterns.
+
 ---
 
 ## Key Files Reference
@@ -238,9 +319,7 @@ Added breadcrumb support for action items in the Task Panel, so when users navig
 - [application-status-badges.tsx](components/shared/application-status-badges.tsx)
 
 **Applicant Requests:**
-- [applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx)
-- [create-request-content.tsx](components/shared/create-request-content.tsx)
-- [request-detail-content.tsx](components/shared/request-detail-content.tsx)
+- [applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx) - Title/description shell only (journey redesign in progress)
 
 **Map:**
 - [map-view.tsx](components/shared/map-view.tsx)
@@ -331,5 +410,262 @@ Fixed secondary button styling to use proper neutral grey colors (not greenish t
 - Shadows adapt appropriately to light/dark themes
 - No greenish tint on secondary buttons
 - Better visual hierarchy between primary and secondary actions
+
+---
+
+## Task Status Reset - All Tasks 'Not Started'
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Task Panel Status Update
+
+Reset all tasks to 'not-started' status for clean initial state.
+
+**Changes Made:**
+
+1. **Current Version Tasks ([assessment-context.tsx](components/shared/assessment-context.tsx)):**
+   - Task 2 (Check consultees consulted): `needs-review` → `not-started`
+   - Task 6 (Site description): `needs-review` → `not-started`
+   - Task 8 (Summary of advice): `locked` → `not-started`
+   - Task 10 (Check and add requirements): `locked` → `not-started`
+   - Task 11 (Review and submit): `locked` → `not-started`
+
+2. **Future Version Tasks ([future-assessment-context.tsx](components/shared/future-assessment-context.tsx)):**
+   - Already set to `not-started` (no changes needed)
+
+**Result:**
+- All 11 tasks in current version now show as 'not-started'
+- All 14 tasks in future version remain 'not-started'
+- Clean slate for testing task progression and status changes
+- Unlock logic remains intact (will still unlock tasks when dependencies complete)
+
+**Files Modified:**
+- [components/shared/assessment-context.tsx](components/shared/assessment-context.tsx:50,84,96,113,119) - Reset task statuses
+
+---
+
+## Applicant Requests - Card-Based List View
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Request List with Card Layout
+
+Implemented card-based list view for applicant requests with full request details and status tracking.
+
+**Changes Made:**
+
+1. **Request Cards Layout:**
+   - Card component with hover effect (border-muted-foreground/30)
+   - 20px padding (p-5) for comfortable spacing
+   - 16px spacing between cards (space-y-4)
+   - Subject as heading (text-lg font-bold)
+   - Status badge positioned top-right
+
+2. **Card Content Structure:**
+   - Header: Subject (left) + Status badge (right)
+   - Description: Full request details with leading-relaxed
+   - Metadata row: "Sent by {name}" • "Sent {date}" • "Due {date}" • "{type}"
+   - All dates formatted as "25 Mar 2024" (UK format)
+   - Request type shown capitalized (information, document, general)
+
+3. **Response Section:**
+   - Border-top separator when response exists
+   - "Response received" label with "New" badge for unviewed responses
+   - Response date and attachment count
+   - Blue "New" badge (small size) for unread officer responses
+   - Attachment count: "2 attachments" or "1 attachment"
+
+4. **Action Button:**
+   - "New request" button positioned below separator
+   - 24px spacing between button and cards list (mt-6)
+   - Left-aligned within max-w-readable
+
+5. **Empty State:**
+   - Message: "No requests have been sent yet."
+   - Small muted text styling
+
+6. **Data Integration:**
+   - Reads from `application.applicantRequests` array
+   - Uses `getRequestStatusBadge()` helper from task-utils
+   - Status badges: Pending (blue), Responded (green), Overdue (red)
+   - Handles optional fields: dueDate, response, attachments
+
+**Visual Result:**
+- Clean card-based layout with clear information hierarchy
+- Subject prominence for quick scanning
+- Status visibility at a glance
+- Response indicators with "New" badge for actionable items
+- Consistent spacing with assessment workflow patterns
+- Hover states provide interactive feedback
+
+**Files Modified:**
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:1-111) - Complete card layout implementation
+
+**Visual Refinement - Sharp Corners and Grey Borders:**
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+Refined card styling for cleaner, more professional appearance:
+- **Border radius:** Removed (rounded-none) for sharp, clean corners
+- **Border color:** Changed to grey (border-border) from default
+- **Hover state:** Border darkens to muted-foreground on hover
+
+**Files Modified:**
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:59) - Card styling update
+
+**Request Status Update and Title Sizing:**
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+Updated request statuses and refined typography:
+
+1. **New Status Values:**
+   - Replaced: 'pending', 'overdue' → 'sent', 'not-sent-yet', 'closed'
+   - Kept: 'responded'
+   - Status badges: Sent (blue), Responded (green), Not sent yet (grey), Closed (grey)
+
+2. **Title Sizing:**
+   - Changed request subject from text-lg to text-base
+   - Maintains font-bold weight for hierarchy
+
+3. **Data Updates:**
+   - Updated mock data to use new status values
+   - Removed overdue auto-detection logic from helper function
+   - Simplified status badge function
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:168) - Status type definition
+- [lib/task-utils.tsx](lib/task-utils.tsx:38-53) - Badge helper function
+- [lib/mock-data/applicant-requests.ts](lib/mock-data/applicant-requests.ts:8-73) - Mock data status values
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:63) - Title text size
+
+---
+
+## New Request Form - Subpage Creation
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Create Request Workflow
+
+Implemented subpage for creating new applicant requests with form validation and navigation.
+
+**Changes Made:**
+
+1. **New Request Form Component:**
+   - Created `CreateRequestContent` component with form state management
+   - Form fields: Subject (required), Message (required, 8 rows)
+   - Field validation with required indicators (red asterisk)
+   - Helper text for message field
+   - Form submission handler (TODO: integrate with backend)
+   - Cancel button returns to requests list
+
+2. **New Request Page Route:**
+   - Route: `/application/[id]/assessment/requests/new`
+   - Uses `AssessmentLayout` wrapper for consistency with assessment workflow
+   - Integrates with existing task panel and breadcrumbs
+   - Server-side application data loading with notFound() handling
+
+3. **Navigation Integration:**
+   - "New request" button now links to new request page
+   - Uses Next.js Link component for client-side navigation
+   - Cancel button navigates back to requests list (task=999)
+   - Submit handler redirects to requests list after submission
+
+4. **Form Design:**
+   - Title: "New request" (text-2xl font-bold)
+   - Description explaining purpose and applicant notification
+   - All content constrained to max-w-readable (723px)
+   - 24px spacing between sections (space-y-6)
+   - Action buttons: Primary "Send request" + Secondary "Cancel"
+   - 3-column button layout with gap-3
+
+5. **User Experience:**
+   - Clear field labels with required indicators
+   - Placeholder text for guidance
+   - Helper text for message field
+   - Textarea with 8 rows for detailed messages
+   - Form prevents submission until required fields completed
+
+**Visual Result:**
+- Clean, focused form layout within assessment context
+- Consistent spacing and typography with rest of application
+- Clear call-to-action with primary/secondary button hierarchy
+- Helper text provides guidance without cluttering interface
+- Navigation flow: List → New → Submit → List
+
+**Files Created:**
+- [components/shared/create-request-content.tsx](components/shared/create-request-content.tsx) - NEW: Form component
+- [app/application/[id]/assessment/requests/new/page.tsx](app/application/[id]/assessment/requests/new/page.tsx) - NEW: Page route
+
+**Files Modified:**
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:3,37-40) - Added Link import and navigation
+
+**Spacing Fix:**
+- Added `py-8` wrapper to page for consistent vertical spacing with other assessment pages
+- Updated [app/application/[id]/assessment/requests/new/page.tsx](app/application/[id]/assessment/requests/new/page.tsx:26-28)
+
+---
+
+## Request Card Restructure - Information Architecture
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Card Content Reorganization
+
+Restructured request cards to show clearer information hierarchy with labeled sections.
+
+**Changes Made:**
+
+1. **Card Structure (top to bottom):**
+   - **Title** - Request subject (text-base font-bold)
+   - **Status badge** - Positioned top-right aligned with title
+   - **Reason** - Labeled section with request description
+   - **Last updated** - Formatted date (response date if available, otherwise sent date)
+   - **Latest update** - Response message and attachments (only shown if response exists)
+
+2. **Section Labels:**
+   - Added "Reason" label above description
+   - Added "Last updated:" inline label with date
+   - Added "Latest update" label above response message
+   - All labels use font-medium for emphasis
+
+3. **Last Updated Logic:**
+   - If response exists: uses response.receivedDate
+   - If no response: uses sentDate
+   - Always formatted as "25 Mar 2024" (UK format)
+
+4. **Latest Update Section:**
+   - Only displays when response exists
+   - Shows full response message
+   - Lists attachment count and filenames
+   - Format: "2 attachments: Drainage_Calculations_Rev_B.pdf, Attenuation_Tank_Specs.pdf"
+
+5. **Removed Elements:**
+   - Sent by metadata
+   - Sent date metadata
+   - Due date metadata
+   - Request type metadata
+   - "Response received" header with "New" badge
+
+**Visual Result:**
+- Clearer information hierarchy with labeled sections
+- Easier to scan for key information
+- Response content integrated naturally into card flow
+- Last updated date provides temporal context at a glance
+- Full response message visible without clicking through
+
+**Files Modified:**
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:60-110) - Complete card restructure
+
+**Simplified Card Content:**
+- Removed "Latest update" section with response message
+- Removed attachment display
+- Card now shows only: Title, Status, Reason, Last updated date
+- Cleaner, more focused presentation
+- Updated [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:88-95)
 
 ---

@@ -47,7 +47,7 @@ const mockTaskGroups: TaskGroup[] = [
         id: 2,
         title: 'Check consultees consulted',
         description: 'Review the list of statutory consultees contacted and confirm all required consultees have been notified according to planning regulations.',
-        status: 'needs-review'
+        status: 'not-started'
       },
       {
         id: 3,
@@ -81,7 +81,7 @@ const mockTaskGroups: TaskGroup[] = [
         id: 6,
         title: 'Site description',
         description: 'Prepare detailed description of the site including its location, existing use, surrounding context, and any relevant site characteristics.',
-        status: 'needs-review'
+        status: 'not-started'
       },
       {
         id: 7,
@@ -93,7 +93,7 @@ const mockTaskGroups: TaskGroup[] = [
         id: 8,
         title: 'Summary of advice',
         description: 'Summarize advice received from consultees, technical specialists, and other relevant parties. Highlight key recommendations and concerns.',
-        status: 'locked'
+        status: 'not-started'
       },
     ]
   },
@@ -110,13 +110,13 @@ const mockTaskGroups: TaskGroup[] = [
         id: 10,
         title: 'Check and add requirements',
         description: 'Review and confirm all requirements for the selected application type, adding any additional documentation or information needed.',
-        status: 'locked'
+        status: 'not-started'
       },
       {
         id: 11,
         title: 'Review and submit',
         description: 'Conduct final review of the pre-application assessment and submit advice to the applicant.',
-        status: 'locked'
+        status: 'not-started'
       },
     ]
   },

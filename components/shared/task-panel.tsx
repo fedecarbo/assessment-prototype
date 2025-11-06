@@ -306,8 +306,6 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
                     {/* Show count for applicant requests */}
                     {isApplicantRequests && applicantRequestsCount > 0 && ` (${applicantRequestsCount})`}
                     {/* Placeholder counts for other items - to be implemented */}
-                    {actionItem.id === 998 && ' (3)'} {/* Activity */}
-                    {actionItem.id === 997 && ' (1)'} {/* Fees and services */}
                     {actionItem.id === 996 && ' (1)'} {/* Meetings */}
                     {actionItem.id === 995 && ' (2)'} {/* Site visits */}
                     {actionItem.id === 994 && ' (5)'} {/* Notes */}

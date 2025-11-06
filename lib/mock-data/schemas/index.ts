@@ -165,7 +165,7 @@ export interface ConsulteeConsultation {
   responses: ConsulteeResponse[];
 }
 
-export type ApplicantRequestStatus = 'pending' | 'responded' | 'overdue';
+export type ApplicantRequestStatus = 'sent' | 'responded' | 'not-sent-yet' | 'closed';
 
 export interface ApplicantRequest {
   id: string;

@@ -1,15 +1,15 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
-import { mockApplications } from '@/lib/mock-data/applications'
+import { getApplicationById } from '@/lib/mock-data'
 import { AssessmentLayout } from '@/components/shared/assessment-layout'
 import { CreateRequestContent } from '@/components/shared/create-request-content'
 
-export default async function NewRequestPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = await params
-  const application = mockApplications.find((app) => app.id === id)
+export default function NewRequestPage() {
+  const params = useParams()
+  const id = params.id as string
+  const application = getApplicationById(id)
 
   if (!application) {
     notFound()
@@ -24,7 +24,7 @@ export default async function NewRequestPage({
       applicantRequests={application.applicantRequests}
     >
       <div className="py-8">
-        <CreateRequestContent application={application} />
+        <CreateRequestContent applicationId={application.id} />
       </div>
     </AssessmentLayout>
   )

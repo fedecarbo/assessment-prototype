@@ -1,27 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx create-next-app:*)",
-      "Bash(npm init:*)",
-      "Bash(npm install:*)",
-      "Bash(npx shadcn@latest add:*)",
-      "Bash(git init:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(npm run build:*)",
-      "Bash(git remote add:*)",
-      "Bash(git push:*)",
       "Bash(npm run dev:*)",
-      "Bash(timeout:*)",
-      "Bash(git rm:*)",
-      "Bash(npm run lint)",
-      "Bash(git log:*)",
-      "Bash(npx tsc:*)",
-      "Bash(taskkill:*)",
-      "Bash(git checkout:*)",
-      "Bash(npm uninstall:*)",
-      "Bash(node --version:*)",
-      "Bash(npm --version:*)"
+      "Bash(npm run build:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
