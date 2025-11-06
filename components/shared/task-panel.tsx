@@ -289,18 +289,14 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
           <div className="space-y-[0.625rem]">
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Activity (3)</Link>
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1d70b8] dark:bg-[#1e4460] text-white text-xs font-bold">
-                3
-              </div>
+              <Badge variant="light-blue" size="small">New</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Fees and services (1)</Link>
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Meetings (1)</Link>
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1d70b8] dark:bg-[#1e4460] text-white text-xs font-bold">
-                1
-              </div>
+              <Badge variant="light-blue" size="small">New</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Site visits (2)</Link>
@@ -316,11 +312,7 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
               >
                 Applicant requests {applicantRequestsCount > 0 && `(${applicantRequestsCount})`}
               </Link>
-              {hasNewResponses && (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1d70b8] dark:bg-[#1e4460] text-white text-xs font-bold">
-                  {applicantRequestsCount}
-                </div>
-              )}
+              {hasNewResponses && <Badge variant="light-blue" size="small">New</Badge>}
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Notes (5)</Link>
