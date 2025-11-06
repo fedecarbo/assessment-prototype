@@ -668,4 +668,15 @@ Restructured request cards to show clearer information hierarchy with labeled se
 - Cleaner, more focused presentation
 - Updated [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:88-95)
 
+**Card Enhancement - Truncation and View Link:**
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+Added description truncation and view/update link to request cards:
+- **Description truncation:** Truncates reason text at 150 characters with "..." if longer
+- **View and update link:** Added at bottom of card with border-top separator
+- **Link styling:** Primary color with hover underline
+- Provides cleaner card view while allowing access to full details
+- Updated [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:60-111)
+
 ---

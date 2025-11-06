@@ -66,6 +66,12 @@ function RequestCard({ request }: RequestCardProps) {
     year: 'numeric'
   })
 
+  // Truncate description to 150 characters for preview
+  const shouldTruncate = request.description.length > 150
+  const truncatedDescription = shouldTruncate
+    ? request.description.substring(0, 150) + '...'
+    : request.description
+
   return (
     <Card className="p-5 rounded-none border-border shadow-none">
       <div className="space-y-3">
@@ -81,13 +87,23 @@ function RequestCard({ request }: RequestCardProps) {
         <div>
           <p className="text-sm font-medium text-foreground">Reason</p>
           <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-            {request.description}
+            {truncatedDescription}
           </p>
         </div>
 
         {/* Last Updated Date */}
         <div className="text-sm text-muted-foreground">
           <span className="font-medium text-foreground">Last updated:</span> {formattedLastUpdated}
+        </div>
+
+        {/* View and Update Link */}
+        <div className="pt-2 border-t">
+          <Link
+            href={`#`}
+            className="text-sm text-primary hover:underline"
+          >
+            View and update
+          </Link>
         </div>
       </div>
     </Card>
