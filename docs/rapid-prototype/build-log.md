@@ -193,3 +193,76 @@ Quick reference for architecture and context - what exists and where to find it.
 - [app/globals.css](app/globals.css) - Theme variables
 
 ---
+
+## Design System Enhancement - Dark Mode Badge Colors
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Dark Mode Badge Optimization
+
+Added comprehensive dark mode support for all badge/tag color variants in [app/globals.css](app/globals.css).
+
+**Design Principles Applied:**
+- Sufficient contrast against dark backgrounds (WCAG AA minimum)
+- Reduced brightness to prevent eye strain in dark mode
+- Maintained color identity while adapting to dark theme
+- Enhanced visibility for critical states (red/orange)
+- Balanced saturation for informational states (blue/green)
+
+**Badge Variants - Dark Mode:**
+- **Grey:** Subtle neutral state (#d4d4d5 on #2a2a2b)
+- **Green:** Success/completed with vibrant presence (#b8e0d2 on #0f5132)
+- **Turquoise:** Informational with clarity (#9de4e8 on #164447)
+- **Blue:** Primary informational (#aad3f0 on #1e4460)
+- **Light Blue:** Subtle informational (#c5e2f5 on #223d54)
+- **Purple:** Special/featured state (#d9ccec on #3d2560)
+- **Pink:** Highlighted/flagged (#f0c8dc on #6e2550)
+- **Red:** Critical/urgent with strong visibility (#f0c8c8 on #6e2525)
+- **Orange:** Warning with warmth (#fdd8be on #854a26)
+- **Yellow:** Attention/pending with clarity (#f5eba8 on #6b5f0f)
+
+**Components Affected:**
+- All badge components throughout the application
+- Applicant request status badges (Pending, Responded, Overdue)
+- Task status badges (Completed, In progress, Needs review, Not started, Locked)
+- Document category badges
+- Constraint type badges
+
+**Location:** [app/globals.css](app/globals.css) lines 49-88 (.dark section)
+
+---
+
+## Button Style Enhancement - Dark Mode & Secondary Button
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Secondary Button & Shadow Optimization
+
+Fixed secondary button styling to use proper neutral grey colors (not greenish tint) and added dark mode shadow support.
+
+**Changes Made:**
+
+1. **Button Shadows:**
+   - Moved shadow from base class to variant-specific
+   - Default (green) button: Light mode shadow `rgb(0,45,24)`, dark mode shadow `rgb(0,30,16)`
+   - Secondary (grey) button: Light mode shadow `rgb(50,50,51)`, dark mode shadow `rgb(20,20,21)`
+
+2. **Secondary Color Refinement:**
+   - **Light mode:** Changed from bluish grey `210 40% 96.1%` to neutral grey `0 0% 93%` (#ededed)
+   - **Dark mode:** Increased from `0 0% 14%` to `0 0% 25%` (#404040) for better visibility
+   - Maintains proper contrast ratios for accessibility
+   - Follows GOV.UK Design System pattern for secondary actions
+
+**Files Modified:**
+- [components/ui/button.tsx](components/ui/button.tsx:7-21) - Separated shadow per variant with dark mode support
+- [app/globals.css](app/globals.css:13,37) - Updated secondary color values for light and dark modes
+
+**Visual Result:**
+- "Save draft" buttons now display with proper dark grey appearance
+- Shadows adapt appropriately to light/dark themes
+- No greenish tint on secondary buttons
+- Better visual hierarchy between primary and secondary actions
+
+---
