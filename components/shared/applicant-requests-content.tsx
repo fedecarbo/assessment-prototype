@@ -92,7 +92,7 @@ export function ApplicantRequestsContent({ application }: ApplicantRequestsConte
                         <div className="flex items-start gap-2">
                           <Link
                             href={`/application/${application.id}/assessment/requests/${request.id}`}
-                            className="text-base font-medium text-primary hover:underline"
+                            className="text-base text-primary hover:underline"
                           >
                             {request.subject}
                           </Link>

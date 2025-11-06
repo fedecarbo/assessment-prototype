@@ -207,7 +207,8 @@ Added breadcrumb support for action items in the Task Panel, so when users navig
 - Button to table: 10px (`space-y-[10px]`) - compact spacing
 - **Table cell vertical padding: 20px total (`py-[10px]`)** - 10px top + 10px bottom per cell
 - **Button alignment: Left-aligned** instead of right-aligned for consistency with task actions
-- Updated in [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:28,40,43,65,67,91,106,109,112)
+- **Link font weight: Regular** (removed `font-medium`) for cleaner, less heavy appearance
+- Updated in [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:28,40,43,65,67,91,95,106,109,112)
 
 ---
 
