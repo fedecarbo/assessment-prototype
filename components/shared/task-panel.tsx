@@ -289,14 +289,12 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
           <div className="space-y-[0.625rem]">
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Activity (3)</Link>
-              <Badge variant="light-blue" size="small">New</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Fees and services (1)</Link>
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Meetings (1)</Link>
-              <Badge variant="light-blue" size="small">New</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
               <Link href="#" className="text-primary hover:underline">Site visits (2)</Link>
