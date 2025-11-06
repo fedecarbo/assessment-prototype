@@ -22,7 +22,13 @@ export default async function RequestDetailPage({
   }
 
   return (
-    <AssessmentLayout application={application}>
+    <AssessmentLayout
+      applicationId={application.id}
+      address={application.address}
+      reference={application.reference}
+      description={application.description}
+      applicantRequests={application.applicantRequests}
+    >
       <div className="py-8">
         <RequestDetailContent application={application} request={request} />
       </div>
