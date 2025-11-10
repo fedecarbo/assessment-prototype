@@ -165,7 +165,7 @@ export interface ConsulteeConsultation {
   responses: ConsulteeResponse[];
 }
 
-export type ApplicantRequestStatus = 'sent' | 'responded' | 'not-sent-yet' | 'closed';
+export type ApplicantRequestStatus = 'sent' | 'responded' | 'not-sent-yet' | 'closed' | 'cancelled';
 
 export interface ApplicantRequest {
   id: string;
@@ -182,6 +182,19 @@ export interface ApplicantRequest {
     message: string;
     attachments?: string[]; // File names for mock data
   };
+}
+
+export type MeetingType = 'meeting' | 'site-visit' | 'telephone-call';
+
+export interface Meeting {
+  id: string;
+  title: string; // Meeting title/subject
+  type: MeetingType; // Type of meeting
+  meetingDate: string; // ISO date string
+  notes?: string;
+  attachments?: string[]; // File names/paths for uploaded documents
+  recordedBy: string; // Officer name who recorded the meeting
+  recordedDate: string; // ISO date string when meeting was added to system
 }
 
 export interface PlanningApplication {
@@ -208,6 +221,7 @@ export interface PlanningApplication {
   consulteeConsultation?: ConsulteeConsultation;
   neighbourConsultation?: NeighbourConsultation;
   applicantRequests?: ApplicantRequest[];
+  meetings?: Meeting[];
   // Stage workflow with tasks
   validation: ValidationStage;
   consultation: ConsultationStage;
