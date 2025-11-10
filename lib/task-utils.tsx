@@ -45,6 +45,8 @@ export function getRequestStatusBadge(status: ApplicantRequestStatus): ReactElem
       return <Badge variant="grey">Not sent yet</Badge>
     case 'closed':
       return <Badge variant="grey">Closed</Badge>
+    case 'cancelled':
+      return <Badge variant="red">Cancelled</Badge>
     default:
       // Exhaustive check: TypeScript will error if new status added but not handled
       const _exhaustive: never = status

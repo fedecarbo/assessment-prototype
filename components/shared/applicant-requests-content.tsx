@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import type { PlanningApplication, ApplicantRequest } from '@/lib/mock-data/schemas'
 import { getRequestStatusBadge } from '@/lib/task-utils'
 
@@ -33,14 +32,14 @@ export function ApplicantRequestsContent({ application }: ApplicantRequestsConte
       <Separator className="mt-6" />
 
       {/* Action Button */}
-      <div className="mt-6 max-w-readable">
+      <div className="mt-6">
         <Link href={`/application/${application.id}/assessment/requests/new`}>
           <Button>New request</Button>
         </Link>
       </div>
 
-      {/* Requests List */}
-      <div className="mt-6 max-w-readable space-y-4">
+      {/* Requests List - Full width */}
+      <div className="mt-6 space-y-4">
         {requests.length === 0 ? (
           <p className="text-sm text-muted-foreground">No requests have been sent yet.</p>
         ) : (
@@ -58,11 +57,10 @@ interface RequestCardProps {
 }
 
 function RequestCard({ request }: RequestCardProps) {
-  // Determine last updated date (response date if available, otherwise sent date)
-  const lastUpdatedDate = request.response?.receivedDate || request.sentDate
-  const formattedLastUpdated = new Date(lastUpdatedDate).toLocaleDateString('en-GB', {
+  // Format sent date in GDS style
+  const formattedSentDate = new Date(request.sentDate).toLocaleDateString('en-GB', {
     day: 'numeric',
-    month: 'short',
+    month: 'long',
     year: 'numeric'
   })
 
@@ -83,20 +81,17 @@ function RequestCard({ request }: RequestCardProps) {
           {getRequestStatusBadge(request.status)}
         </div>
 
-        {/* Reason (Description) */}
-        <div>
-          <p className="text-sm font-medium text-foreground">Reason</p>
-          <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-            {truncatedDescription}
-          </p>
-        </div>
+        {/* Metadata: Date and Requester (GDS style) */}
+        <p className="text-sm text-muted-foreground">
+          {formattedSentDate} by {request.sentBy}
+        </p>
 
-        {/* Last Updated Date */}
-        <div className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Last updated:</span> {formattedLastUpdated}
-        </div>
+        {/* Description */}
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {truncatedDescription}
+        </p>
 
-        {/* View and Update Link */}
+        {/* View Link */}
         <div className="pt-2 border-t">
           <Link
             href={`#`}

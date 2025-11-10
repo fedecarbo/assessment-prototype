@@ -680,3 +680,759 @@ Added description truncation and view/update link to request cards:
 - Updated [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:60-111)
 
 ---
+
+## Applicant Requests - Cancel Request Feature
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Cancel Request Implementation
+
+Added ability to cancel applicant requests with new 'cancelled' status.
+
+**Changes Made:**
+
+1. **Schema Update:**
+   - Added 'cancelled' to `ApplicantRequestStatus` type
+   - Updated [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:168)
+
+2. **Status Badge:**
+   - Added red 'Cancelled' badge variant to `getRequestStatusBadge()` helper
+   - Updated [lib/task-utils.tsx](lib/task-utils.tsx:48-49)
+
+3. **Mock Data:**
+   - Added sample cancelled request (req-006: "Additional parking space dimensions")
+   - Demonstrates cancelled status in card list
+   - Updated [lib/mock-data/applicant-requests.ts](lib/mock-data/applicant-requests.ts:73-83)
+
+---
+
+## Applicant Requests - Card Layout Refinement (GDS Style)
+
+**Date:** 2025-11-06
+**Agent:** Forge (Builder)
+
+### Simplified Card Layout with GDS Content Guidelines
+
+Refined request cards to follow GDS content patterns with cleaner information hierarchy.
+
+**Changes Made:**
+
+1. **Card Structure (simplified):**
+   - **Title** - Request subject (text-base font-bold)
+   - **Status badge** - Positioned top-right aligned with title
+   - **Metadata** - Date and requester in GDS format: "15 March 2024 by Federico Carbo"
+   - **Description** - Request description (truncated at 150 characters)
+   - **View link** - "View and update" link with border-top separator
+
+2. **Removed Elements:**
+   - Removed "Reason" label (description now stands alone)
+   - Removed "Last updated" date (simplified to sent date only)
+   - Removed inline cancel button (cancel functionality moved to individual request pages)
+   - Removed React state management (no longer needed without inline cancel)
+
+3. **Full Width Layout:**
+   - Cards now span full width (removed max-w-readable constraint)
+   - Action button container full width
+   - Only title/description section remains constrained to max-w-readable
+
+4. **GDS Metadata Format:**
+   - Date formatted as "15 March 2024" (day, full month name, year)
+   - Format: "{date} by {officer name}"
+   - Muted foreground color for secondary information
+   - Small text size (text-sm)
+
+**User Experience:**
+- Cleaner, more scannable card layout
+- Date and requester information immediately visible
+- GDS-compliant content presentation
+- Cancel functionality available on individual request detail pages
+- Consistent with government service patterns
+
+**Visual Result:**
+- Simplified information architecture
+- Better vertical rhythm with reduced sections
+- Full-width cards for better content flow
+- Metadata follows GDS content guidelines
+- Focus on essential information only
+
+**Files Modified:**
+- [components/shared/applicant-requests-content.tsx](components/shared/applicant-requests-content.tsx:1-106) - Complete card restructure
+
+---
+
+## Meetings Feature - Recording and Tracking Meetings
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Meetings Page Implementation
+
+Implemented complete meetings feature for recording upcoming meetings and viewing meeting history related to planning applications.
+
+**Changes Made:**
+
+1. **Meeting Schema:**
+   - Created `Meeting` interface in [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:187-193)
+   - Fields: id, meetingDate (ISO string), notes (optional), recordedBy, recordedDate
+   - Added `meetings` array to `PlanningApplication` interface
+
+2. **Mock Data:**
+   - Created [lib/mock-data/meetings.ts](lib/mock-data/meetings.ts) with sample meeting data
+   - Four sample meetings: two upcoming, two past
+   - Includes meetings with and without notes
+   - Mock data imported into [lib/mock-data/applications.ts](lib/mock-data/applications.ts:9,415)
+
+3. **Meetings Component:**
+   - Created [components/shared/meetings-content.tsx](components/shared/meetings-content.tsx)
+   - Card-based layout with upcoming/past sections
+   - Automatic date-based separation (compares against current date)
+   - Upcoming meetings sorted ascending (earliest first)
+   - Past meetings sorted descending (most recent first)
+   - Empty state handling when no meetings recorded
+
+4. **Meeting Cards:**
+   - Display format: "{date} at {time}" as title
+   - GDS-style date formatting: "15 November 2025"
+   - 24-hour time format: "10:00"
+   - Metadata: "Recorded {date} by {officer name}"
+   - Notes displayed below metadata when present
+   - Consistent card styling with applicant requests (rounded-none, border-border)
+
+5. **New Meeting Form:**
+   - Inline form within MeetingsContent component (toggled with state)
+   - Form fields: Meeting date (required), Meeting time (required), Notes (optional, 8 rows)
+   - Native date/time inputs with proper labels and required indicators
+   - Action buttons: "Add meeting" (primary) + "Cancel" (secondary)
+   - Form submission handler ready for backend integration
+
+6. **Assessment Integration:**
+   - Added meetings routing to [components/shared/assessment-content.tsx](components/shared/assessment-content.tsx:12,43-50)
+   - Task ID 996 routes to MeetingsContent component
+   - Added meetings routing to [components/shared/future-assessment-content.tsx](components/shared/future-assessment-content.tsx:13,44-51)
+   - Both current and future assessment versions support meetings
+
+7. **Task Panel Count:**
+   - Updated [components/shared/task-panel.tsx](components/shared/task-panel.tsx:31,243,246,295,311-312) to accept `upcomingMeetingsCount`
+   - Dynamic count display in task panel: "Meetings (2)"
+   - Count only shows upcoming meetings (not past meetings)
+   - Removed hardcoded placeholder count
+
+8. **Assessment Layout Integration:**
+   - Updated [components/shared/assessment-layout.tsx](components/shared/assessment-layout.tsx:12,21,31,67-69,94) to pass meetings
+   - Calculates upcoming meetings count: filters by date >= now
+   - Passes count to TaskPanel component
+   - Updated [app/application/[id]/assessment/page.tsx](app/application/[id]/assessment/page.tsx:35) to pass meetings from application
+
+**User Experience:**
+
+- Officers click "Meetings (2)" in task panel to access meetings page
+- See clear separation between upcoming and past meetings
+- Add new meeting with date, time, and optional notes
+- Meetings automatically move from upcoming to past as time progresses
+- GDS-compliant date/time formatting for consistency
+- Clean, scannable card layout matching applicant requests pattern
+
+**Data Flow:**
+
+1. User clicks "Add meeting" button
+2. Form appears inline (replaces list view)
+3. User enters date, time, and optional notes
+4. On submit: creates new Meeting record with recordedBy and recordedDate
+5. Form closes, list refreshes with new meeting in appropriate section
+6. Task panel count updates automatically based on upcoming meetings
+
+**Visual Result:**
+
+- Consistent card-based layout with rest of assessment workflow
+- Clear temporal organization (upcoming vs past)
+- Optional notes provide context flexibility
+- Automatic date-based filtering requires no manual categorization
+- Count badge in task panel shows actionable upcoming meetings only
+
+**Files Created:**
+- [lib/mock-data/meetings.ts](lib/mock-data/meetings.ts) - NEW: Mock meeting data
+- [components/shared/meetings-content.tsx](components/shared/meetings-content.tsx) - NEW: Meetings component
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:187-193,219) - Meeting schema and PlanningApplication update
+- [lib/mock-data/applications.ts](lib/mock-data/applications.ts:9,415) - Import and add meetings data
+- [components/shared/assessment-content.tsx](components/shared/assessment-content.tsx:12,43-50) - Meetings routing
+- [components/shared/future-assessment-content.tsx](components/shared/future-assessment-content.tsx:13,44-51) - Meetings routing
+- [components/shared/task-panel.tsx](components/shared/task-panel.tsx:31,243,246,295,311-312) - Upcoming meetings count
+- [components/shared/assessment-layout.tsx](components/shared/assessment-layout.tsx:12,21,31,67-69,94) - Pass meetings and calculate count
+- [app/application/[id]/assessment/page.tsx](app/application/[id]/assessment/page.tsx:35) - Pass meetings prop
+
+---
+
+## Meetings Feature Enhancement - Timeline Layout and Edit Functionality
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Timeline View and Meeting Editing
+
+Enhanced meetings feature with timeline layout grouped by date, meeting titles, and full edit capability.
+
+**Changes Made:**
+
+1. **Meeting Schema Update:**
+   - Added `title` field to `Meeting` interface in [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:189)
+   - Title is required field for all meetings
+   - Updated interface: `{ id, title, meetingDate, notes?, recordedBy, recordedDate }`
+
+2. **Mock Data Enhancement:**
+   - Updated [lib/mock-data/meetings.ts](lib/mock-data/meetings.ts) with meeting titles
+   - Sample titles: "Pre-application meeting with applicant", "Site visit with conservation officer", etc.
+   - Notes remain optional for flexibility
+
+3. **Timeline Layout:**
+   - Replaced upcoming/past sections with date-grouped timeline view
+   - Meetings grouped by full date: "15 November 2025"
+   - Date headers (h2, font-bold) separate each day's meetings
+   - Sorted descending (most recent date first)
+   - Multiple meetings on same date appear under single date header
+   - `groupMeetingsByDate()` helper function handles grouping logic
+
+4. **Meeting Cards Redesign:**
+   - Title as primary heading (text-base, font-bold)
+   - Time displayed below title (text-sm, muted)
+   - Date removed from card (now in timeline header)
+   - "Recorded by" metadata unchanged
+   - Notes displayed when present
+   - "Edit meeting" link added at bottom with border-top separator
+   - Hover effect on card border for interactivity
+
+5. **Edit Meeting Functionality:**
+   - New `FormMode` type: 'list' | 'add' | 'edit'
+   - `editingMeeting` state tracks which meeting is being edited
+   - `handleEdit()` function sets mode and meeting
+   - Form pre-populates with existing meeting data
+   - Edit form title: "Edit meeting"
+   - Submit button text: "Save changes"
+   - Date/time parsing handles ISO string to input format conversion
+
+6. **Form Enhancement:**
+   - Added "Meeting title" field (required) at top of form
+   - Placeholder text: "e.g. Pre-application meeting with applicant"
+   - Form fields order: Title → Date → Time → Notes
+   - Form mode determines title and submit button text
+   - Cancel button clears editing state and returns to list
+
+7. **Component Architecture:**
+   - `MeetingsContent` - Main container with mode state
+   - `MeetingCard` - Card component with edit callback
+   - `MeetingForm` - Unified form for add/edit modes
+   - `groupMeetingsByDate()` - Timeline grouping helper
+   - State management handles form mode transitions
+
+**User Experience:**
+
+- Officers see meetings organized chronologically by date
+- Timeline structure provides clear temporal narrative
+- Meeting titles give quick context without reading notes
+- Click "Edit meeting" to modify any meeting details
+- Form pre-fills with current data when editing
+- All fields editable: title, date, time, notes
+- Clear distinction between add and edit modes
+
+**Visual Result:**
+
+- Clean timeline layout with date headers
+- Meeting title prominently displayed
+- Time shown below title (not in heading)
+- Cards grouped by date reduce redundancy
+- Edit link provides clear action affordance
+- Consistent with applicant requests card pattern
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:189) - Added title field to Meeting interface
+- [lib/mock-data/meetings.ts](lib/mock-data/meetings.ts:5-35) - Added titles to all mock meetings
+- [components/shared/meetings-content.tsx](components/shared/meetings-content.tsx:1-311) - Complete redesign with timeline and edit
+
+---
+
+## Meetings Timeline - DWP Design System Visual Structure
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### DWP Timeline Pattern Implementation
+
+Updated meetings timeline with DWP Design System visual structure featuring vertical timeline with dots and connecting lines.
+
+**Changes Made:**
+
+1. **Timeline Visual Structure:**
+   - Vertical timeline line (4px width, border color) runs down left side
+   - Blue circular dots (16px diameter) mark each date
+   - Timeline dot positioned at 32px from left edge
+   - Connecting lines between date dots
+   - Content indented 48px (ml-12) from left edge
+
+2. **Date Header Integration:**
+   - Date appears inline with timeline dot
+   - Dot and date aligned horizontally with 16px gap
+   - Date text uses text-base font-bold
+   - Dot positioned with 4px top margin for alignment
+
+3. **Timeline Line Logic:**
+   - Line connects previous date to current date dot
+   - Line continues from dot down to meetings section
+   - Last date section: line stops after meetings (no continuation)
+   - Lines positioned at 14px from left (centered on 16px dot)
+
+4. **Meeting Cards Layout:**
+   - Cards indented 48px from left (ml-12 = 3rem = 48px)
+   - Creates clear visual hierarchy: dot → date → meetings
+   - 16px spacing between meeting cards (space-y-4)
+   - 32px spacing between date sections (pb-8)
+
+5. **Responsive Considerations:**
+   - Fixed width timeline column (32px) ensures consistent alignment
+   - Flexible content area adapts to available space
+   - Timeline structure maintains on all screen sizes
+   - Dot size (16px) and line width (4px) remain constant
+
+**Visual Hierarchy:**
+
+```
+● 15 November 2025
+│     [Meeting Card 1]
+│     [Meeting Card 2]
+│
+● 10 November 2025
+│     [Meeting Card 3]
+│
+● 5 November 2025
+      [Meeting Card 4]
+```
+
+**Timeline Measurements:**
+- Timeline dot: 16px × 16px circle
+- Timeline line: 4px width
+- Left margin: 32px (timeline column)
+- Content indent: 48px (from left edge)
+- Gap between dot and date: 16px
+- Spacing between cards: 16px
+- Spacing between date groups: 32px
+
+**User Experience:**
+
+- Clear chronological narrative with visual timeline
+- Dots provide visual anchors for scanning
+- Connecting lines show temporal continuity
+- Date headers prominently displayed
+- Meeting cards clearly grouped by date
+- Professional DWP/GDS aesthetic
+
+**Files Modified:**
+- [components/shared/meetings-content.tsx](components/shared/meetings-content.tsx:62-133,162-168) - DWP timeline visual structure
+
+---
+
+## Meetings Timeline - Refined DWP Pattern
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Simplified Timeline Implementation
+
+Refined meetings timeline to match DWP Design System pattern more precisely with continuous vertical line and horizontal markers.
+
+**Changes Made:**
+
+1. **Simplified Timeline Structure:**
+   - Continuous 4px blue vertical line on left side (border-l-4)
+   - Horizontal line markers (32px × 4px) extend from vertical line at each date
+   - No separate dots - markers provide visual anchors
+   - Cleaner, more minimal appearance
+
+2. **Timeline Implementation:**
+   - Container has `border-l-4 border-primary` for continuous vertical line
+   - Left padding of 32px (pl-8) for content spacing
+   - Horizontal markers positioned at `-32px` from left edge
+   - Markers appear at top of each date header (8px from top)
+
+3. **Spacing Updates:**
+   - 32px spacing between date sections (pb-8)
+   - 24px spacing between meeting cards (space-y-6)
+   - Consistent with DWP reference implementation
+   - Last date section removes bottom padding
+
+4. **Visual Hierarchy:**
+   - Vertical line provides continuous timeline spine
+   - Horizontal markers indicate event points
+   - Date headers bold and prominent
+   - Meeting cards indented from timeline
+
+**DWP Pattern Match:**
+```
+|—— Date Header
+|    [Meeting Card]
+|    [Meeting Card]
+|
+|—— Date Header
+|    [Meeting Card]
+|
+|—— Date Header
+     [Meeting Card]
+```
+
+**Technical Details:**
+- Vertical line: 4px width, primary color
+- Horizontal markers: 32px width × 4px height
+- Content indent: 32px from vertical line
+- Marker position: -32px left, 8px top
+
+**User Experience:**
+- Clear continuous timeline shows progression
+- Horizontal markers provide visual scan points
+- Simpler design reduces visual noise
+- Professional DWP/GDS aesthetic maintained
+
+**Files Modified:**
+- [components/shared/meetings-content.tsx](components/shared/meetings-content.tsx:67-100) - Simplified DWP timeline pattern
+
+---
+
+## Applicant Portal - User Switcher and Basic Layout
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Dual User Experience Implementation
+
+Added applicant portal with user switching capability in site header and basic navigation structure.
+
+**Changes Made:**
+
+1. **User Switcher in Site Header:**
+   - Added `userType` prop to SiteHeader component ('officer' | 'applicant')
+   - Link-based switcher in header navigation
+   - Officer view: "Switch to Applicant" link → `/applicant`
+   - Applicant view: "Switch to Officer" link → `/`
+   - Maintains clean URL-based navigation pattern
+   - Updated [components/shared/site-header.tsx](components/shared/site-header.tsx:2,6,9,19-28)
+
+2. **Service Navigation Component:**
+   - Created new navigation component for applicant pages
+   - Tab-based navigation: Tasks, Timeline
+   - Active state indication with bottom border (5px, primary color)
+   - Client component using usePathname for active state detection
+   - Constrained to 1100px max-width matching site design
+   - Hover states for inactive tabs
+   - Created [components/shared/service-navigation.tsx](components/shared/service-navigation.tsx) - NEW
+
+3. **Applicant Layout Structure:**
+   - New `/applicant` route with dedicated layout
+   - SiteHeader with `userType="applicant"`
+   - ServiceNavigation below header
+   - Consistent 1100px max-width container
+   - Created [app/applicant/layout.tsx](app/applicant/layout.tsx) - NEW
+   - Created [app/applicant/page.tsx](app/applicant/page.tsx) - NEW (redirects to tasks)
+
+4. **Applicant Pages:**
+   - **Tasks page**: Title only for now ([app/applicant/tasks/page.tsx](app/applicant/tasks/page.tsx) - NEW)
+   - **Timeline page**: Title only for now ([app/applicant/timeline/page.tsx](app/applicant/timeline/page.tsx) - NEW)
+   - Both pages use constrained layout (max-w-[1100px])
+   - 32px vertical padding (py-8)
+   - Title styling: text-2xl font-bold
+
+**User Experience:**
+
+- Officers can switch to applicant view from any page
+- Applicants can switch back to officer view
+- Clear navigation structure with Tasks and Timeline tabs
+- Active tab highlighted with primary color border
+- Simple, focused interface for applicants
+- Ready for content implementation in future iterations
+
+**Navigation Flow:**
+```
+Officer View (/)
+  ↓ "Switch to Applicant"
+Applicant View (/applicant/tasks)
+  - Tasks tab (active)
+  - Timeline tab
+  ↓ "Switch to Officer"
+Officer View (/)
+```
+
+**Architecture:**
+- Separate layout for applicant routes
+- Service navigation scoped to applicant section
+- URL-driven navigation state (no additional state management)
+- Extensible for adding more service tabs in future
+
+**Files Created:**
+- [components/shared/service-navigation.tsx](components/shared/service-navigation.tsx) - NEW: Service navigation component
+- [app/applicant/layout.tsx](app/applicant/layout.tsx) - NEW: Applicant layout wrapper
+- [app/applicant/page.tsx](app/applicant/page.tsx) - NEW: Applicant root (redirects to tasks)
+- [app/applicant/tasks/page.tsx](app/applicant/tasks/page.tsx) - NEW: Tasks page (placeholder)
+- [app/applicant/timeline/page.tsx](app/applicant/timeline/page.tsx) - NEW: Timeline page (placeholder)
+
+**Files Modified:**
+- [components/shared/site-header.tsx](components/shared/site-header.tsx:2,6,9,19-28) - Added user switcher
+
+---
+
+## Applicant Portal - Requests and Timeline Implementation
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Complete Applicant Experience with Requests and Timeline
+
+Implemented full applicant portal with requests page and comprehensive timeline showing all application events.
+
+**Changes Made:**
+
+1. **Service Navigation Update:**
+   - Renamed "Tasks" → "Requests" for clarity
+   - Added `applicationId` prop support for dynamic routing
+   - Routes: `/applicant/[id]/requests` and `/applicant/[id]/timeline`
+   - Updated [components/shared/service-navigation.tsx](components/shared/service-navigation.tsx:20)
+
+2. **Applicant Requests Page:**
+   - Read-only view of all requests sent by officers
+   - Card-based layout matching officer view pattern
+   - Shows: subject, description (truncated at 150 chars), sent date, status, officer name
+   - Response section shows applicant's reply and attachments when present
+   - Status badges: Sent (blue), Responded (green), Closed (grey), Cancelled (red)
+   - Created [components/shared/applicant-requests-view.tsx](components/shared/applicant-requests-view.tsx) - NEW
+   - Created [app/applicant/[id]/requests/page.tsx](app/applicant/[id]/requests/page.tsx) - NEW
+
+3. **Timeline Event System:**
+   - Created comprehensive event aggregation system
+   - Unified `TimelineEvent` interface for all event types
+   - Event categories: meetings-visits, documents, milestones
+   - Event types: meeting, site-visit, telephone-call, document-upload, milestone
+   - Helper functions for filtering, sorting, grouping by date
+   - Created [lib/timeline-utils.ts](lib/timeline-utils.ts) - NEW
+
+4. **Applicant Timeline Page:**
+   - **Upcoming Section**: Future meetings and site visits in card layout
+   - **Activity History Section**: Past events with DWP timeline pattern
+   - **Filtering**: [All] [Meetings & visits] [Documents] [Milestones]
+   - Timeline with vertical blue bar, date grouping, horizontal markers
+   - Event cards with type badges, descriptions, metadata
+   - Sorted: upcoming ascending (soonest first), past descending (most recent first)
+   - Created [components/shared/applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx) - NEW
+   - Created [app/applicant/[id]/timeline/page.tsx](app/applicant/[id]/timeline/page.tsx) - NEW
+
+5. **Timeline Events Included:**
+   - **Meetings & Visits**: All Meeting records (meeting, site-visit, telephone-call)
+   - **Documents**: Document uploads by applicant
+   - **Milestones**: Application submitted, validated, consultation started/ended, stage completions, decision made
+   - Each event shows: title, date/time, description, type badge, attachments count
+
+6. **Route Structure:**
+   - `/applicant` → Redirects to first application's requests page
+   - `/applicant/[id]/layout.tsx` → Nested layout with ServiceNavigation
+   - `/applicant/[id]/requests` → Applicant requests view
+   - `/applicant/[id]/timeline` → Timeline with upcoming and history
+   - Removed: `/applicant/tasks` and `/applicant/timeline` (old placeholder routes)
+
+7. **Event Type Badges:**
+   - Meeting (blue), Site visit (turquoise), Phone call (purple)
+   - Document (green), Milestone (light-blue)
+   - Consistent badge variants across application
+
+**User Experience:**
+
+**Requests Page:**
+- Applicants see all officer requests and their responses
+- Clear status indication (sent, responded, closed, cancelled)
+- Truncated descriptions with full text preserved in data
+- Response messages and attachment counts visible
+- Read-only view - no actions to create or respond (officer-initiated only)
+
+**Timeline Page:**
+- Clear separation: "Upcoming" vs "Activity history"
+- Upcoming events show future meetings/visits in simple cards
+- Activity history shows chronological timeline with filtering
+- Filter buttons highlight active state with primary color
+- DWP timeline pattern: vertical bar, date headers, horizontal markers
+- Event cards with hover states and type badges
+- Empty states handle no upcoming events or no activity
+
+**Navigation Flow:**
+```
+/applicant
+  ↓
+/applicant/APP-001/requests (default)
+  - View all requests from officers
+  - See responses submitted
+
+/applicant/APP-001/timeline
+  - See upcoming meetings/visits
+  - Filter activity history
+  - Track application progress
+```
+
+**Data Flow:**
+
+1. **Timeline Event Aggregation**:
+   - `getTimelineEvents()` extracts all events from PlanningApplication
+   - Meetings, documents, milestones combined into unified structure
+   - Each event has: type, category, date, title, description, metadata
+
+2. **Event Filtering**:
+   - `separateUpcomingAndPast()` splits events by date vs now
+   - `filterEventsByCategory()` applies user-selected filter
+   - `groupEventsByDate()` groups for timeline display
+
+3. **Event Display**:
+   - Upcoming: simple cards, no timeline visual, ascending sort
+   - Past: DWP timeline pattern, grouped by date, descending sort
+   - Type badges from `getEventTypeBadge()` helper
+
+**Architecture:**
+
+- Nested layouts: `/applicant/layout.tsx` → `/applicant/[id]/layout.tsx`
+- Service navigation scoped to application-specific routes
+- Timeline utilities separate from components for reusability
+- Event system extensible for adding new event types
+- Consistent card styling across requests and timeline
+
+**Files Created:**
+- [lib/timeline-utils.ts](lib/timeline-utils.ts) - NEW: Event aggregation and filtering utilities
+- [components/shared/applicant-requests-view.tsx](components/shared/applicant-requests-view.tsx) - NEW: Requests component
+- [components/shared/applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx) - NEW: Timeline component
+- [app/applicant/[id]/layout.tsx](app/applicant/[id]/layout.tsx) - NEW: Application-specific layout
+- [app/applicant/[id]/requests/page.tsx](app/applicant/[id]/requests/page.tsx) - NEW: Requests page route
+- [app/applicant/[id]/timeline/page.tsx](app/applicant/[id]/timeline/page.tsx) - NEW: Timeline page route
+
+**Files Modified:**
+- [components/shared/service-navigation.tsx](components/shared/service-navigation.tsx:20) - Renamed Tasks → Requests
+- [app/applicant/layout.tsx](app/applicant/layout.tsx:1-14) - Removed ServiceNavigation (moved to nested layout)
+- [app/applicant/page.tsx](app/applicant/page.tsx:1-22) - Redirect to first application's requests
+
+**Files Deleted:**
+- `/app/applicant/tasks/` - Removed old tasks placeholder
+- `/app/applicant/timeline/` - Removed old timeline placeholder
+
+---
+
+## Applicant Timeline - UX Improvements
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Applicant-Centric Experience Enhancements
+
+Improved the applicant timeline based on UX analysis to make it more user-friendly, contextual, and action-oriented.
+
+**Changes Made:**
+
+1. **Removed Filter System:**
+   - **Problem:** Two-step filtering (checkboxes + Apply button) added unnecessary friction for only 2 categories
+   - **Solution:** Removed filters entirely - show all events by default
+   - **Impact:** Simpler interface, no cognitive load from temporary filter states
+   - **Files:** Removed Checkbox import, filter state management, and filter UI
+
+2. **Always Show Upcoming Section:**
+   - **Problem:** Section disappeared when no upcoming events, leaving users confused
+   - **Solution:** Always display "Upcoming" section with helpful empty state
+   - **Empty state:** "No upcoming meetings or site visits scheduled."
+   - **Impact:** Users always know what to expect, consistent layout
+   - **Files:** Updated conditional rendering logic
+
+3. **Application Context Banner:**
+   - **Problem:** No context about which application or where it is in the process
+   - **Solution:** Added context banner at top showing:
+     - Application ID and address
+     - Current status (formatted from snake-case)
+     - Submitted date (e.g., "Submitted: 15 Mar 2024")
+     - Decision deadline (e.g., "Decision by: 10 May 2024")
+   - **Design:** Muted background, border, responsive flex layout
+   - **Impact:** Users immediately understand context and timeline
+   - **Files:** Added banner in [applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx:43-57)
+
+4. **Plain Language Milestone Descriptions:**
+   - **Problem:** Technical jargon not suitable for applicants (e.g., "Your application has been checked and validated")
+   - **Solution:** Rewrote all milestone descriptions in applicant-friendly language
+
+   **Examples:**
+   - **Before:** "Application validated" → "Your application has been checked and validated"
+   - **After:** "Application accepted" → "Your application is complete and has been accepted for processing. The planning team will now review your proposal."
+
+   - **Before:** "Assessment completed" → "Planning officers have completed the assessment"
+   - **After:** "Assessment complete" → "Our planning team has finished assessing your application against planning policies. Your application is now being reviewed by senior officers."
+
+   - **Before:** "Application approved" → "Your application has been approved"
+   - **After:** "Application approved" → "Your planning application has been approved. You will receive formal notification with any conditions attached to the permission."
+
+   - **Impact:** Clear communication, reduced anxiety, explains what happens next
+   - **Files:** Updated all milestone descriptions in [timeline-utils.ts](lib/timeline-utils.ts:72-159)
+
+5. **Clickable Attachments:**
+   - **Problem:** Attachment counts shown but not actionable
+   - **Solution:** Display individual attachment filenames as clickable links
+   - **Design:** Border-top separator, list of links with hover underline
+   - **Format:** "{count} documents: [filename1] [filename2]"
+   - **Implementation:** Placeholder click handler ready for backend integration
+   - **Impact:** Users can access meeting documents directly from timeline
+   - **Files:** Updated both UpcomingEventCard and TimelineEventCard components
+
+6. **Add to Calendar:**
+   - **Problem:** No way to add upcoming meetings/visits to personal calendar
+   - **Solution:** Added "Add to calendar" button for all upcoming events
+   - **Implementation:** Generates ICS file (standard calendar format) that downloads when clicked
+   - **Details:** Creates 1-hour event with title, description, date/time
+   - **Compatibility:** Works with Google Calendar, Outlook, Apple Calendar, and other standard calendar apps
+   - **Impact:** Users can easily track meetings in their own calendar system
+   - **Files:** Added calendar generation function to UpcomingEventCard component
+
+**UX Improvements Summary:**
+
+| Issue | Priority | Solution | Impact |
+|-------|----------|----------|--------|
+| Complex filtering | Moderate | Removed | Simpler interface |
+| Hidden upcoming section | High | Always show with empty state | Consistent experience |
+| Missing context | High | Application banner | Clear orientation |
+| Technical language | Moderate | Plain language milestones | Better comprehension |
+| Non-actionable attachments | Low | Clickable links | Direct access |
+| No calendar integration | Low | Add to calendar button | Personal calendar sync |
+
+**Language Tone Changes:**
+
+**Before (Technical):**
+- "Application validated"
+- "Planning officers have completed..."
+- "Senior review has been completed"
+
+**After (Applicant-Friendly):**
+- "Application accepted"
+- "Our planning team has finished..."
+- "Senior officers have completed their review. A decision on your application will be made soon."
+
+**Context Banner Format:**
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Application APP-001: 123 High Street, London SE1 1AA       │
+│ Status: Under review • Submitted: 15 Mar 2024 •            │
+│ Decision by: 10 May 2024                                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**User Benefits:**
+
+1. **Reduced Cognitive Load:** No filter management, everything visible by default
+2. **Better Context:** Always know which application and where it stands
+3. **Clear Communication:** Plain language explains process and next steps
+4. **Actionable Information:** Can download documents directly from timeline
+5. **Consistent Experience:** Sections always present, no surprise disappearances
+
+**Accessibility:**
+- Maintained semantic HTML structure
+- Proper label associations for all interactive elements
+- Clear focus states on links
+- Descriptive link text for screen readers
+
+**Files Modified:**
+- [components/shared/applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx) - Removed filters, added banner, always show upcoming, clickable attachments
+- [lib/timeline-utils.ts](lib/timeline-utils.ts:72-159) - Rewrote milestone descriptions in plain language
+
+---

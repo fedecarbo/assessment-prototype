@@ -10,6 +10,7 @@ import { usePathname } from 'next/navigation'
 import { ProposalDescriptionTask } from './proposal-description-task'
 import { SiteMapTask } from './site-map-task'
 import { ApplicantRequestsContent } from './applicant-requests-content'
+import { MeetingsContent } from './meetings-content'
 import type { Application } from '@/lib/mock-data/schemas'
 import { getStatusBadge } from '@/lib/task-utils'
 
@@ -36,6 +37,15 @@ export function FutureAssessmentContent({ application }: FutureAssessmentContent
     return (
       <div className="py-8">
         <ApplicantRequestsContent application={application} />
+      </div>
+    )
+  }
+
+  // Special handling for Meetings (task ID 996)
+  if (selectedTaskId === 996) {
+    return (
+      <div className="py-8">
+        <MeetingsContent application={application} />
       </div>
     )
   }

@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { getStatusBadge } from '@/lib/task-utils'
 import { ApplicantRequestsContent } from './applicant-requests-content'
+import { MeetingsContent } from './meetings-content'
 import type { PlanningApplication } from '@/lib/mock-data/schemas'
 
 interface AssessmentContentProps {
@@ -35,6 +36,15 @@ export function AssessmentContent({ application }: AssessmentContentProps) {
     return (
       <div className="py-8">
         <ApplicantRequestsContent application={application} />
+      </div>
+    )
+  }
+
+  // Special handling for Meetings (task ID 996)
+  if (selectedTaskId === 996) {
+    return (
+      <div className="py-8">
+        <MeetingsContent application={application} />
       </div>
     )
   }

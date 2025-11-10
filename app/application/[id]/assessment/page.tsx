@@ -32,6 +32,7 @@ export default function AssessmentPage() {
         reference={application.reference}
         description={application.description}
         applicantRequests={application.applicantRequests}
+        meetings={application.meetings}
       >
         {version === 'future' ? (
           <FutureAssessmentContent application={application} />

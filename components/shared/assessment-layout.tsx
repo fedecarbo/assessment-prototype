@@ -9,7 +9,7 @@ import { TaskPanel } from './task-panel'
 import { AssessmentProvider, useAssessment } from './assessment-context'
 import { FutureAssessmentProvider, useFutureAssessment } from './future-assessment-context'
 import { getCurrentVersion } from './version-toggle'
-import type { ApplicantRequest } from '@/lib/mock-data/schemas'
+import type { ApplicantRequest, Meeting } from '@/lib/mock-data/schemas'
 import { getActionItemById, isActionItem } from '@/lib/action-items'
 
 interface AssessmentLayoutProps {
@@ -18,6 +18,7 @@ interface AssessmentLayoutProps {
   reference: string
   description?: string
   applicantRequests?: ApplicantRequest[]
+  meetings?: Meeting[]
   children: ReactNode
 }
 
@@ -27,6 +28,7 @@ function AssessmentLayoutContent({
   reference,
   description,
   applicantRequests = [],
+  meetings = [],
   children,
 }: AssessmentLayoutProps) {
   const [version, setVersion] = useState<'current' | 'future'>('current')
@@ -62,6 +64,10 @@ function AssessmentLayoutContent({
   const pendingRequestsCount = applicantRequests.filter(req => req.status === 'sent').length
   const hasNewResponses = applicantRequests.some(req => req.response && !req.viewedByOfficer)
 
+  // Calculate upcoming meetings count
+  const now = new Date()
+  const upcomingMeetingsCount = meetings.filter(m => new Date(m.meetingDate) >= now).length
+
   return (
     <div className="flex h-screen flex-col">
       {/* Fixed Headers at Top */}
@@ -85,6 +91,7 @@ function AssessmentLayoutContent({
           applicationId={applicationId}
           applicantRequestsCount={pendingRequestsCount}
           hasNewResponses={hasNewResponses}
+          upcomingMeetingsCount={upcomingMeetingsCount}
         />
 
         {/* Right: Main Content - Full width with centered 1100px max-width content and 16px padding */}

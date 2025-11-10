@@ -28,6 +28,7 @@ interface TaskPanelProps {
   applicationId?: string
   applicantRequestsCount?: number
   hasNewResponses?: boolean
+  upcomingMeetingsCount?: number
 }
 
 // Type for items that can appear in task panel (tasks with status or action items without)
@@ -239,9 +240,10 @@ interface BaseTaskPanelProps extends TaskPanelProps {
   previewButtonPlacement?: 'top' | 'below-group-title'
   applicantRequestsCount?: number
   hasNewResponses?: boolean
+  upcomingMeetingsCount?: number
 }
 
-const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups, showNonLinearActions = false, previewButtonPlacement = 'top', applicantRequestsCount = 0, hasNewResponses = false }: BaseTaskPanelProps) => {
+const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, groups, showNonLinearActions = false, previewButtonPlacement = 'top', applicantRequestsCount = 0, hasNewResponses = false, upcomingMeetingsCount = 0 }: BaseTaskPanelProps) => {
   const renderTaskItem = (task: TaskPanelItem) => {
     const isSelected = selectedTaskId === task.id
     const isLocked = task.status === 'locked'
@@ -290,6 +292,7 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
           <div className="space-y-[0.625rem]">
             {ACTION_ITEMS.map((actionItem) => {
               const isApplicantRequests = actionItem.id === 999
+              const isMeetings = actionItem.id === 996
               const showBadge = isApplicantRequests && hasNewResponses
 
               return (
@@ -305,8 +308,9 @@ const BaseTaskPanel = ({ selectedTaskId, onTaskSelect, applicationId, tasks, gro
                     {actionItem.label}
                     {/* Show count for applicant requests */}
                     {isApplicantRequests && applicantRequestsCount > 0 && ` (${applicantRequestsCount})`}
+                    {/* Show count for upcoming meetings */}
+                    {isMeetings && upcomingMeetingsCount > 0 && ` (${upcomingMeetingsCount})`}
                     {/* Placeholder counts for other items - to be implemented */}
-                    {actionItem.id === 996 && ' (1)'} {/* Meetings */}
                     {actionItem.id === 995 && ' (2)'} {/* Site visits */}
                     {actionItem.id === 994 && ' (5)'} {/* Notes */}
                   </Link>

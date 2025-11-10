@@ -69,5 +69,16 @@ export const mockApplicantRequests: ApplicantRequest[] = [
     sentDate: '2024-03-25',
     sentBy: 'Federico Carbo',
     viewedByOfficer: true
+  },
+  {
+    id: 'req-006',
+    subject: 'Additional parking space dimensions',
+    description: 'The submitted site plan shows three parking spaces but the dimensions are not clearly marked. Please provide detailed measurements showing compliance with the council\'s parking standards (minimum 2.4m x 4.8m per space).',
+    requestType: 'information',
+    status: 'cancelled',
+    sentDate: '2024-03-08',
+    dueDate: '2024-03-22',
+    sentBy: 'Federico Carbo',
+    viewedByOfficer: true
   }
 ]
