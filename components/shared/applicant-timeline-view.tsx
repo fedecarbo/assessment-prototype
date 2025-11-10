@@ -7,6 +7,7 @@ import type { PlanningApplication } from '@/lib/mock-data/schemas'
 import {
   getTimelineEvents,
   separateUpcomingAndPast,
+  groupUpcomingByRelativeTime,
   groupEventsByDate,
   getEventTypeBadge,
   type TimelineEvent
@@ -21,7 +22,8 @@ export function ApplicantTimelineView({ application }: ApplicantTimelineViewProp
   const allEvents = getTimelineEvents(application)
   const { upcoming, past } = separateUpcomingAndPast(allEvents)
 
-  // Group past events by date
+  // Group upcoming by relative time, past by absolute date
+  const groupedUpcoming = groupUpcomingByRelativeTime(upcoming)
   const groupedPast = groupEventsByDate(past)
 
   return (
@@ -40,33 +42,46 @@ export function ApplicantTimelineView({ application }: ApplicantTimelineViewProp
       {/* Divider */}
       <Separator className="mt-6" />
 
-      {/* Application Context Banner */}
-      <div className="mt-6 p-4 bg-muted/50 rounded-none border border-border">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div>
-            <p className="text-sm font-medium text-foreground">
-              Application {application.id}: {application.address}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Status: {application.status.charAt(0).toUpperCase() + application.status.slice(1).replace('-', ' ')}
-              {application.submittedDate && ` • Submitted: ${new Date(application.submittedDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`}
-              {application.expiryDate && ` • Decision by: ${new Date(application.expiryDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`}
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Upcoming Section */}
-      <div className="mt-8">
+      <div className="mt-6">
         <h2 className="text-xl font-bold text-foreground mb-4">Upcoming</h2>
-        {upcoming.length === 0 ? (
+
+        {/* Timeline */}
+        {groupedUpcoming.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No upcoming meetings or site visits scheduled.
           </p>
         ) : (
-          <div className="space-y-4">
-            {upcoming.map((event) => (
-              <UpcomingEventCard key={event.id} event={event} />
+          <div className="relative ml-0">
+            {/* Vertical timeline line - BLUE */}
+            <div className="absolute top-0 bottom-0 left-0 w-1 bg-primary" style={{ marginTop: '8px' }} />
+
+            {groupedUpcoming.map(([date, dateEvents], dateIndex) => (
+              <div key={date} className="relative pb-8 last:pb-0 pl-8">
+                {/* Date Header with Timeline Marker */}
+                <div className="relative">
+                  {/* Timeline horizontal line marker - BLUE */}
+                  <div
+                    className="absolute bg-primary"
+                    style={{
+                      width: '30px',
+                      height: '4px',
+                      left: '-40px',
+                      top: '8px'
+                    }}
+                  />
+
+                  {/* Date Text */}
+                  <h3 className="text-base font-bold text-foreground mb-4">{date}</h3>
+                </div>
+
+                {/* Event Cards for this date */}
+                <div className="space-y-6">
+                  {dateEvents.map((event) => (
+                    <UpcomingEventCard key={event.id} event={event} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -81,16 +96,16 @@ export function ApplicantTimelineView({ application }: ApplicantTimelineViewProp
           <p className="text-sm text-muted-foreground">No activity to display.</p>
         ) : (
           <div className="relative ml-0">
-            {/* Vertical timeline line */}
-            <div className="absolute top-0 bottom-0 left-0 w-1 bg-primary" style={{ marginTop: '8px' }} />
+            {/* Vertical timeline line - GREY */}
+            <div className="absolute top-0 bottom-0 left-0 w-1 bg-border" style={{ marginTop: '8px' }} />
 
             {groupedPast.map(([date, dateEvents], dateIndex) => (
               <div key={date} className="relative pb-8 last:pb-0 pl-8">
                 {/* Date Header with Timeline Marker */}
                 <div className="relative">
-                  {/* Timeline horizontal line marker */}
+                  {/* Timeline horizontal line marker - GREY */}
                   <div
-                    className="absolute bg-primary"
+                    className="absolute bg-border"
                     style={{
                       width: '30px',
                       height: '4px',
@@ -123,56 +138,84 @@ interface UpcomingEventCardProps {
 }
 
 function UpcomingEventCard({ event }: UpcomingEventCardProps) {
+  const typeBadge = getEventTypeBadge(event.type)
+  const startTime = event.metadata?.startTime || '00:00'
+  const endTime = event.metadata?.endTime || '00:00'
+
+  const getLocationDisplay = () => {
+    if (!event.metadata?.location) return null
+    const location = event.metadata.location
+
+    if (event.type === 'meeting' && (location.startsWith('http://') || location.startsWith('https://'))) {
+      return (
+        <a
+          href={location}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline"
+        >
+          {location}
+        </a>
+      )
+    }
+
+    if (event.type === 'telephone-call') {
+      return <a href={`tel:${location}`} className="text-primary hover:underline">{location}</a>
+    }
+
+    return <span>{location}</span>
+  }
+
   const eventDate = new Date(event.date)
   const formattedDate = eventDate.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
   })
-  const formattedTime = eventDate.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  })
 
-  const typeBadge = getEventTypeBadge(event.type)
+  const generateCalendarFile = () => {
+    const [startHour, startMin] = startTime.split(':')
+    const [endHour, endMin] = endTime.split(':')
 
-  // Generate calendar link (ICS format)
-  const handleAddToCalendar = () => {
-    // Format date for ICS (YYYYMMDDTHHMMSS)
-    const startDate = eventDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
-    // Add 1 hour duration
-    const endDate = new Date(eventDate.getTime() + 60 * 60 * 1000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    const startDateTime = new Date(event.date)
+    startDateTime.setHours(parseInt(startHour), parseInt(startMin), 0)
+
+    const endDateTime = new Date(event.date)
+    endDateTime.setHours(parseInt(endHour), parseInt(endMin), 0)
+
+    const formatDateForICal = (date: Date) => {
+      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    }
 
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
+      'PRODID:-//Planning Application//Meeting//EN',
       'BEGIN:VEVENT',
-      `DTSTART:${startDate}`,
-      `DTEND:${endDate}`,
+      `DTSTART:${formatDateForICal(startDateTime)}`,
+      `DTEND:${formatDateForICal(endDateTime)}`,
       `SUMMARY:${event.title}`,
-      `DESCRIPTION:${event.description || ''}`,
+      `DESCRIPTION:${event.description?.replace(/\n/g, '\\n') || ''}`,
+      `LOCATION:${event.metadata?.location || ''}`,
       'END:VEVENT',
       'END:VCALENDAR'
-    ].join('\n')
+    ].join('\r\n')
 
-    const blob = new Blob([icsContent], { type: 'text/calendar' })
-    const url = URL.createObjectURL(blob)
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' })
     const link = document.createElement('a')
-    link.href = url
-    link.download = `${event.title.replace(/\s+/g, '_')}.ics`
+    link.href = URL.createObjectURL(blob)
+    link.download = `${event.title.replace(/[^a-z0-9]/gi, '_')}.ics`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-    URL.revokeObjectURL(url)
   }
 
   return (
-    <Card className="p-5 rounded-none border-border shadow-none">
-      <div className="space-y-2">
-        {/* Header with Title and Type Badge */}
-        <div className="flex items-start justify-between gap-4">
-          <h3 className="text-base font-bold text-foreground flex-1">
+    <Card className="p-5 rounded-none border-border shadow-none hover:border-muted-foreground transition-colors">
+      <div className="space-y-3">
+        {/* Header: Title and Badge */}
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-lg font-bold text-foreground flex-1">
             {event.title}
           </h3>
           <Badge variant={typeBadge.variant as any}>
@@ -180,52 +223,34 @@ function UpcomingEventCard({ event }: UpcomingEventCardProps) {
           </Badge>
         </div>
 
-        {/* Date and Time */}
-        <p className="text-sm text-muted-foreground">
-          Scheduled: {formattedDate} at {formattedTime}
-        </p>
-
-        {/* Description/Notes */}
-        {event.description && (
-          <p className="text-sm text-foreground leading-relaxed">
-            {event.description}
+        {/* Date, Time, Location */}
+        <div className="space-y-1">
+          <p className="text-sm text-foreground">
+            <span className="font-bold">When:</span> {formattedDate}, {startTime} - {endTime}
+            {' • '}
+            <button
+              onClick={generateCalendarFile}
+              className="text-primary hover:underline"
+            >
+              Add to calendar
+            </button>
           </p>
-        )}
-
-        {/* Attachments for upcoming events */}
-        {event.metadata?.attachments && event.metadata.attachments.length > 0 && (
-          <div className="pt-2 border-t">
-            <p className="text-sm font-medium text-foreground mb-2">
-              {event.metadata.attachments.length} {event.metadata.attachments.length === 1 ? 'document' : 'documents'}:
+          {event.metadata?.location && (
+            <p className="text-sm text-foreground">
+              <span className="font-bold">Location:</span> {getLocationDisplay()}
             </p>
-            <div className="space-y-1">
-              {event.metadata.attachments.map((filename: string, index: number) => (
-                <a
-                  key={index}
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    // TODO: Implement document download
-                    console.log('Download:', filename)
-                  }}
-                  className="text-sm text-primary hover:underline block"
-                >
-                  {filename}
-                </a>
-              ))}
-            </div>
+          )}
+        </div>
+
+        {/* Description */}
+        {event.description && (
+          <div>
+            <p className="text-sm font-bold text-foreground mb-1">Description</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {event.description}
+            </p>
           </div>
         )}
-
-        {/* Add to calendar link */}
-        <div className="pt-2 border-t">
-          <button
-            onClick={handleAddToCalendar}
-            className="text-sm text-primary hover:underline"
-          >
-            Add to calendar
-          </button>
-        </div>
       </div>
     </Card>
   )
@@ -236,51 +261,114 @@ interface TimelineEventCardProps {
 }
 
 function TimelineEventCard({ event }: TimelineEventCardProps) {
-  const eventDate = new Date(event.date)
   const hasTime = event.type === 'meeting' || event.type === 'site-visit' || event.type === 'telephone-call'
-
-  const formattedTime = hasTime
-    ? eventDate.toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      })
-    : null
-
   const typeBadge = getEventTypeBadge(event.type)
+
+  const startTime = event.metadata?.startTime
+  const endTime = event.metadata?.endTime
+  const timeRange = startTime && endTime ? `${startTime} - ${endTime}` : null
+
+  const getLocationDisplay = () => {
+    if (!event.metadata?.location) return null
+    const location = event.metadata.location
+
+    if (event.type === 'meeting' && (location.startsWith('http://') || location.startsWith('https://'))) {
+      return (
+        <a
+          href={location}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline"
+        >
+          Join meeting
+        </a>
+      )
+    }
+
+    if (event.type === 'telephone-call') {
+      return <a href={`tel:${location}`} className="text-primary hover:underline">{location}</a>
+    }
+
+    return <span>{location}</span>
+  }
 
   return (
     <Card className="p-5 rounded-none border-border shadow-none hover:border-muted-foreground transition-colors">
-      <div className="space-y-2">
-        {/* Header with Title and Type Badge */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <h4 className="text-base font-bold text-foreground">
-              {event.title}
-            </h4>
-            {formattedTime && (
-              <p className="text-sm text-muted-foreground mt-1">
-                {formattedTime}
-              </p>
-            )}
-          </div>
-          <Badge variant={typeBadge.variant as any}>
+      <div className="space-y-3">
+        {/* Header: Badge and Title */}
+        <div>
+          <Badge variant={typeBadge.variant as any} className="mb-2">
             {typeBadge.label}
           </Badge>
+          <h3 className="text-base font-bold text-foreground">
+            {event.title}
+          </h3>
+          {timeRange && (
+            <p className="text-sm text-muted-foreground mt-1">{timeRange}</p>
+          )}
         </div>
 
-        {/* Description */}
-        {event.description && (
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {event.description}
-          </p>
+        {/* Location (for meetings/visits) */}
+        {event.metadata?.location && hasTime && (
+          <div className="flex gap-3">
+            <span className="w-20 text-sm font-medium text-muted-foreground">
+              {event.type === 'meeting' && event.metadata.location.startsWith('http') ? 'Link' :
+               event.type === 'site-visit' ? 'Address' :
+               event.type === 'telephone-call' ? 'Phone' : 'Location'}
+            </span>
+            <span className="text-sm text-foreground">{getLocationDisplay()}</span>
+          </div>
         )}
 
-        {/* Attachments */}
-        {event.metadata?.attachments && event.metadata.attachments.length > 0 && (
-          <div className="pt-2 border-t">
+        {/* Description (what the meeting is about) */}
+        {event.description && (
+          <div>
+            <p className="text-sm font-medium text-foreground mb-1">About this {event.type === 'site-visit' ? 'visit' : event.type === 'telephone-call' ? 'call' : 'meeting'}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {event.description}
+            </p>
+          </div>
+        )}
+
+        {/* Meeting Notes */}
+        {event.metadata?.meetingNotes && (
+          <div className="pt-3 border-t">
+            <p className="text-sm font-medium text-foreground mb-1">Notes</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {event.metadata.meetingNotes}
+            </p>
+          </div>
+        )}
+
+        {/* Photos */}
+        {event.metadata?.photos && event.metadata.photos.length > 0 && (
+          <div className="pt-3 border-t">
             <p className="text-sm font-medium text-foreground mb-2">
-              {event.metadata.attachments.length} {event.metadata.attachments.length === 1 ? 'document' : 'documents'}:
+              {event.metadata.photos.length} {event.metadata.photos.length === 1 ? 'photo' : 'photos'}
+            </p>
+            <div className="space-y-1">
+              {event.metadata.photos.map((filename: string, index: number) => (
+                <a
+                  key={index}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    console.log('View photo:', filename)
+                  }}
+                  className="text-sm text-primary hover:underline block"
+                >
+                  {filename}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Attachments (documents) */}
+        {event.metadata?.attachments && event.metadata.attachments.length > 0 && (
+          <div className="pt-3 border-t">
+            <p className="text-sm font-medium text-foreground mb-2">
+              {event.metadata.attachments.length} {event.metadata.attachments.length === 1 ? 'document' : 'documents'}
             </p>
             <div className="space-y-1">
               {event.metadata.attachments.map((filename: string, index: number) => (
@@ -289,7 +377,6 @@ function TimelineEventCard({ event }: TimelineEventCardProps) {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault()
-                    // TODO: Implement document download
                     console.log('Download:', filename)
                   }}
                   className="text-sm text-primary hover:underline block"

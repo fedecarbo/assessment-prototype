@@ -1436,3 +1436,236 @@ Improved the applicant timeline based on UX analysis to make it more user-friend
 - [lib/timeline-utils.ts](lib/timeline-utils.ts:72-159) - Rewrote milestone descriptions in plain language
 
 ---
+
+## Applicant Timeline - Appointment Card Design
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Enhanced Upcoming Event Cards with Appointment Details
+
+Redesigned upcoming event cards to display as proper appointments with date, time, and location information.
+
+**Changes Made:**
+
+1. **Meeting Schema Enhancement:**
+   - Added `location` field to `Meeting` interface in [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:194)
+   - Location field optional, supports:
+     - Meeting links (URLs) for virtual meetings
+     - Physical addresses for site visits
+     - Phone numbers for telephone calls
+   - Comment guidance: "Physical address for site-visit, meeting link URL for meeting, phone number for telephone-call"
+
+2. **Mock Data Updates:**
+   - Updated all meetings in [lib/mock-data/meetings.ts](lib/mock-data/meetings.ts) with location data
+   - Sample data includes:
+     - Virtual meeting link: `https://meet.google.com/abc-defg-hij`
+     - Site visit address: `123 High Street, London, SE1 1AA`
+     - Office meeting: `Planning Office, Town Hall, High Street, London SE1 2AA`
+     - Phone number: `020 7946 0958`
+
+3. **Timeline Events Integration:**
+   - Updated [lib/timeline-utils.ts](lib/timeline-utils.ts:44) to pass location to event metadata
+   - Location now available in all timeline event objects
+   - Maintains backwards compatibility with optional field
+
+4. **Appointment Card Redesign:**
+   - **Appointment Details Box** - New structured layout with grey background (bg-muted/30)
+   - Three-row layout with labels and values:
+     - Date: Full formatted date (e.g., "15 November 2025")
+     - Time: 24-hour format (e.g., "10:00")
+     - Location: Smart label and display based on event type
+   - Label width: 80px (w-20) for consistent alignment
+   - Label styling: text-sm, font-medium, muted-foreground
+
+5. **Smart Location Display:**
+   - **Meeting with URL**: Shows "Link" label with "Join meeting" link (opens in new tab)
+   - **Site visit**: Shows "Address" label with plain text address
+   - **Telephone call**: Shows "Phone" label with clickable tel: link
+   - **Other**: Shows "Location" label with plain text
+   - Links styled in primary color with hover underline
+   - Auto-detects URL pattern (http:// or https://)
+
+6. **Visual Hierarchy:**
+   - Title increased to text-lg (from text-base) for prominence
+   - Spacing increased to space-y-3 (from space-y-2)
+   - Appointment details box visually distinct with border and background
+   - "About this appointment" label added above description
+   - Border separators for attachments and calendar sections increased to pt-3
+
+7. **User Experience:**
+   - Clear appointment structure familiar to users from calendar apps
+   - One-click access to meeting links or phone dialing
+   - All essential appointment information at a glance
+   - Visual separation between appointment details and additional content
+   - Consistent label/value layout for easy scanning
+
+**Visual Structure:**
+```
+┌─────────────────────────────────────────┐
+│ Pre-application meeting    [Badge]      │
+│ ┌─────────────────────────────────────┐ │
+│ │ Date     15 November 2025           │ │
+│ │ Time     10:00                      │ │
+│ │ Link     Join meeting               │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ About this appointment                  │
+│ [Description text...]                   │
+│                                         │
+│ ──────────────────────────────────────  │
+│ 2 documents: [links]                    │
+│ ──────────────────────────────────────  │
+│ Add to calendar                         │
+└─────────────────────────────────────────┘
+```
+
+**Technical Details:**
+- Label column: Fixed 80px width (w-20) for alignment
+- Details box: Border, rounded-none, muted background at 30% opacity
+- Row spacing: 12px (space-y-3) within details box
+- Gap between label and value: 12px (gap-3)
+- Font weights: Labels medium, values medium for emphasis
+- Link behavior: External links open in new tab with noopener noreferrer
+
+**Accessibility:**
+- Semantic HTML with proper heading hierarchy
+- Clear label/value associations
+- Descriptive link text ("Join meeting" vs raw URL)
+- Phone links enable one-tap dialing on mobile
+- Sufficient color contrast for all text
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:194) - Added location field to Meeting interface
+- [lib/mock-data/meetings.ts](lib/mock-data/meetings.ts:9,19,30,40) - Added location data to all meetings
+- [lib/timeline-utils.ts](lib/timeline-utils.ts:44) - Pass location to event metadata
+- [components/shared/applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx:140-308) - Redesigned UpcomingEventCard with appointment layout
+
+---
+
+## Meeting Schema Reorganization - Comprehensive Meeting Data Structure
+
+**Date:** 2025-11-10
+**Agent:** Forge (Builder)
+
+### Complete Meeting Schema Overhaul for Timeline UX
+
+Reorganized the Meeting schema and mock data to support comprehensive meeting/site visit tracking with all necessary fields for a complete applicant timeline experience.
+
+**Changes Made:**
+
+1. **Meeting Schema Restructure** ([lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:189-202)):
+   - **Replaced**: `meetingDate` (single ISO datetime)
+   - **With**: Separate `date` (YYYY-MM-DD), `startTime` (HH:MM), `endTime` (HH:MM)
+   - **Replaced**: `notes` (ambiguous usage)
+   - **With**: Distinct `description` and `meetingNotes` fields
+   - **Added**: `photos` array for site visit/meeting photos
+   - **Made required**: `location` field (was optional)
+
+   **New Field Structure:**
+   - `date`: ISO date (YYYY-MM-DD) - The date of the meeting/visit
+   - `startTime`: ISO time (HH:MM) - Start time
+   - `endTime`: ISO time (HH:MM) - End time
+   - `description`: Open-ended text describing what the meeting will cover and who should attend
+   - `location`: Physical address, meeting link URL, or phone number (open-ended input)
+   - `photos`: Optional array of photo filenames from site visits or meetings
+   - `meetingNotes`: Optional notes taken during or after the meeting/site visit
+
+2. **Mock Data Enhancement** ([lib/mock-data/meetings.ts](lib/mock-data/meetings.ts:1-71)):
+   - Updated all 4 existing meetings to new schema
+   - Added 1 new meeting with photos (mtg-005: Site inspection)
+   - **Total**: 5 meetings (2 upcoming, 3 past)
+
+   **Upcoming Meetings:**
+   - Pre-application meeting (Nov 15, 10:00-11:00) - Virtual meeting link
+   - Site visit with conservation officer (Nov 20, 14:30-15:30) - Physical address
+
+   **Past Meetings:**
+   - Initial scoping meeting (Oct 22) - With detailed meeting notes
+   - Pre-submission consultation call (Oct 15) - Phone consultation with notes
+   - Site inspection for neighbour concerns (Oct 8) - With 3 photos and comprehensive notes
+
+3. **Timeline Utilities Update** ([lib/timeline-utils.ts](lib/timeline-utils.ts:33-54)):
+   - Updated `getTimelineEvents()` to construct datetime from `date + startTime`
+   - Pass all new fields to event metadata: `startTime`, `endTime`, `location`, `meetingNotes`, `photos`
+   - Event description now uses `meeting.description` instead of `meeting.notes`
+   - Maintains backwards compatibility with existing timeline event structure
+
+4. **Upcoming Event Cards** ([components/shared/applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx:140-228)):
+   - Display appointment details box with Date, Time range, Location
+   - Time format: "10:00 - 11:00" (start - end)
+   - Description section: "About this appointment" with full description text
+   - Smart location display: "Join meeting" link for URLs, clickable phone for calls
+   - No meeting notes or photos shown for upcoming events (not yet occurred)
+
+5. **Past Event Cards** ([components/shared/applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx:234-364)):
+   - Badge + Title + Time range display
+   - Location row with smart label (Link/Address/Phone)
+   - Description: "About this meeting/visit/call"
+   - **Meeting Notes section**: Border-top separator, displays full notes taken during event
+   - **Photos section**: Count + clickable photo filenames (e.g., "3 photos")
+   - **Attachments section**: Document downloads (separate from photos)
+   - Clear visual separation between description (before event) and notes (after event)
+
+**Data Organization:**
+
+**Field Purposes:**
+- `description`: Planning officer explains what will be discussed, who should attend (written before event)
+- `meetingNotes`: Notes taken during or after the meeting/site visit (written after event)
+- `photos`: Visual evidence from site visits (usually added after event)
+- `location`: Open-ended input - can be URL, address, phone number
+
+**Visual Hierarchy:**
+
+**Upcoming Events:**
+```
+[Badge: Meeting]
+Pre-application meeting with applicant
+
+┌─────────────────────────────────────┐
+│ Date      15 November 2025          │
+│ Time      10:00 - 11:00             │
+│ Link      Join meeting              │
+└─────────────────────────────────────┘
+
+About this appointment
+Discuss conservatory design, material choices...
+```
+
+**Past Events:**
+```
+[Badge: Site visit]
+Site inspection - neighbour concerns
+10:00 - 11:00
+
+Address    123 High Street, London, SE1 1AA
+
+About this visit
+Site visit to assess concerns raised by neighbour...
+
+────────────────────────────────────
+Notes
+Attended site with applicant and neighbour...
+
+────────────────────────────────────
+3 photos
+site-visit-08-10-2025-north-elevation.jpg
+site-visit-08-10-2025-neighbour-boundary.jpg
+site-visit-08-10-2025-existing-tree.jpg
+```
+
+**User Experience:**
+
+- **Before event**: Applicants see description explaining what to prepare and who will attend
+- **After event**: Applicants can review what was discussed via meeting notes
+- **Site visits**: Photos provide visual record of what was observed
+- **Time clarity**: Clear start and end times for scheduling
+- **Location flexibility**: Supports virtual meetings, phone calls, and physical addresses
+
+**Files Modified:**
+- [lib/mock-data/schemas/index.ts](lib/mock-data/schemas/index.ts:189-202) - Complete Meeting schema restructure
+- [lib/mock-data/meetings.ts](lib/mock-data/meetings.ts:1-71) - Updated all meetings with new schema + added photo example
+- [lib/timeline-utils.ts](lib/timeline-utils.ts:33-54) - Updated event aggregation for new fields
+- [components/shared/applicant-timeline-view.tsx](components/shared/applicant-timeline-view.tsx:140-364) - Redesigned both card types
+
+---

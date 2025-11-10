@@ -189,12 +189,16 @@ export type MeetingType = 'meeting' | 'site-visit' | 'telephone-call';
 export interface Meeting {
   id: string;
   title: string; // Meeting title/subject
-  type: MeetingType; // Type of meeting
-  meetingDate: string; // ISO date string
-  notes?: string;
-  attachments?: string[]; // File names/paths for uploaded documents
+  type: MeetingType; // Type of meeting (shown as badge)
+  date: string; // ISO date (YYYY-MM-DD)
+  startTime: string; // ISO time (HH:MM)
+  endTime: string; // ISO time (HH:MM)
+  description: string; // Open-ended description about what the meeting will cover and who should attend
+  location: string; // Physical address, meeting link URL, or phone number - open-ended input
+  photos?: string[]; // Photos from site visits or meetings (usually added after the event)
+  meetingNotes?: string; // Notes taken during or after the meeting/site visit
   recordedBy: string; // Officer name who recorded the meeting
-  recordedDate: string; // ISO date string when meeting was added to system
+  recordedDate: string; // ISO datetime when meeting was scheduled/recorded
 }
 
 export interface PlanningApplication {

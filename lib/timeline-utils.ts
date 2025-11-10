@@ -31,16 +31,23 @@ export function getTimelineEvents(application: PlanningApplication): TimelineEve
   // 1. Add meetings and visits
   if (application.meetings) {
     application.meetings.forEach((meeting: Meeting) => {
+      // Combine date and startTime to create ISO datetime string
+      const meetingDateTime = `${meeting.date}T${meeting.startTime}:00`
+
       events.push({
         id: `meeting-${meeting.id}`,
         type: meeting.type,
         category: 'meetings-visits',
-        date: meeting.meetingDate,
+        date: meetingDateTime,
         title: meeting.title,
-        description: meeting.notes,
+        description: meeting.description,
         metadata: {
-          recordedBy: meeting.recordedBy,
-          attachments: meeting.attachments
+          startTime: meeting.startTime,
+          endTime: meeting.endTime,
+          location: meeting.location,
+          meetingNotes: meeting.meetingNotes,
+          photos: meeting.photos,
+          recordedBy: meeting.recordedBy
         }
       })
     })
@@ -199,6 +206,42 @@ export function separateUpcomingAndPast(events: TimelineEvent[]): {
   past.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   return { upcoming, past }
+}
+
+/**
+ * Groups upcoming events by relative time periods
+ */
+export function groupUpcomingByRelativeTime(events: TimelineEvent[]): [string, TimelineEvent[]][] {
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const in7Days = new Date(today)
+  in7Days.setDate(in7Days.getDate() + 7)
+
+  const groups = new Map<string, TimelineEvent[]>()
+  groups.set('Today', [])
+  groups.set('Tomorrow', [])
+  groups.set('In 7 days', [])
+  groups.set('Later', [])
+
+  events.forEach(event => {
+    const eventDate = new Date(event.date)
+    const eventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate())
+
+    if (eventDay.getTime() === today.getTime()) {
+      groups.get('Today')!.push(event)
+    } else if (eventDay.getTime() === tomorrow.getTime()) {
+      groups.get('Tomorrow')!.push(event)
+    } else if (eventDay > tomorrow && eventDay <= in7Days) {
+      groups.get('In 7 days')!.push(event)
+    } else {
+      groups.get('Later')!.push(event)
+    }
+  })
+
+  // Return only non-empty groups
+  return Array.from(groups.entries()).filter(([_, events]) => events.length > 0)
 }
 
 /**
