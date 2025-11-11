@@ -164,30 +164,40 @@ function MeetingCard({ meeting, onEdit, isLast }: MeetingCardProps) {
           </div>
         </div>
 
-        {/* Notes */}
-        {meeting.notes && (
+        {/* Description */}
+        {meeting.description && (
           <p className="text-sm text-muted-foreground leading-relaxed">
-            {meeting.notes}
+            {meeting.description}
           </p>
         )}
 
-        {/* Attachments */}
-        {meeting.attachments && meeting.attachments.length > 0 && (
-          <div>
-            <p className="text-sm font-medium text-foreground mb-2">Documents:</p>
+        {/* Meeting Notes */}
+        {meeting.meetingNotes && (
+          <div className="pt-3 border-t border-border">
+            <p className="text-sm font-medium text-foreground mb-2">Notes:</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {meeting.meetingNotes}
+            </p>
+          </div>
+        )}
+
+        {/* Photos */}
+        {meeting.photos && meeting.photos.length > 0 && (
+          <div className="pt-3 border-t border-border">
+            <p className="text-sm font-medium text-foreground mb-2">Photos:</p>
             <div className="space-y-1">
-              {meeting.attachments.map((attachment, index) => (
+              {meeting.photos.map((photo, index) => (
                 <a
                   key={index}
                   href="#"
                   className="text-sm text-primary hover:underline block"
                   onClick={(e) => {
                     e.preventDefault()
-                    // TODO: Implement document download
-                    console.log('Download:', attachment)
+                    // TODO: Implement photo view
+                    console.log('View photo:', photo)
                   }}
                 >
-                  {attachment}
+                  {photo}
                 </a>
               ))}
             </div>
