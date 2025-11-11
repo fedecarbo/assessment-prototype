@@ -390,3 +390,42 @@ const upcomingMeetingsCount = meetings.filter(m => {
 **Status:** ✅ Resolved - All components now use the updated Meeting schema with separate date/time fields. Build should pass successfully.
 
 ---
+
+## 2025-11-11 | Timeline Utils - Fix Stage Field References
+
+**Issue:** Vercel build failing with TypeScript error:
+```
+Property 'validationStage' does not exist on type 'PlanningApplication'. Did you mean 'validation'?
+```
+
+**Root Cause:** The timeline-utils.ts file was referencing stage fields with incorrect names:
+- Used: `validationStage`, `consultationStage`, `assessmentStage`, `reviewStage`
+- Actual schema fields: `validation`, `consultation`, `assessment`, `review`
+
+Additionally, the consultation end date was incorrectly referenced as `application.consultationEnd` when it should be `application.consultation.endDate`.
+
+**Resolution:**
+Updated timeline event aggregation in timeline-utils.ts to use correct field names:
+- `application.validationStage?.completedDate` → `application.validation?.validatedDate`
+- `application.consultationStage?.startDate` → `application.consultation?.startDate`
+- `application.consultationEnd` → `application.consultation?.endDate`
+- `application.assessmentStage?.completedDate` → `application.assessment?.completedDate`
+- `application.reviewStage?.completedDate` → `application.review?.completedDate`
+
+**Files Changed:**
+- [lib/timeline-utils.ts](lib/timeline-utils.ts:91-147) - Fixed all stage field references
+
+**Technical Details:**
+```typescript
+// Before: Incorrect field names
+if (application.validationStage?.completedDate) { ... }
+if (application.consultationStage?.startDate) { ... }
+
+// After: Correct field names
+if (application.validation?.validatedDate) { ... }
+if (application.consultation?.startDate) { ... }
+```
+
+**Status:** ✅ Resolved - All stage field references now match the PlanningApplication schema. Build should pass successfully.
+
+---

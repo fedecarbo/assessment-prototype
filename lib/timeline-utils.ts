@@ -88,60 +88,60 @@ export function getTimelineEvents(application: PlanningApplication): TimelineEve
   }
 
   // Application validated
-  if (application.validationStage?.completedDate) {
+  if (application.validation?.validatedDate) {
     events.push({
       id: 'milestone-validated',
       type: 'milestone',
       category: 'milestones',
-      date: application.validationStage.completedDate,
+      date: application.validation.validatedDate,
       title: 'Application accepted',
       description: 'Your application is complete and has been accepted for processing. The planning team will now review your proposal.'
     })
   }
 
   // Consultation started
-  if (application.consultationStage?.startDate) {
+  if (application.consultation?.startDate) {
     events.push({
       id: 'milestone-consultation-start',
       type: 'milestone',
       category: 'milestones',
-      date: application.consultationStage.startDate,
+      date: application.consultation.startDate,
       title: 'Public consultation opened',
       description: 'We are now consulting neighbours and relevant organisations about your application. They have time to provide comments.'
     })
   }
 
   // Consultation ended
-  if (application.consultationEnd) {
+  if (application.consultation?.endDate) {
     events.push({
       id: 'milestone-consultation-end',
       type: 'milestone',
       category: 'milestones',
-      date: application.consultationEnd,
+      date: application.consultation.endDate,
       title: 'Public consultation closed',
       description: 'The consultation period has ended. We are now reviewing all comments received.'
     })
   }
 
   // Assessment stage completed
-  if (application.assessmentStage?.completedDate) {
+  if (application.assessment?.completedDate) {
     events.push({
       id: 'milestone-assessment-complete',
       type: 'milestone',
       category: 'milestones',
-      date: application.assessmentStage.completedDate,
+      date: application.assessment.completedDate,
       title: 'Assessment complete',
       description: 'Our planning team has finished assessing your application against planning policies. Your application is now being reviewed by senior officers.'
     })
   }
 
   // Review stage completed
-  if (application.reviewStage?.completedDate) {
+  if (application.review?.completedDate) {
     events.push({
       id: 'milestone-review-complete',
       type: 'milestone',
       category: 'milestones',
-      date: application.reviewStage.completedDate,
+      date: application.review.completedDate,
       title: 'Final review complete',
       description: 'Senior officers have completed their review. A decision on your application will be made soon.'
     })
