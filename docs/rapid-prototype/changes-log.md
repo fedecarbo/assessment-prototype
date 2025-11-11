@@ -345,3 +345,48 @@ export default async function ApplicantRequestsPage({ params }: { params: Promis
 **Status:** ✅ Resolved - All applicant portal routes now use Next.js 15 async params API. Build should pass successfully.
 
 ---
+
+## 2025-11-11 | Meeting Schema Update - Fix References to Old meetingDate Field
+
+**Issue:** Vercel build failing with TypeScript error:
+```
+Property 'meetingDate' does not exist on type 'Meeting'.
+```
+
+**Root Cause:** The Meeting schema was updated in a previous change to use separate `date`, `startTime`, and `endTime` fields instead of a single `meetingDate` field. However, two components were still referencing the old `meetingDate` field:
+1. [assessment-layout.tsx](components/shared/assessment-layout.tsx) - calculating upcoming meetings count
+2. [meetings-content.tsx](components/shared/meetings-content.tsx) - displaying and editing meetings
+
+**Resolution:**
+1. Updated assessment-layout.tsx to construct datetime from `date + startTime`:
+   - Changed from `new Date(m.meetingDate)` to `new Date(\`${m.date}T${m.startTime}\`)`
+
+2. Updated meetings-content.tsx to use new schema fields:
+   - Changed date sorting to use `meeting.date` instead of `meeting.meetingDate`
+   - Updated MeetingCard to use `meeting.startTime` directly
+   - Updated MeetingForm to handle separate date, startTime, endTime fields
+   - Replaced old fields with new schema:
+     - `notes` → `description` (for meeting purpose) and `meetingNotes` (for meeting notes)
+     - `attachments` → removed (schema uses `photos` for site visit photos)
+     - Added `location` field (required - meeting link, address, or phone)
+   - Updated form fields to match new schema
+
+**Files Changed:**
+- [components/shared/assessment-layout.tsx](components/shared/assessment-layout.tsx:69-72) - Fixed upcoming meetings filter
+- [components/shared/meetings-content.tsx](components/shared/meetings-content.tsx:112,119,150,219-230,232-249,323-398) - Updated to use new Meeting schema
+
+**Technical Details:**
+```typescript
+// Before: Old meetingDate field
+const upcomingMeetingsCount = meetings.filter(m => new Date(m.meetingDate) >= now).length
+
+// After: Construct datetime from date + startTime
+const upcomingMeetingsCount = meetings.filter(m => {
+  const meetingDateTime = new Date(`${m.date}T${m.startTime}`)
+  return meetingDateTime >= now
+}).length
+```
+
+**Status:** ✅ Resolved - All components now use the updated Meeting schema with separate date/time fields. Build should pass successfully.
+
+---

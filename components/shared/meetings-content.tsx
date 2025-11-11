@@ -109,14 +109,14 @@ export function MeetingsContent({ application }: MeetingsContentProps) {
 function groupMeetingsByDate(meetings: Meeting[]): [string, Meeting[]][] {
   // Sort meetings by date descending (most recent first)
   const sorted = [...meetings].sort((a, b) =>
-    new Date(b.meetingDate).getTime() - new Date(a.meetingDate).getTime()
+    new Date(b.date).getTime() - new Date(a.date).getTime()
   )
 
   // Group by date
   const grouped = new Map<string, Meeting[]>()
 
   sorted.forEach((meeting) => {
-    const meetingDate = new Date(meeting.meetingDate)
+    const meetingDate = new Date(meeting.date)
     const dateKey = meetingDate.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
@@ -140,17 +140,14 @@ interface MeetingCardProps {
 
 function MeetingCard({ meeting, onEdit, isLast }: MeetingCardProps) {
   // Format meeting date and time
-  const meetingDate = new Date(meeting.meetingDate)
+  const meetingDate = new Date(meeting.date)
   const formattedMeetingDate = meetingDate.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
   })
-  const formattedMeetingTime = meetingDate.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  })
+  // Use startTime directly from the meeting object
+  const formattedMeetingTime = meeting.startTime
 
   return (
     <Card className="p-5 rounded-none border-border shadow-none hover:border-muted-foreground transition-colors">
@@ -219,30 +216,18 @@ interface MeetingFormProps {
 
 function MeetingForm({ onCancel, mode, meeting }: MeetingFormProps) {
   // Parse existing meeting data if editing
-  const existingDate = meeting ? new Date(meeting.meetingDate) : null
-  const existingDateString = existingDate ? existingDate.toISOString().split('T')[0] : ''
-  const existingTimeString = existingDate
-    ? existingDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })
-    : ''
+  const existingDateString = meeting?.date || ''
+  const existingStartTime = meeting?.startTime || ''
+  const existingEndTime = meeting?.endTime || ''
 
   const [title, setTitle] = useState(meeting?.title || '')
   const [type, setType] = useState<'meeting' | 'site-visit' | 'telephone-call'>(meeting?.type || 'meeting')
   const [meetingDate, setMeetingDate] = useState(existingDateString)
-  const [meetingTime, setMeetingTime] = useState(existingTimeString)
-  const [notes, setNotes] = useState(meeting?.notes || '')
-  const [attachments, setAttachments] = useState<string[]>(meeting?.attachments || [])
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      const fileNames = Array.from(files).map(file => file.name)
-      setAttachments([...attachments, ...fileNames])
-    }
-  }
-
-  const handleRemoveAttachment = (index: number) => {
-    setAttachments(attachments.filter((_, i) => i !== index))
-  }
+  const [startTime, setStartTime] = useState(existingStartTime)
+  const [endTime, setEndTime] = useState(existingEndTime)
+  const [description, setDescription] = useState(meeting?.description || '')
+  const [location, setLocation] = useState(meeting?.location || '')
+  const [meetingNotes, setMeetingNotes] = useState(meeting?.meetingNotes || '')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -251,10 +236,12 @@ function MeetingForm({ onCancel, mode, meeting }: MeetingFormProps) {
     console.log(mode === 'add' ? 'Creating meeting:' : 'Updating meeting:', {
       title,
       type,
-      meetingDate,
-      meetingTime,
-      notes,
-      attachments
+      date: meetingDate,
+      startTime,
+      endTime,
+      description,
+      location,
+      meetingNotes
     })
 
     // For now, just close the form
@@ -333,69 +320,81 @@ function MeetingForm({ onCancel, mode, meeting }: MeetingFormProps) {
             />
           </div>
 
-          {/* Meeting Time Field */}
+          {/* Start Time Field */}
           <div>
-            <label htmlFor="meetingTime" className="block text-sm font-medium text-foreground mb-2">
-              Meeting time <span className="text-red-600">*</span>
+            <label htmlFor="startTime" className="block text-sm font-medium text-foreground mb-2">
+              Start time <span className="text-red-600">*</span>
             </label>
             <input
               type="time"
-              id="meetingTime"
-              value={meetingTime}
-              onChange={(e) => setMeetingTime(e.target.value)}
+              id="startTime"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
               required
               className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
             />
           </div>
 
-          {/* Notes Field */}
+          {/* End Time Field */}
           <div>
-            <label htmlFor="notes" className="block text-sm font-medium text-foreground mb-2">
-              Notes (optional)
+            <label htmlFor="endTime" className="block text-sm font-medium text-foreground mb-2">
+              End time <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="time"
+              id="endTime"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
+            />
+          </div>
+
+          {/* Location Field */}
+          <div>
+            <label htmlFor="location" className="block text-sm font-medium text-foreground mb-2">
+              Location <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="text"
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+              placeholder="e.g. Meeting link, address, or phone number"
+              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
+            />
+          </div>
+
+          {/* Description Field */}
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
+              Description <span className="text-red-600">*</span>
             </label>
             <textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={8}
-              placeholder="Add any notes about the meeting"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              rows={4}
+              placeholder="What will be discussed and who should attend"
               className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground resize-none"
             />
           </div>
 
-          {/* Upload Documents Field */}
+          {/* Meeting Notes Field */}
           <div>
-            <label htmlFor="documents" className="block text-sm font-medium text-foreground mb-2">
-              Upload documents (optional)
+            <label htmlFor="meetingNotes" className="block text-sm font-medium text-foreground mb-2">
+              Meeting notes (optional)
             </label>
-            <input
-              type="file"
-              id="documents"
-              multiple
-              onChange={handleFileUpload}
-              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
+            <textarea
+              id="meetingNotes"
+              value={meetingNotes}
+              onChange={(e) => setMeetingNotes(e.target.value)}
+              rows={8}
+              placeholder="Notes taken during or after the meeting"
+              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground resize-none"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Upload meeting notes, photos, or other relevant documents
-            </p>
-
-            {/* List of uploaded files */}
-            {attachments.length > 0 && (
-              <div className="mt-3 space-y-2">
-                {attachments.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
-                    <span className="text-sm text-foreground">{file}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveAttachment(index)}
-                      className="text-sm text-red-600 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Action Buttons */}

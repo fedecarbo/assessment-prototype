@@ -66,7 +66,10 @@ function AssessmentLayoutContent({
 
   // Calculate upcoming meetings count
   const now = new Date()
-  const upcomingMeetingsCount = meetings.filter(m => new Date(m.meetingDate) >= now).length
+  const upcomingMeetingsCount = meetings.filter(m => {
+    const meetingDateTime = new Date(`${m.date}T${m.startTime}`)
+    return meetingDateTime >= now
+  }).length
 
   return (
     <div className="flex h-screen flex-col">
