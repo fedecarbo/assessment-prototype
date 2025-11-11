@@ -304,3 +304,44 @@ Route (app)                                 Size  First Load JS
 **Status:** ✅ Resolved - Build passes successfully, all TypeScript errors fixed. Ready for Vercel deployment.
 
 ---
+
+## 2025-11-11 | Next.js 15 Async Params API - Applicant Portal Routes
+
+**Issue:** Vercel build failing with TypeScript error on applicant portal routes:
+```
+Type '{ params: { id: string; }; }' does not satisfy the constraint 'PageProps'.
+Types of property 'params' are incompatible.
+Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally
+```
+
+**Root Cause:** Next.js 15 changed the params API to be asynchronous. Dynamic route segments now receive params as a Promise that must be awaited, but the applicant portal pages were still using the old synchronous params API.
+
+**Resolution:**
+1. Updated all three applicant portal route files to use async params API:
+   - Changed function signature from `function` to `async function`
+   - Changed params type from `{ id: string }` to `Promise<{ id: string }>`
+   - Added `await params` to extract the id value
+   - Applied fixes to: page components, layout component
+
+**Files Changed:**
+- [app/applicant/[id]/requests/page.tsx](app/applicant/[id]/requests/page.tsx) - Made async, awaited params
+- [app/applicant/[id]/timeline/page.tsx](app/applicant/[id]/timeline/page.tsx) - Made async, awaited params
+- [app/applicant/[id]/layout.tsx](app/applicant/[id]/layout.tsx) - Made async, awaited params
+
+**Technical Details:**
+```typescript
+// Before: Synchronous params (Next.js 14 style)
+export default function ApplicantRequestsPage({ params }: { params: { id: string } }) {
+  const application = mockApplications.find(app => app.id === params.id)
+}
+
+// After: Asynchronous params (Next.js 15 style)
+export default async function ApplicantRequestsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const application = mockApplications.find(app => app.id === id)
+}
+```
+
+**Status:** ✅ Resolved - All applicant portal routes now use Next.js 15 async params API. Build should pass successfully.
+
+---
